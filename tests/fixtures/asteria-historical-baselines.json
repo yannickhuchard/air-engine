@@ -1,0 +1,26 @@
+{
+  "source": "Historical synthetic foundation fixture, 2026-09-19; expected digests, not a new execution receipt",
+  "dossiers": [
+    {
+      "baseline": {
+        "id": "urn:asteria:baseline:d01",
+        "revision": 1
+      },
+      "digest": "sha256:ee090696c5fc37b84aad41d90ae79d5d82c4d943203c8da35690169351b75c75"
+    },
+    {
+      "baseline": {
+        "id": "urn:asteria:baseline:d02",
+        "revision": 1
+      },
+      "digest": "sha256:5f1237e2765c5f0e609877c69e683b48f0ef505a784e5afdccbae53a0eb9e726"
+    },
+    {
+      "baseline": {
+        "id": "urn:asteria:baseline:d03",
+        "revision": 1
+      },
+      "digest": "sha256:0ecbafc858659eb11c5f616cb44013e61ef8cb46cfbdd5168ea608a0d0633e45"
+    }
+  ]
+}

@@ -34,3 +34,7 @@ ils ne sont pas inclus dans les archives et ce rendu demande un accès réseau.
 
 Le nom AIR et l’identité de Yannick Huchard indiquent l’origine officielle ; ils ne
 constituent pas une certification OpenAI ni une garantie de support contractuel.
+
+Les tests de construction utilisent un extrait public des trois empreintes historiques
+Asteria, conservées sans modification dans `tests/fixtures/asteria-historical-baselines.json`.
+Les utilitaires de recette de restauration sont inclus avec leurs dépendances.

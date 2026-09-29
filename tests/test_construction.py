@@ -92,7 +92,7 @@ def test_old_profile_cannot_contain_new_types(construction, store):
 
 
 def test_old_baseline_digests_match_recorded_release(store):
-    evidence = json.loads((ROOT / "docs/traceability/verification-foundation.json").read_text(encoding="utf-8"))
+    evidence = json.loads((ROOT / "tests/fixtures/asteria-historical-baselines.json").read_text(encoding="utf-8"))
     # Historical fixture digests are checked separately from the current implementation.
     manifest = json.loads((ROOT / "fixtures/enterprise/asteria/manifest.json").read_text(encoding="utf-8"))
     def find(value, object_id):
