@@ -34,6 +34,10 @@ Un IDE peut suivre [.agents/skills/air-install/SKILL.md](.agents/skills/air-inst
 
 ## Comprendre l’utilité avec trois dossiers
 
+Pour recevoir la distribution sur un autre poste, utiliser le
+[kit de recette publique](docs/reception-second-poste.md). Il vérifie les artefacts,
+l’installation et les trois dossiers, avec une attestation humaine séparée.
+
 [Asteria Industrie](fixtures/enterprise/asteria/README.md) est une entreprise fictive
 avec trois dossiers partageant identité et intégration :
 

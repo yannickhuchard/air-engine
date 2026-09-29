@@ -11,3 +11,10 @@ un environnement neuf, la réinstallation, la restauration et les trois dossiers
 Asteria. La validation native d’un nouveau compte ChatGPT, un second poste physique,
 macOS/Linux, PostgreSQL, l’approbation d’annuaire et la conformité AIR complète restent
 hors de ce reçu. Aucune CI n’est lancée.
+
+Le kit de [réception sur un second poste](reception-second-poste.md), ajouté le
+30 septembre, a été répété sur le poste de développement dans une venv neuve :
+artefacts rc9 téléchargés, installation/reprise et trois dossiers PASS_SCOPED.
+Sept tests ciblés du kit passent (empreintes altérées, destination existante,
+preuves incomplètes et absence d’attestation artificielle). Ce reçu supplémentaire
+ne modifie pas les archives rc9 et n’atteste pas un second appareil ni un client natif.
