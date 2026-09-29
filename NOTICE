@@ -1,0 +1,17 @@
+AIR â€” Architecture Intermediate Representation
+Copyright 2026 Yannick Huchard
+
+Official project: https://github.com/yannickhuchard/air-engine
+Official developer: Yannick Huchard
+
+The AIR implementation and its first-party software documentation are licensed
+under the Apache License, Version 2.0. See LICENSE.
+
+Third-party components and imported materials retain their respective notices
+and licenses. The original AIR white paper PDF is a reference document; this
+software license does not assign a new license to that document. Enterprise
+models, source documents, credentials and data are not licensed by this notice.
+
+The AIR Local skills plugin is part of this implementation. Its name and the
+identification of the official developer do not imply certification by any
+agent-platform vendor. This notice does not modify the Apache License.

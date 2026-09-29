@@ -1,0 +1,1149 @@
+[
+  {
+    "meta": {
+      "id": "urn:asteria:source:company",
+      "type": "air.Source",
+      "revision": 1,
+      "name": "Contexte d’entreprise et hypothèses communes",
+      "description": "Jeu entièrement fictif Asteria Industrie. Contexte d’entreprise et hypothèses communes",
+      "namespace": "asteria.shared",
+      "owner": "urn:asteria:identity:lea-morel",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": []
+      }
+    },
+    "body": {
+      "kind": "DOCUMENT",
+      "locator": "fixtures/enterprise/asteria/company.md",
+      "source_revision": "sha256:b83bc8f0d371658fe5e6638db58922e8fd40e10c166286d164722b3b901029ba",
+      "captured_at": "2026-09-21T09:00:00Z",
+      "access_policy": "Périmètre fictif de démonstration Asteria",
+      "retention_policy": "Conserver avec la version du jeu de recette"
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:scope:identity",
+      "type": "air.Scope",
+      "revision": 1,
+      "name": "Plateforme d’identité partagée",
+      "description": "Jeu entièrement fictif Asteria Industrie. Plateforme d’identité partagée",
+      "namespace": "asteria.shared",
+      "owner": "urn:asteria:identity:marc-petit",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:company",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "includes": [],
+      "excludes": [],
+      "boundary_description": "Identités clients, salariés, prestataires et machines, avec des droits distincts.",
+      "context_dimensions": {
+        "populations": "clients; salariés; prestataires; machines",
+        "authority": "Responsable IAM"
+      }
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:scope:integration",
+      "type": "air.Scope",
+      "revision": 1,
+      "name": "Équipe d’intégration partagée",
+      "description": "Jeu entièrement fictif Asteria Industrie. Équipe d’intégration partagée",
+      "namespace": "asteria.shared",
+      "owner": "urn:asteria:identity:karim-vidal",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:company",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "includes": [],
+      "excludes": [],
+      "boundary_description": "Quatre ETP nets par semaine pour les trois dossiers, sur le calendrier synthétique commun.",
+      "context_dimensions": {
+        "capacity_basis": "Hypothèse de recette ; aucune réservation réelle",
+        "authority": "Responsable intégration"
+      }
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:source:atelier",
+      "type": "air.Source",
+      "revision": 1,
+      "name": "Atelier fictif — Maintenance connectée d’un atelier",
+      "description": "Jeu entièrement fictif Asteria Industrie. Atelier fictif — Maintenance connectée d’un atelier",
+      "namespace": "asteria.atelier",
+      "owner": "urn:asteria:identity:lea-morel",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": []
+      }
+    },
+    "body": {
+      "kind": "DOCUMENT",
+      "locator": "fixtures/enterprise/asteria/dossiers/atelier/brief.md",
+      "source_revision": "sha256:700d588a483b44e7a5335b5ceed2d64aeb04c5c3701a9698d273ec4002d56ff9",
+      "captured_at": "2026-09-21T09:00:00Z",
+      "access_policy": "Périmètre fictif de démonstration Asteria",
+      "retention_policy": "Conserver avec la version du jeu de recette"
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:scope:atelier",
+      "type": "air.Scope",
+      "revision": 1,
+      "name": "Maintenance connectée d’un atelier",
+      "description": "Jeu entièrement fictif Asteria Industrie. Maintenance connectée d’un atelier",
+      "namespace": "asteria.atelier",
+      "owner": "urn:asteria:identity:eric-lambert",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:company",
+            "revision": 1
+          },
+          {
+            "id": "urn:asteria:source:atelier",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "includes": [
+        {
+          "id": "urn:asteria:scope:identity",
+          "revision": 1
+        },
+        {
+          "id": "urn:asteria:scope:integration",
+          "revision": 1
+        }
+      ],
+      "excludes": [],
+      "boundary_description": "Périmètre du dossier D02 ; critères, exclusions et inconnues conservés dans le brief sourcé.",
+      "context_dimensions": {
+        "dossier": "D02",
+        "company": "Asteria Industrie — fictive",
+        "stage": "Cadrage synthétique non approuvé"
+      }
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:assertion:d02",
+      "type": "air.Assertion",
+      "revision": 1,
+      "name": "Assertion — Maintenance connectée d’un atelier",
+      "description": "Connaissance synthétique du dossier D02 ; aucune qualification d’une entreprise réelle.",
+      "namespace": "asteria.atelier",
+      "owner": "urn:asteria:identity:eric-lambert",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:company",
+            "revision": 1
+          },
+          {
+            "id": "urn:asteria:source:atelier",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "statement": "Le pilote atelier ne permet aucune écriture vers les automates ou actionneurs.",
+      "subject_scope": {
+        "id": "urn:asteria:scope:atelier",
+        "revision": 1
+      },
+      "epistemic_status": "SUPPORTED",
+      "evidence": [
+        {
+          "id": "urn:asteria:evidence:d02",
+          "revision": 1
+        }
+      ]
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:evidence:d02",
+      "type": "air.Evidence",
+      "revision": 1,
+      "name": "Evidence — Maintenance connectée d’un atelier",
+      "description": "Connaissance synthétique du dossier D02 ; aucune qualification d’une entreprise réelle.",
+      "namespace": "asteria.atelier",
+      "owner": "urn:asteria:identity:eric-lambert",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:company",
+            "revision": 1
+          },
+          {
+            "id": "urn:asteria:source:atelier",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "source": {
+        "id": "urn:asteria:source:atelier",
+        "revision": 1
+      },
+      "selector": "Section « Périmètre, alternatives et contrats à construire » (ou contrat à construire pour D01)",
+      "evidence_kind": "DOCUMENT_EXCERPT",
+      "supports_or_refutes": [
+        {
+          "id": "urn:asteria:assertion:d02",
+          "revision": 1,
+          "direction": "SUPPORTS"
+        }
+      ],
+      "limitations": [
+        "Confirme le contenu du brief fictif ; ne prouve aucun comportement observé ni revue humaine."
+      ]
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:assumption:d02",
+      "type": "air.Assumption",
+      "revision": 1,
+      "name": "Assumption — Maintenance connectée d’un atelier",
+      "description": "Connaissance synthétique du dossier D02 ; aucune qualification d’une entreprise réelle.",
+      "namespace": "asteria.atelier",
+      "owner": "urn:asteria:identity:eric-lambert",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:company",
+            "revision": 1
+          },
+          {
+            "id": "urn:asteria:source:atelier",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "statement": "Les six machines du pilote exposent des observations exploitables avec unité et instant.",
+      "used_by": [
+        {
+          "id": "urn:asteria:scope:atelier",
+          "revision": 1
+        }
+      ],
+      "impact_if_false": "Réduire le périmètre de collecte et revoir la recette de simulation.",
+      "validation_plan": "Examiner des échantillons synthétiques puis qualifier chaque protocole avec les automaticiens.",
+      "review_due": "2026-10-01T09:00:00Z",
+      "state": "OPEN"
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:unknown:d02",
+      "type": "air.Unknown",
+      "revision": 1,
+      "name": "Unknown — Maintenance connectée d’un atelier",
+      "description": "Connaissance synthétique du dossier D02 ; aucune qualification d’une entreprise réelle.",
+      "namespace": "asteria.atelier",
+      "owner": "urn:asteria:identity:eric-lambert",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:company",
+            "revision": 1
+          },
+          {
+            "id": "urn:asteria:source:atelier",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "question": "Quel seuil de fraîcheur rend une observation inutilisable pour proposer une inspection ?",
+      "affected_objects": [
+        {
+          "id": "urn:asteria:scope:atelier",
+          "revision": 1
+        }
+      ],
+      "resolution_owner": "urn:asteria:identity:eric-lambert",
+      "blocking_policy": "BLOCK",
+      "state": "OPEN"
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:atelier:requirement",
+      "type": "air.Requirement",
+      "revision": 1,
+      "name": "Proposer une inspection humaine à partir de mesures fraîches, sans commande physique automatique.",
+      "description": "Spécification synthétique — Proposer une inspection humaine à partir de mesures fraîches, sans commande physique automatique.",
+      "namespace": "asteria.atelier",
+      "owner": "urn:asteria:identity:eric-lambert",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:atelier",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "statement": "Proposer une inspection humaine à partir de mesures fraîches, sans commande physique automatique.",
+      "kind": "FUNCTIONAL",
+      "priority": "MUST",
+      "applicability": "Pilote atelier ; toutes les occurrences décrites dans ce dossier.",
+      "acceptance": [
+        {
+          "id": "urn:asteria:construction:atelier:criterion0",
+          "revision": 1
+        },
+        {
+          "id": "urn:asteria:construction:atelier:criterion1",
+          "revision": 1
+        },
+        {
+          "id": "urn:asteria:construction:atelier:criterion2",
+          "revision": 1
+        }
+      ],
+      "source": [
+        {
+          "id": "urn:asteria:source:atelier",
+          "revision": 1
+        }
+      ]
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:atelier:criterion0",
+      "type": "air.AcceptanceCriterion",
+      "revision": 1,
+      "name": "Réception 1 — ProposeInspection",
+      "description": "Spécification synthétique — Réception 1 — ProposeInspection",
+      "namespace": "asteria.atelier",
+      "owner": "urn:asteria:identity:eric-lambert",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:atelier",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "condition": "Mesure nominale synthétique : proposition traçable, aucun appel de commande machine.",
+      "verification_method": "TEST",
+      "acceptance_authority": "urn:asteria:authority:atelier",
+      "cases": [
+        {
+          "id": "urn:asteria:construction:atelier:case0",
+          "revision": 1
+        }
+      ]
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:atelier:case0",
+      "type": "air.VerificationCase",
+      "revision": 1,
+      "name": "Scénario 1 — ProposeInspection",
+      "description": "Spécification synthétique — Scénario 1 — ProposeInspection",
+      "namespace": "asteria.atelier",
+      "owner": "urn:asteria:identity:eric-lambert",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:atelier",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "target": {
+        "id": "urn:asteria:construction:atelier:function",
+        "revision": 1
+      },
+      "method": "TEST",
+      "inputs": [
+        {
+          "name": "observation",
+          "data_type": "MachineObservation",
+          "description": "Machine, unité, valeur, instant de mesure et identité du collecteur"
+        }
+      ],
+      "oracle": "Mesure nominale synthétique : proposition traçable, aucun appel de commande machine.",
+      "acceptance": "Observer tous les résultats attendus et conserver les preuves corrélées.",
+      "independence_basis": "Scénario conçu depuis le brief ; exécution et revue indépendante non réalisées."
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:atelier:criterion1",
+      "type": "air.AcceptanceCriterion",
+      "revision": 1,
+      "name": "Réception 2 — ProposeInspection",
+      "description": "Spécification synthétique — Réception 2 — ProposeInspection",
+      "namespace": "asteria.atelier",
+      "owner": "urn:asteria:identity:eric-lambert",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:atelier",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "condition": "Mesure périmée : résultat inconnu et demande de contrôle, aucun faux état sain.",
+      "verification_method": "TEST",
+      "acceptance_authority": "urn:asteria:authority:atelier",
+      "cases": [
+        {
+          "id": "urn:asteria:construction:atelier:case1",
+          "revision": 1
+        }
+      ]
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:atelier:case1",
+      "type": "air.VerificationCase",
+      "revision": 1,
+      "name": "Scénario 2 — ProposeInspection",
+      "description": "Spécification synthétique — Scénario 2 — ProposeInspection",
+      "namespace": "asteria.atelier",
+      "owner": "urn:asteria:identity:eric-lambert",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:atelier",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "target": {
+        "id": "urn:asteria:construction:atelier:function",
+        "revision": 1
+      },
+      "method": "TEST",
+      "inputs": [
+        {
+          "name": "observation",
+          "data_type": "MachineObservation",
+          "description": "Machine, unité, valeur, instant de mesure et identité du collecteur"
+        }
+      ],
+      "oracle": "Mesure périmée : résultat inconnu et demande de contrôle, aucun faux état sain.",
+      "acceptance": "Observer tous les résultats attendus et conserver les preuves corrélées.",
+      "independence_basis": "Scénario conçu depuis le brief ; exécution et revue indépendante non réalisées."
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:atelier:criterion2",
+      "type": "air.AcceptanceCriterion",
+      "revision": 1,
+      "name": "Réception 3 — ProposeInspection",
+      "description": "Spécification synthétique — Réception 3 — ProposeInspection",
+      "namespace": "asteria.atelier",
+      "owner": "urn:asteria:identity:eric-lambert",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:atelier",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "condition": "Collecteur expiré ou unité incompatible : rejet et demande de revalidation.",
+      "verification_method": "TEST",
+      "acceptance_authority": "urn:asteria:authority:atelier",
+      "cases": [
+        {
+          "id": "urn:asteria:construction:atelier:case2",
+          "revision": 1
+        }
+      ]
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:atelier:case2",
+      "type": "air.VerificationCase",
+      "revision": 1,
+      "name": "Scénario 3 — ProposeInspection",
+      "description": "Spécification synthétique — Scénario 3 — ProposeInspection",
+      "namespace": "asteria.atelier",
+      "owner": "urn:asteria:identity:eric-lambert",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:atelier",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "target": {
+        "id": "urn:asteria:construction:atelier:function",
+        "revision": 1
+      },
+      "method": "TEST",
+      "inputs": [
+        {
+          "name": "observation",
+          "data_type": "MachineObservation",
+          "description": "Machine, unité, valeur, instant de mesure et identité du collecteur"
+        }
+      ],
+      "oracle": "Collecteur expiré ou unité incompatible : rejet et demande de revalidation.",
+      "acceptance": "Observer tous les résultats attendus et conserver les preuves corrélées.",
+      "independence_basis": "Scénario conçu depuis le brief ; exécution et revue indépendante non réalisées."
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:atelier:failure0",
+      "type": "air.FailureMode",
+      "revision": 1,
+      "name": "StaleObservation",
+      "description": "Spécification synthétique — StaleObservation",
+      "namespace": "asteria.atelier",
+      "owner": "urn:asteria:identity:eric-lambert",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:atelier",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "trigger": "Mesure périmée ou réseau indisponible",
+      "effect": "Chemin nominal interrompu ; Classer la situation UNKNOWN, demander une mesure ; ne pas déclarer la machine saine",
+      "detection": "Contrôle explicite de la condition : Mesure périmée ou réseau indisponible",
+      "response": "Classer la situation UNKNOWN, demander une mesure ; ne pas déclarer la machine saine",
+      "recovery_condition": "Nouvelle mesure suffisamment fraîche"
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:atelier:failure1",
+      "type": "air.FailureMode",
+      "revision": 1,
+      "name": "InvalidCollector",
+      "description": "Spécification synthétique — InvalidCollector",
+      "namespace": "asteria.atelier",
+      "owner": "urn:asteria:identity:eric-lambert",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:atelier",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "trigger": "Collecteur expiré ou unité incompatible",
+      "effect": "Chemin nominal interrompu ; Refuser la mesure et demander une revalidation",
+      "detection": "Contrôle explicite de la condition : Collecteur expiré ou unité incompatible",
+      "response": "Refuser la mesure et demander une revalidation",
+      "recovery_condition": "Identité et unité vérifiées par leur responsable"
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:atelier:function",
+      "type": "air.Function",
+      "revision": 1,
+      "name": "ProposeInspection",
+      "description": "Spécification synthétique — ProposeInspection",
+      "namespace": "asteria.atelier",
+      "owner": "urn:asteria:identity:eric-lambert",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:atelier",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "kind": "SOFTWARE",
+      "inputs": [
+        {
+          "name": "observation",
+          "data_type": "MachineObservation",
+          "description": "Machine, unité, valeur, instant de mesure et identité du collecteur"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "proposal",
+          "data_type": "InspectionProposal",
+          "description": "Proposition à qualifier par un technicien ; aucune instruction machine"
+        }
+      ],
+      "preconditions": [
+        "Collecteur autorisé ; unité attendue et seuil de fraîcheur explicitement validé avant usage."
+      ],
+      "postconditions": [
+        "La proposition expose les mesures et leur âge.",
+        "Aucune commande de machine ; une donnée manquante ne vaut pas absence de panne."
+      ],
+      "effects": [
+        {
+          "kind": "STATE_CHANGE",
+          "description": "Créer un enregistrement de conception prévu par ProposeInspection ; aucune exécution par AIR."
+        }
+      ],
+      "exceptions": [
+        {
+          "id": "urn:asteria:construction:atelier:failure0",
+          "revision": 1
+        },
+        {
+          "id": "urn:asteria:construction:atelier:failure1",
+          "revision": 1
+        }
+      ],
+      "atomic": true,
+      "satisfies": [
+        {
+          "id": "urn:asteria:construction:atelier:requirement",
+          "revision": 1
+        }
+      ]
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:atelier:requester",
+      "type": "air.Actor",
+      "revision": 1,
+      "name": "Maintenance, données industrielles et sécurité",
+      "description": "Spécification synthétique — Maintenance, données industrielles et sécurité",
+      "namespace": "asteria.atelier",
+      "owner": "urn:asteria:identity:eric-lambert",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:atelier",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "kind": "HUMAN",
+      "roles": [],
+      "boundary": {
+        "id": "urn:asteria:scope:atelier",
+        "revision": 1
+      }
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:atelier:service",
+      "type": "air.Actor",
+      "revision": 1,
+      "name": "ProposeInspection service",
+      "description": "Spécification synthétique — ProposeInspection service",
+      "namespace": "asteria.atelier",
+      "owner": "urn:asteria:identity:eric-lambert",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:atelier",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "kind": "SOFTWARE",
+      "roles": [],
+      "boundary": {
+        "id": "urn:asteria:scope:atelier",
+        "revision": 1
+      }
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:atelier:contract",
+      "type": "air.SemanticContract",
+      "revision": 1,
+      "name": "Contrat ProposeInspection",
+      "description": "Spécification synthétique — Contrat ProposeInspection",
+      "namespace": "asteria.atelier",
+      "owner": "urn:asteria:identity:eric-lambert",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:atelier",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "operations": [
+        {
+          "name": "ProposeInspection",
+          "function": {
+            "id": "urn:asteria:construction:atelier:function",
+            "revision": 1
+          }
+        }
+      ],
+      "participants": [
+        {
+          "actor": {
+            "id": "urn:asteria:construction:atelier:requester",
+            "revision": 1
+          },
+          "role": "Demandeur habilité selon le périmètre métier"
+        },
+        {
+          "actor": {
+            "id": "urn:asteria:construction:atelier:service",
+            "revision": 1
+          },
+          "role": "Fournisseur de l’opération"
+        }
+      ],
+      "authorization": "Contrôler identité et périmètre de la demande ; une proposition AIR ne confère aucun mandat.",
+      "state_effects": [
+        {
+          "kind": "STATE_CHANGE",
+          "description": "Créer un enregistrement de conception prévu par ProposeInspection ; aucune exécution par AIR."
+        }
+      ],
+      "error_contract": [
+        {
+          "code": "StaleObservation",
+          "failure_mode": {
+            "id": "urn:asteria:construction:atelier:failure0",
+            "revision": 1
+          },
+          "response": "Classer la situation UNKNOWN, demander une mesure ; ne pas déclarer la machine saine"
+        },
+        {
+          "code": "InvalidCollector",
+          "failure_mode": {
+            "id": "urn:asteria:construction:atelier:failure1",
+            "revision": 1
+          },
+          "response": "Refuser la mesure et demander une revalidation"
+        }
+      ],
+      "quality": [],
+      "compatibility_policy": "Toute modification d’entrée, sortie, condition, erreur ou effet rouvre la revue du contrat ; aucun binding qualifié."
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:atelier:unit",
+      "type": "air.ConstructionUnit",
+      "revision": 1,
+      "name": "Construire et vérifier ProposeInspection",
+      "description": "Spécification synthétique — Construire et vérifier ProposeInspection",
+      "namespace": "asteria.atelier",
+      "owner": "urn:asteria:identity:eric-lambert",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:atelier",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "realizes": [
+        {
+          "id": "urn:asteria:construction:atelier:function",
+          "revision": 1
+        },
+        {
+          "id": "urn:asteria:construction:atelier:contract",
+          "revision": 1
+        }
+      ],
+      "work_kind": "SOFTWARE",
+      "outputs": [
+        {
+          "name": "ProposeInspection implementation",
+          "kind": "CODE_AND_TESTS",
+          "description": "Livrable futur : opération, documentation, tests nominaux et erreurs. Aucun code métier généré dans cette tranche AIR."
+        }
+      ],
+      "acceptance": [
+        {
+          "id": "urn:asteria:construction:atelier:criterion0",
+          "revision": 1
+        },
+        {
+          "id": "urn:asteria:construction:atelier:criterion1",
+          "revision": 1
+        },
+        {
+          "id": "urn:asteria:construction:atelier:criterion2",
+          "revision": 1
+        }
+      ],
+      "justified_by": [
+        {
+          "id": "urn:asteria:construction:atelier:requirement",
+          "revision": 1
+        }
+      ],
+      "resource_demand": [],
+      "estimate": {
+        "id": "urn:asteria:construction:atelier:estimate",
+        "revision": 1
+      }
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:atelier:estimate",
+      "type": "air.Estimate",
+      "revision": 1,
+      "name": "Estimation synthétique ProposeInspection",
+      "description": "Spécification synthétique — Estimation synthétique ProposeInspection",
+      "namespace": "asteria.atelier",
+      "owner": "urn:asteria:identity:eric-lambert",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:atelier",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "target": {
+        "id": "urn:asteria:construction:atelier:unit",
+        "revision": 1
+      },
+      "measure": "effort",
+      "value_or_distribution": {
+        "value": "10",
+        "unit": "person_day"
+      },
+      "basis": [
+        "Ordre de grandeur pédagogique du pilote, non calibré et non engagé."
+      ],
+      "scope_assumptions": [
+        {
+          "id": "urn:asteria:assumption:d02",
+          "revision": 1
+        }
+      ],
+      "calibration_class": "SYNTHETIC_UNCALIBRATED"
+    }
+  }
+]

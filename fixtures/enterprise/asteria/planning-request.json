@@ -1,0 +1,190 @@
+{
+  "basis": "SCENARIO_INPUT",
+  "as_of": "2026-09-19T12:00:00Z",
+  "unit": "FTE",
+  "periods": [
+    {
+      "start": "2026-10-05T00:00:00Z",
+      "end": "2026-10-12T00:00:00Z"
+    },
+    {
+      "start": "2026-10-12T00:00:00Z",
+      "end": "2026-10-19T00:00:00Z"
+    },
+    {
+      "start": "2026-10-19T00:00:00Z",
+      "end": "2026-10-26T00:00:00Z"
+    },
+    {
+      "start": "2026-10-26T00:00:00Z",
+      "end": "2026-11-02T00:00:00Z"
+    },
+    {
+      "start": "2026-11-02T00:00:00Z",
+      "end": "2026-11-09T00:00:00Z"
+    },
+    {
+      "start": "2026-11-09T00:00:00Z",
+      "end": "2026-11-16T00:00:00Z"
+    },
+    {
+      "start": "2026-11-16T00:00:00Z",
+      "end": "2026-11-23T00:00:00Z"
+    },
+    {
+      "start": "2026-11-23T00:00:00Z",
+      "end": "2026-11-30T00:00:00Z"
+    }
+  ],
+  "pools": [
+    {
+      "scope": {
+        "id": "urn:asteria:scope:integration",
+        "revision": 1,
+        "digest": "sha256:4e7540ace1d5316a5be971d7f28e6c55b10579411da5726d3d78f40275e28583"
+      },
+      "source": {
+        "id": "urn:asteria:source:company",
+        "revision": 1,
+        "digest": "sha256:68adbb601ce390af14de162b6e4780c32a5f3ebcd2fdd77af3e7f9cbb89b4143"
+      },
+      "resource_ids": [
+        "urn:asteria:resource:integration-0",
+        "urn:asteria:resource:integration-1",
+        "urn:asteria:resource:integration-2",
+        "urn:asteria:resource:integration-3",
+        "urn:asteria:resource:integration-4",
+        "urn:asteria:resource:integration-5"
+      ],
+      "availability": "AVAILABLE",
+      "observed_at": "2026-09-19T10:00:00Z",
+      "expires_at": "2026-10-01T00:00:00Z",
+      "gross": [
+        "6",
+        "6",
+        "6",
+        "6",
+        "6",
+        "6",
+        "6",
+        "6"
+      ],
+      "baseline_obligations": [
+        "2",
+        "2",
+        "2",
+        "2",
+        "2",
+        "2",
+        "2",
+        "2"
+      ],
+      "existing_reservations": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    }
+  ],
+  "demands": [
+    {
+      "baseline": {
+        "id": "urn:asteria:construction-baseline:sav",
+        "revision": 1,
+        "digest": "sha256:a8d2637d5189e4e480bb4d9f1bbf444c4ae71b1f271ff378e07fa9832a3ac7da"
+      },
+      "unit": {
+        "id": "urn:asteria:construction:sav:unit",
+        "revision": 1,
+        "digest": "sha256:f13fb63cffc2db563a2674577b379355a5a5b4448704110fcd58e8a7a2e3c875"
+      },
+      "pool": {
+        "id": "urn:asteria:scope:integration",
+        "revision": 1
+      },
+      "per_week": [
+        "2",
+        "2",
+        "2",
+        "2",
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "baseline": {
+        "id": "urn:asteria:construction-baseline:atelier",
+        "revision": 1,
+        "digest": "sha256:d6fda88c294d93da657bb24b73c8189ed23003c6f89b903b174c9a6a61e997e6"
+      },
+      "unit": {
+        "id": "urn:asteria:construction:atelier:unit",
+        "revision": 1,
+        "digest": "sha256:b0d3be3026ec0331fac7b6d4e7a7a7aec82a6952b698640cac5a4d79e5ae2dd1"
+      },
+      "pool": {
+        "id": "urn:asteria:scope:integration",
+        "revision": 1
+      },
+      "per_week": [
+        "2",
+        "2",
+        "2",
+        "2",
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "baseline": {
+        "id": "urn:asteria:construction-baseline:identites",
+        "revision": 1,
+        "digest": "sha256:1519e8fd3025726e745fbbf69e83181cd62f2a3f6f220829bc3c30c96bc099c2"
+      },
+      "unit": {
+        "id": "urn:asteria:construction:identites:unit",
+        "revision": 1,
+        "digest": "sha256:dd2193a4ebfee42329d1149fb6256434a70637996d77544521f00f20ffdd3554"
+      },
+      "pool": {
+        "id": "urn:asteria:scope:integration",
+        "revision": 1
+      },
+      "per_week": [
+        "1",
+        "1",
+        "1",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    }
+  ],
+  "dependencies": [],
+  "priority_order": [
+    {
+      "id": "urn:asteria:construction:sav:unit",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:identites:unit",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:atelier:unit",
+      "revision": 1
+    }
+  ],
+  "strategy": "AS_PROPOSED"
+}

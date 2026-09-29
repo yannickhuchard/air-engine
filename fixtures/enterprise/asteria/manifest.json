@@ -1,0 +1,288 @@
+{
+  "schema_version": 1,
+  "company": {
+    "id": "asteria",
+    "name": "Asteria Industrie",
+    "fictional": true,
+    "context": "company.md"
+  },
+  "shared_objects": "shared.bootstrap.json",
+  "dossiers": [
+    {
+      "id": "D01",
+      "title": "Portail SAV et orchestration des interventions",
+      "brief": "dossiers/sav/brief.md",
+      "bootstrap": "dossiers/sav/bootstrap.json",
+      "shared_refs": [
+        {
+          "id": "urn:asteria:scope:identity",
+          "revision": 1
+        },
+        {
+          "id": "urn:asteria:scope:integration",
+          "revision": 1
+        }
+      ],
+      "foundation": "dossiers/sav/foundation.json",
+      "baseline_request": "dossiers/sav/baseline-request.json",
+      "validation": "dossiers/sav/validation.json",
+      "construction": "dossiers/sav/construction.json",
+      "construction_baseline_request": "dossiers/sav/construction-baseline-request.json"
+    },
+    {
+      "id": "D02",
+      "title": "Maintenance connectÃ©e dâ€™un atelier",
+      "brief": "dossiers/atelier/brief.md",
+      "bootstrap": "dossiers/atelier/bootstrap.json",
+      "shared_refs": [
+        {
+          "id": "urn:asteria:scope:identity",
+          "revision": 1
+        },
+        {
+          "id": "urn:asteria:scope:integration",
+          "revision": 1
+        }
+      ],
+      "foundation": "dossiers/atelier/foundation.json",
+      "baseline_request": "dossiers/atelier/baseline-request.json",
+      "validation": "dossiers/atelier/validation.json",
+      "construction": "dossiers/atelier/construction.json",
+      "construction_baseline_request": "dossiers/atelier/construction-baseline-request.json"
+    },
+    {
+      "id": "D03",
+      "title": "ArrivÃ©es, mobilitÃ©s et dÃ©parts",
+      "brief": "dossiers/identites/brief.md",
+      "bootstrap": "dossiers/identites/bootstrap.json",
+      "shared_refs": [
+        {
+          "id": "urn:asteria:scope:identity",
+          "revision": 1
+        },
+        {
+          "id": "urn:asteria:scope:integration",
+          "revision": 1
+        }
+      ],
+      "foundation": "dossiers/identites/foundation.json",
+      "baseline_request": "dossiers/identites/baseline-request.json",
+      "validation": "dossiers/identites/validation.json",
+      "construction": "dossiers/identites/construction.json",
+      "construction_baseline_request": "dossiers/identites/construction-baseline-request.json"
+    }
+  ],
+  "milestone": {
+    "id": "DEMO-METIER-1",
+    "status": "PASS_SCOPED",
+    "reason": "Conception traÃ§able exÃ©cutÃ©e par HTTP/MCP sur SQLite/local neuve ; refus, vues et restauration vÃ©rifiÃ©s. Pas dâ€™exÃ©cution des systÃ¨mes mÃ©tier ni de conformitÃ© complÃ¨te.",
+    "requires": [
+      {
+        "id": "M1-BASELINE",
+        "lots": [
+          "L01",
+          "L03"
+        ],
+        "criterion": "RÃ©fÃ©rences exactes et typÃ©es ; baseline fermÃ©e, immuable et rejouable pour chaque dossier.",
+        "status": "PASS_SCOPED"
+      },
+      {
+        "id": "M1-KNOWLEDGE",
+        "lots": [
+          "L02",
+          "L06"
+        ],
+        "criterion": "Sources, preuves, assertions, hypothÃ¨ses et inconnues distinguÃ©es ; preuve manquante visible et bloquante si requise.",
+        "status": "PASS_SCOPED"
+      },
+      {
+        "id": "M1-CONTRACT",
+        "lots": [
+          "L07"
+        ],
+        "criterion": "Au moins une exigence, une fonction, un contrat et une unitÃ© de construction traÃ§ables par dossier.",
+        "status": "PASS_SCOPED"
+      },
+      {
+        "id": "M1-CHANGE",
+        "lots": [
+          "L03",
+          "L11"
+        ],
+        "criterion": "Une proposition modifie une nouvelle version ; diff et impacts sur les trois dossiers reliÃ©s Ã  la version partagÃ©e exacte.",
+        "status": "PASS_SCOPED"
+      },
+      {
+        "id": "M1-AUTHORITY",
+        "lots": [
+          "L04"
+        ],
+        "criterion": "Droits par pÃ©rimÃ¨tre testÃ©s ; proposition, approbation et exÃ©cution distinctes ; refus dâ€™une approbation auto-dÃ©clarÃ©e.",
+        "status": "PASS_SCOPED"
+      },
+      {
+        "id": "M1-VIEW",
+        "lots": [
+          "L07",
+          "L08"
+        ],
+        "criterion": "Vue lisible par mÃ©tier et ingÃ©nierie, produite depuis le modÃ¨le avec preuves, lacunes et contrÃ´les non exÃ©cutÃ©s.",
+        "status": "PASS_SCOPED"
+      },
+      {
+        "id": "M1-INSTALL",
+        "lots": [
+          "L05",
+          "L16",
+          "L17"
+        ],
+        "criterion": "Les trois dossiers se rejouent sur une installation SQLite/local neuve en suivant documentation et skill ; restauration des mÃªmes rÃ©visions.",
+        "status": "PASS_SCOPED"
+      }
+    ],
+    "acceptance": "Chaque critÃ¨re possÃ¨de un rÃ©sultat dâ€™exÃ©cution et des artefacts de preuve ; NOT_EXECUTED ou UNKNOWN requis empÃªche la rÃ©ception.",
+    "evidence": "docs/validation.md"
+  },
+  "portfolio": {
+    "milestone": "DEMO-PORTEFEUILLE-2",
+    "status": "NOT_READY",
+    "lots": [
+      "L09",
+      "L10",
+      "L11",
+      "L12",
+      "L13",
+      "L14"
+    ],
+    "calendar": {
+      "start": "2026-10-05",
+      "end_exclusive": "2026-11-30",
+      "weeks": 8,
+      "working_days_per_week": 5,
+      "holidays": [],
+      "synthetic": true
+    },
+    "resource": {
+      "id": "integration",
+      "unit": "FTE",
+      "net_supply_per_week": [
+        "4",
+        "4",
+        "4",
+        "4",
+        "4",
+        "4",
+        "4",
+        "4"
+      ]
+    },
+    "demands": [
+      {
+        "dossier": "D01",
+        "per_week": [
+          "2",
+          "2",
+          "2",
+          "2",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        "total_FTE_weeks": "8"
+      },
+      {
+        "dossier": "D02",
+        "per_week": [
+          "2",
+          "2",
+          "2",
+          "2",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        "total_FTE_weeks": "8"
+      },
+      {
+        "dossier": "D03",
+        "per_week": [
+          "1",
+          "1",
+          "1",
+          "1",
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        "total_FTE_weeks": "4"
+      }
+    ],
+    "oracle": {
+      "kind": "EXPECTED_RESULT_NOT_ENGINE_OUTPUT",
+      "initial_total_per_week": [
+        "5",
+        "5",
+        "5",
+        "5",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "initial_shortfall_per_week": [
+        "1",
+        "1",
+        "1",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "initial_shortfall_FTE_weeks": "4",
+      "proposed_variant": {
+        "shifted_dossier": "D02",
+        "per_week": [
+          "0",
+          "0",
+          "0",
+          "0",
+          "2",
+          "2",
+          "2",
+          "2"
+        ],
+        "total_per_week": [
+          "3",
+          "3",
+          "3",
+          "3",
+          "2",
+          "2",
+          "2",
+          "2"
+        ],
+        "capacity_feasible": true,
+        "approved": false,
+        "admitted": false,
+        "launch_authorized": false
+      },
+      "required_negative_cases": [
+        "Concurrent requests must not overbook the same shared supply.",
+        "Unavailable capacity source is UNKNOWN, not zero demand or full availability.",
+        "Expired collector identity must block a newly requested launch.",
+        "Restoring the registry must preserve historical commitments or freeze new admissions pending reconciliation."
+      ]
+    }
+  },
+  "execution_policy": {
+    "real_external_effects": false,
+    "default_backend": "sqlite",
+    "default_auth": "local",
+    "isolated_data_required": true,
+    "bootstrap_check_is_business_demo": false
+  }
+}

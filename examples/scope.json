@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "id": "urn:air:example:scope:claims", "type": "air.Scope", "revision": 1,
+    "name": "Claims pilot", "description": "First architecture scope for the claims pilot.",
+    "namespace": "example.claims", "owner": "urn:identity:example:architecture",
+    "classification": {"level": "INTERNAL"}, "lifecycle": "DRAFT",
+    "recorded_at": "2026-09-19T00:00:00Z",
+    "validity": {"start": "2026-09-19T00:00:00Z", "end": null},
+    "provenance": {"recorded_by": "urn:identity:example:architect", "method": "manual example", "source_refs": []}
+  },
+  "body": {"includes": [], "excludes": [], "boundary_description": "Claim registration; coverage decisions are outside this pilot."}
+}

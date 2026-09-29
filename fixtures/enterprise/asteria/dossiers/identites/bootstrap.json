@@ -1,0 +1,88 @@
+[
+  {
+    "meta": {
+      "id": "urn:asteria:source:identites",
+      "type": "air.Source",
+      "revision": 1,
+      "name": "Atelier fictif — Arrivées, mobilités et départs",
+      "description": "Jeu entièrement fictif Asteria Industrie. Atelier fictif — Arrivées, mobilités et départs",
+      "namespace": "asteria.identites",
+      "owner": "urn:asteria:identity:lea-morel",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": []
+      }
+    },
+    "body": {
+      "kind": "DOCUMENT",
+      "locator": "fixtures/enterprise/asteria/dossiers/identites/brief.md",
+      "source_revision": "sha256:9a41e69a58a29ebd784a2484192b507af993b8892d8ac64dc9124b78b938aebf",
+      "captured_at": "2026-09-21T09:00:00Z",
+      "access_policy": "Périmètre fictif de démonstration Asteria",
+      "retention_policy": "Conserver avec la version du jeu de recette"
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:scope:identites",
+      "type": "air.Scope",
+      "revision": 1,
+      "name": "Arrivées, mobilités et départs",
+      "description": "Jeu entièrement fictif Asteria Industrie. Arrivées, mobilités et départs",
+      "namespace": "asteria.identites",
+      "owner": "urn:asteria:identity:ines-colin",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:company",
+            "revision": 1
+          },
+          {
+            "id": "urn:asteria:source:identites",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "includes": [
+        {
+          "id": "urn:asteria:scope:identity",
+          "revision": 1
+        },
+        {
+          "id": "urn:asteria:scope:integration",
+          "revision": 1
+        }
+      ],
+      "excludes": [],
+      "boundary_description": "Périmètre du dossier D03 ; critères, exclusions et inconnues conservés dans le brief sourcé.",
+      "context_dimensions": {
+        "dossier": "D03",
+        "company": "Asteria Industrie — fictive",
+        "stage": "Cadrage synthétique non approuvé"
+      }
+    }
+  }
+]

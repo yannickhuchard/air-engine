@@ -1,0 +1,134 @@
+{
+  "meta": {
+    "id": "urn:asteria:construction-baseline:identites",
+    "type": "air.Baseline",
+    "revision": 1,
+    "name": "Baseline de construction — identites",
+    "description": "Jeu entièrement fictif Asteria Industrie. Arrivées, mobilités et départs",
+    "namespace": "asteria.identites",
+    "owner": "urn:asteria:identity:ines-colin",
+    "classification": {
+      "level": "INTERNAL"
+    },
+    "lifecycle": "DRAFT",
+    "recorded_at": "2026-09-21T09:00:00Z",
+    "validity": {
+      "start": "2026-10-05T00:00:00Z",
+      "end": "2026-11-30T00:00:00Z"
+    },
+    "provenance": {
+      "recorded_by": "urn:asteria:identity:lea-morel",
+      "method": "Fixture synthétique de recette, sans observation réelle",
+      "source_refs": [
+        {
+          "id": "urn:asteria:source:company",
+          "revision": 1
+        },
+        {
+          "id": "urn:asteria:source:identites",
+          "revision": 1
+        }
+      ]
+    }
+  },
+  "profile": "air.construction/0.4",
+  "members": [
+    {
+      "id": "urn:asteria:source:company",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:scope:identity",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:scope:integration",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:source:identites",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:scope:identites",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:assertion:d03",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:evidence:d03",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:assumption:d03",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:unknown:d03",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:identites:requirement",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:identites:criterion0",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:identites:case0",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:identites:criterion1",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:identites:case1",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:identites:criterion2",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:identites:case2",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:identites:failure0",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:identites:failure1",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:identites:function",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:identites:requester",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:identites:service",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:identites:contract",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:identites:unit",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:identites:estimate",
+      "revision": 1
+    }
+  ],
+  "parent_baselines": []
+}

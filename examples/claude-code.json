@@ -1,0 +1,15 @@
+{
+  "client": "claude-code",
+  "workspace": {
+    "name": "Asteria architecture",
+    "organization": "Asteria Industrie (fiction)"
+  },
+  "server": {
+    "interpreter": "C:/AIR/.venv/Scripts/python.exe",
+    "home": "C:/AIR/.air",
+    "credential": "claude-code.json",
+    "port": 8740
+  },
+  "access": "read-only",
+  "shared_instructions": "AGENTS.md"
+}

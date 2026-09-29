@@ -1,0 +1,6 @@
+# AIR compares exact bytes and pins fixture digests: line endings must never be rewritten on checkout.
+* text=auto eol=lf
+*.pdf binary
+*.png binary
+*.zip binary
+*.db binary

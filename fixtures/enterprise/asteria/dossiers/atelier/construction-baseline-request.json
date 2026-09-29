@@ -1,0 +1,134 @@
+{
+  "meta": {
+    "id": "urn:asteria:construction-baseline:atelier",
+    "type": "air.Baseline",
+    "revision": 1,
+    "name": "Baseline de construction — atelier",
+    "description": "Jeu entièrement fictif Asteria Industrie. Maintenance connectée d’un atelier",
+    "namespace": "asteria.atelier",
+    "owner": "urn:asteria:identity:eric-lambert",
+    "classification": {
+      "level": "INTERNAL"
+    },
+    "lifecycle": "DRAFT",
+    "recorded_at": "2026-09-21T09:00:00Z",
+    "validity": {
+      "start": "2026-10-05T00:00:00Z",
+      "end": "2026-11-30T00:00:00Z"
+    },
+    "provenance": {
+      "recorded_by": "urn:asteria:identity:lea-morel",
+      "method": "Fixture synthétique de recette, sans observation réelle",
+      "source_refs": [
+        {
+          "id": "urn:asteria:source:company",
+          "revision": 1
+        },
+        {
+          "id": "urn:asteria:source:atelier",
+          "revision": 1
+        }
+      ]
+    }
+  },
+  "profile": "air.construction/0.4",
+  "members": [
+    {
+      "id": "urn:asteria:source:company",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:scope:identity",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:scope:integration",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:source:atelier",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:scope:atelier",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:assertion:d02",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:evidence:d02",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:assumption:d02",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:unknown:d02",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:atelier:requirement",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:atelier:criterion0",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:atelier:case0",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:atelier:criterion1",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:atelier:case1",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:atelier:criterion2",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:atelier:case2",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:atelier:failure0",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:atelier:failure1",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:atelier:function",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:atelier:requester",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:atelier:service",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:atelier:contract",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:atelier:unit",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:construction:atelier:estimate",
+      "revision": 1
+    }
+  ],
+  "parent_baselines": []
+}

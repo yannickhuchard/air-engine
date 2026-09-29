@@ -1,0 +1,17 @@
+{
+  "format": "air.p07-reception/2",
+  "profile": "LOCAL_ARCHITECT_WORKSTATION",
+  "scope_decision": "P07_LOCAL_CODEX_CHATGPT_2026_09_28",
+  "deferred_journeys": ["independent_review", "explicit_workstation_exchange"],
+  "air_version": null,
+  "source_sha256": null,
+  "clients": {"chatgpt": null, "codex": null},
+  "journeys": {
+    "individual_identities": null,
+    "network_recovery": null,
+    "credential_expiry": null,
+    "credential_rotation": null,
+    "cross_client_resume": null,
+    "cli_api_mcp_parity": null
+  }
+}

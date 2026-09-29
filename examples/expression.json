@@ -1,0 +1,38 @@
+{
+  "expression": {
+    "language": "AIR-Expr",
+    "language_version": "0.1",
+    "result_type": "Boolean",
+    "required_inputs": [
+      {
+        "name": "capacity.total_committed",
+        "type": "Quantity[FTE]"
+      },
+      {
+        "name": "capacity.net_available",
+        "type": "Quantity[FTE]"
+      }
+    ],
+    "ast": {
+      "op": "lte",
+      "args": [
+        {
+          "ref": "capacity.total_committed"
+        },
+        {
+          "ref": "capacity.net_available"
+        }
+      ]
+    }
+  },
+  "inputs": {
+    "capacity.total_committed": {
+      "type": "Quantity[FTE]",
+      "value": "5"
+    },
+    "capacity.net_available": {
+      "type": "Quantity[FTE]",
+      "value": "4"
+    }
+  }
+}

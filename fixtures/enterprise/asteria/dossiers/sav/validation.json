@@ -1,0 +1,67 @@
+{
+  "note": "La confirmation de déduplication ERP manque. La variante corrigée est une hypothèse synthétique, pas une preuve ERP.",
+  "expected_initial_result": "UNKNOWN",
+  "initial_inputs": {},
+  "corrected_inputs": {
+    "inputs.erp_key_confirmed": {
+      "type": "Boolean",
+      "value": true
+    }
+  },
+  "rule_set": {
+    "id": "urn:asteria:diagnostic:sav",
+    "version": "1",
+    "rules": [
+      {
+        "id": "sav.submission-key-confirmed",
+        "version": "1",
+        "mandatory": true,
+        "method": "EXPRESSION",
+        "applicability": {
+          "language": "AIR-Expr",
+          "language_version": "0.1",
+          "result_type": "Boolean",
+          "required_inputs": [],
+          "ast": {
+            "literal": {
+              "type": "Boolean",
+              "value": true
+            }
+          }
+        },
+        "predicate": {
+          "language": "AIR-Expr",
+          "language_version": "0.1",
+          "result_type": "Boolean",
+          "required_inputs": [
+            {
+              "name": "inputs.erp_key_confirmed",
+              "type": "Boolean"
+            }
+          ],
+          "ast": {
+            "ref": "inputs.erp_key_confirmed"
+          }
+        }
+      },
+      {
+        "id": "sav.owner-review",
+        "version": "1",
+        "mandatory": true,
+        "method": "MANUAL",
+        "applicability": {
+          "language": "AIR-Expr",
+          "language_version": "0.1",
+          "result_type": "Boolean",
+          "required_inputs": [],
+          "ast": {
+            "literal": {
+              "type": "Boolean",
+              "value": true
+            }
+          }
+        }
+      }
+    ]
+  }
+}

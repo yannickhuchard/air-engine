@@ -1,0 +1,768 @@
+{
+  "version": "0.34.0rc9",
+  "status": "PASS_SCOPED",
+  "milestone": "DEMO-METIER-1",
+  "http_executed": true,
+  "mcp_executed": true,
+  "business_scenarios_executed": false,
+  "native_client_qualification": false,
+  "dossiers": [
+    {
+      "id": "D01",
+      "title": "Portail SAV et orchestration des interventions",
+      "status": "PASS",
+      "gate": {
+        "profile": "air.validation/0.3",
+        "engine": "air.expr/0.3",
+        "gate": "foundation-review",
+        "baseline": {
+          "id": "urn:asteria:baseline:d01",
+          "revision": 1,
+          "digest": "sha256:ee090696c5fc37b84aad41d90ae79d5d82c4d943203c8da35690169351b75c75"
+        },
+        "request_digest": "sha256:b97e10db5b5a22b54fa9273af7fa176ba9ba6dec0fc29e862331fbd4eabde9c3",
+        "rule_set": {
+          "id": "urn:asteria:diagnostic:sav",
+          "version": "1",
+          "digest": "sha256:3e3c602e3cce44c0c1e28669166a6163f7e4ee0d649d4235d791fadc8bb715f0"
+        },
+        "inputs_digest": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        "derived_facts": {
+          "baseline.member_count": {
+            "type": "Integer",
+            "value": 9
+          },
+          "baseline.blocking_unknown_count": {
+            "type": "Integer",
+            "value": 1
+          },
+          "baseline.contested_assertion_count": {
+            "type": "Integer",
+            "value": 0
+          },
+          "baseline.closed": {
+            "type": "Boolean",
+            "value": true
+          }
+        },
+        "results": [
+          {
+            "rule": "sav.submission-key-confirmed",
+            "version": "1",
+            "mandatory": true,
+            "applicability": {
+              "engine": "air.expr/0.3",
+              "execution": "EXECUTED",
+              "result": "SATISFIED",
+              "diagnostics": [],
+              "request_digest": "sha256:b5568dc11378b226d375b2ef25a89a0dad40867c4563fc29347c596f48d4df6a",
+              "value": {
+                "type": "Boolean",
+                "value": true
+              },
+              "cost": {
+                "steps": 1,
+                "limit": 20000
+              }
+            },
+            "execution": "EXECUTED",
+            "result": "UNKNOWN",
+            "evaluation": {
+              "engine": "air.expr/0.3",
+              "execution": "EXECUTED",
+              "result": "UNKNOWN",
+              "diagnostics": [
+                {
+                  "code": "AIR_EXPR_UNKNOWN",
+                  "input": "inputs.erp_key_confirmed"
+                }
+              ],
+              "request_digest": "sha256:d87bb881171d632eb4cd5cada1c18d1984ab25d9d1a057595977c5b45f7907a9",
+              "value": {
+                "type": "Boolean",
+                "state": "UNKNOWN"
+              },
+              "cost": {
+                "steps": 1,
+                "limit": 20000
+              }
+            }
+          },
+          {
+            "rule": "sav.owner-review",
+            "version": "1",
+            "mandatory": true,
+            "applicability": {
+              "engine": "air.expr/0.3",
+              "execution": "EXECUTED",
+              "result": "SATISFIED",
+              "diagnostics": [],
+              "request_digest": "sha256:b5568dc11378b226d375b2ef25a89a0dad40867c4563fc29347c596f48d4df6a",
+              "value": {
+                "type": "Boolean",
+                "value": true
+              },
+              "cost": {
+                "steps": 1,
+                "limit": 20000
+              }
+            },
+            "execution": "NOT_EXECUTED",
+            "result": "UNKNOWN",
+            "reason": "Authenticated human review is not implemented; supplied approvals are not accepted"
+          }
+        ],
+        "blockers": [
+          {
+            "code": "AIR_GATE_REQUIRED_RULE",
+            "rule": "sav.submission-key-confirmed",
+            "result": "UNKNOWN"
+          },
+          {
+            "code": "AIR_GATE_REQUIRED_RULE",
+            "rule": "sav.owner-review",
+            "result": "UNKNOWN"
+          },
+          {
+            "code": "AIR_GATE_BLOCKING_UNKNOWNS",
+            "references": [
+              {
+                "id": "urn:asteria:unknown:d01",
+                "revision": 1
+              }
+            ]
+          }
+        ],
+        "gate_decision": "BLOCKED",
+        "decision_ready": false,
+        "authorization_granted": false,
+        "policy_authority": "CALLER_SUPPLIED_DIAGNOSTIC_ONLY",
+        "coverage": {
+          "scope": "Exact foundation baseline and supplied rule set only",
+          "normative": {
+            "executed": [
+              "bootstrap-schema",
+              "bootstrap-temporal",
+              "bootstrap-scope",
+              "bootstrap-identity",
+              "foundation-reference-types",
+              "AIR-V003"
+            ],
+            "not_executed": [
+              "AIR-V001",
+              "AIR-V002",
+              "AIR-V004",
+              "AIR-V005",
+              "AIR-V006",
+              "AIR-V007",
+              "AIR-V008",
+              "AIR-V009",
+              "AIR-V010",
+              "AIR-V011",
+              "AIR-V012",
+              "AIR-V013",
+              "AIR-V014",
+              "AIR-V015",
+              "AIR-V016",
+              "AIR-V017",
+              "AIR-V018",
+              "AIR-V019",
+              "AIR-V020",
+              "AIR-V021",
+              "AIR-V022",
+              "AIR-V023",
+              "AIR-V024",
+              "AIR-V025",
+              "AIR-V026",
+              "AIR-V027",
+              "AIR-V028",
+              "AIR-V029",
+              "AIR-V030",
+              "AIR-V031",
+              "AIR-V032",
+              "AIR-V033",
+              "AIR-V034",
+              "AIR-V035",
+              "AIR-V036",
+              "AIR-V037",
+              "AIR-V038",
+              "AIR-V039",
+              "AIR-V040",
+              "AIR-V041",
+              "AIR-V042",
+              "AIR-V043",
+              "AIR-V044",
+              "AIR-V045",
+              "AIR-V046",
+              "AIR-V047",
+              "AIR-V048",
+              "AIR-V049",
+              "AIR-V050",
+              "AIR-V051",
+              "AIR-V052",
+              "AIR-V053",
+              "AIR-V054",
+              "AIR-V055",
+              "AIR-V056",
+              "AIR-V057",
+              "AIR-V058",
+              "AIR-V059",
+              "AIR-V060",
+              "AIR-V061",
+              "AIR-V062",
+              "AIR-V063",
+              "AIR-V064",
+              "AIR-V065",
+              "AIR-V066",
+              "AIR-V067",
+              "AIR-V068",
+              "AIR-V069",
+              "AIR-V070",
+              "AIR-V071",
+              "AIR-V072",
+              "AIR-V073",
+              "AIR-V074",
+              "AIR-V075",
+              "AIR-V076",
+              "AIR-V077",
+              "AIR-V078",
+              "AIR-V079",
+              "AIR-V080",
+              "AIR-V081",
+              "AIR-V082",
+              "AIR-V083",
+              "AIR-V084"
+            ],
+            "reference_resolution": "EXECUTED"
+          },
+          "executed": [
+            "sav.submission-key-confirmed"
+          ],
+          "not_executed": [
+            "sav.owner-review"
+          ],
+          "failed": []
+        },
+        "cost": {
+          "steps": 3,
+          "limit": 20000
+        },
+        "report_digest": "sha256:48ff61d08bd6692275aee44c37d4ac215944cf84a48be1bea640e14d12ecdad7"
+      },
+      "external_proof": {
+        "synthetic_external_tests_executed": 1,
+        "business_runtime_tests_executed": false,
+        "signed_report_imported": true,
+        "tampering_refused": true,
+        "idempotent": true,
+        "cli_http_mcp_same_digest": true,
+        "executor_revocation_removes_qualification": true,
+        "qualified_before_revocation": 1,
+        "qualified_after_revocation": 0
+      }
+    },
+    {
+      "id": "D02",
+      "title": "Maintenance connectée d’un atelier",
+      "status": "PASS",
+      "gate": {
+        "profile": "air.validation/0.3",
+        "engine": "air.expr/0.3",
+        "gate": "foundation-review",
+        "baseline": {
+          "id": "urn:asteria:baseline:d02",
+          "revision": 1,
+          "digest": "sha256:5f1237e2765c5f0e609877c69e683b48f0ef505a784e5afdccbae53a0eb9e726"
+        },
+        "request_digest": "sha256:bf4ab2f14261ba21d789d4c9ea73a5535dbe2e01a2c5301e1393e236e340f9a5",
+        "rule_set": {
+          "id": "urn:asteria:diagnostic:atelier",
+          "version": "1",
+          "digest": "sha256:ae50c5c327ef5b4d7a01e93c24dfee053b709a5cc129c176f0dbbb2ae9a22e2d"
+        },
+        "inputs_digest": "sha256:8d0e0a7119140e487554ebf9c4376cbc99f777a4145764abb21a7c72f3eff3ea",
+        "derived_facts": {
+          "baseline.member_count": {
+            "type": "Integer",
+            "value": 9
+          },
+          "baseline.blocking_unknown_count": {
+            "type": "Integer",
+            "value": 1
+          },
+          "baseline.contested_assertion_count": {
+            "type": "Integer",
+            "value": 0
+          },
+          "baseline.closed": {
+            "type": "Boolean",
+            "value": true
+          }
+        },
+        "results": [
+          {
+            "rule": "atelier.observation-freshness",
+            "version": "1",
+            "mandatory": true,
+            "applicability": {
+              "engine": "air.expr/0.3",
+              "execution": "EXECUTED",
+              "result": "SATISFIED",
+              "diagnostics": [],
+              "request_digest": "sha256:b5568dc11378b226d375b2ef25a89a0dad40867c4563fc29347c596f48d4df6a",
+              "value": {
+                "type": "Boolean",
+                "value": true
+              },
+              "cost": {
+                "steps": 1,
+                "limit": 20000
+              }
+            },
+            "execution": "EXECUTED",
+            "result": "VIOLATED",
+            "evaluation": {
+              "engine": "air.expr/0.3",
+              "execution": "EXECUTED",
+              "result": "VIOLATED",
+              "diagnostics": [],
+              "request_digest": "sha256:6ef270487d1b089c719a9a08b1dc0d6567d70f72897c9dba81fca71996e7f846",
+              "value": {
+                "type": "Boolean",
+                "value": false
+              },
+              "cost": {
+                "steps": 3,
+                "limit": 20000
+              }
+            }
+          },
+          {
+            "rule": "atelier.owner-review",
+            "version": "1",
+            "mandatory": true,
+            "applicability": {
+              "engine": "air.expr/0.3",
+              "execution": "EXECUTED",
+              "result": "SATISFIED",
+              "diagnostics": [],
+              "request_digest": "sha256:b5568dc11378b226d375b2ef25a89a0dad40867c4563fc29347c596f48d4df6a",
+              "value": {
+                "type": "Boolean",
+                "value": true
+              },
+              "cost": {
+                "steps": 1,
+                "limit": 20000
+              }
+            },
+            "execution": "NOT_EXECUTED",
+            "result": "UNKNOWN",
+            "reason": "Authenticated human review is not implemented; supplied approvals are not accepted"
+          }
+        ],
+        "blockers": [
+          {
+            "code": "AIR_GATE_REQUIRED_RULE",
+            "rule": "atelier.observation-freshness",
+            "result": "VIOLATED"
+          },
+          {
+            "code": "AIR_GATE_REQUIRED_RULE",
+            "rule": "atelier.owner-review",
+            "result": "UNKNOWN"
+          },
+          {
+            "code": "AIR_GATE_BLOCKING_UNKNOWNS",
+            "references": [
+              {
+                "id": "urn:asteria:unknown:d02",
+                "revision": 1
+              }
+            ]
+          }
+        ],
+        "gate_decision": "BLOCKED",
+        "decision_ready": false,
+        "authorization_granted": false,
+        "policy_authority": "CALLER_SUPPLIED_DIAGNOSTIC_ONLY",
+        "coverage": {
+          "scope": "Exact foundation baseline and supplied rule set only",
+          "normative": {
+            "executed": [
+              "bootstrap-schema",
+              "bootstrap-temporal",
+              "bootstrap-scope",
+              "bootstrap-identity",
+              "foundation-reference-types",
+              "AIR-V003"
+            ],
+            "not_executed": [
+              "AIR-V001",
+              "AIR-V002",
+              "AIR-V004",
+              "AIR-V005",
+              "AIR-V006",
+              "AIR-V007",
+              "AIR-V008",
+              "AIR-V009",
+              "AIR-V010",
+              "AIR-V011",
+              "AIR-V012",
+              "AIR-V013",
+              "AIR-V014",
+              "AIR-V015",
+              "AIR-V016",
+              "AIR-V017",
+              "AIR-V018",
+              "AIR-V019",
+              "AIR-V020",
+              "AIR-V021",
+              "AIR-V022",
+              "AIR-V023",
+              "AIR-V024",
+              "AIR-V025",
+              "AIR-V026",
+              "AIR-V027",
+              "AIR-V028",
+              "AIR-V029",
+              "AIR-V030",
+              "AIR-V031",
+              "AIR-V032",
+              "AIR-V033",
+              "AIR-V034",
+              "AIR-V035",
+              "AIR-V036",
+              "AIR-V037",
+              "AIR-V038",
+              "AIR-V039",
+              "AIR-V040",
+              "AIR-V041",
+              "AIR-V042",
+              "AIR-V043",
+              "AIR-V044",
+              "AIR-V045",
+              "AIR-V046",
+              "AIR-V047",
+              "AIR-V048",
+              "AIR-V049",
+              "AIR-V050",
+              "AIR-V051",
+              "AIR-V052",
+              "AIR-V053",
+              "AIR-V054",
+              "AIR-V055",
+              "AIR-V056",
+              "AIR-V057",
+              "AIR-V058",
+              "AIR-V059",
+              "AIR-V060",
+              "AIR-V061",
+              "AIR-V062",
+              "AIR-V063",
+              "AIR-V064",
+              "AIR-V065",
+              "AIR-V066",
+              "AIR-V067",
+              "AIR-V068",
+              "AIR-V069",
+              "AIR-V070",
+              "AIR-V071",
+              "AIR-V072",
+              "AIR-V073",
+              "AIR-V074",
+              "AIR-V075",
+              "AIR-V076",
+              "AIR-V077",
+              "AIR-V078",
+              "AIR-V079",
+              "AIR-V080",
+              "AIR-V081",
+              "AIR-V082",
+              "AIR-V083",
+              "AIR-V084"
+            ],
+            "reference_resolution": "EXECUTED"
+          },
+          "executed": [
+            "atelier.observation-freshness"
+          ],
+          "not_executed": [
+            "atelier.owner-review"
+          ],
+          "failed": []
+        },
+        "cost": {
+          "steps": 5,
+          "limit": 20000
+        },
+        "report_digest": "sha256:93821b9f1f72c4879d257220722b000efd45f2d8dcf04c6bb3da343a29d8d81c"
+      },
+      "external_proof": {
+        "synthetic_external_tests_executed": 1,
+        "business_runtime_tests_executed": false,
+        "signed_report_imported": true,
+        "tampering_refused": true,
+        "idempotent": true,
+        "cli_http_mcp_same_digest": true,
+        "executor_revocation_removes_qualification": true,
+        "qualified_before_revocation": 1,
+        "qualified_after_revocation": 0
+      }
+    },
+    {
+      "id": "D03",
+      "title": "Arrivées, mobilités et départs",
+      "status": "PASS",
+      "gate": {
+        "profile": "air.validation/0.3",
+        "engine": "air.expr/0.3",
+        "gate": "foundation-review",
+        "baseline": {
+          "id": "urn:asteria:baseline:d03",
+          "revision": 1,
+          "digest": "sha256:0ecbafc858659eb11c5f616cb44013e61ef8cb46cfbdd5168ea608a0d0633e45"
+        },
+        "request_digest": "sha256:531479374be386976ef7336519feb0cab87c25dec72451e65e32c7775dc8f222",
+        "rule_set": {
+          "id": "urn:asteria:diagnostic:identites",
+          "version": "1",
+          "digest": "sha256:40dbcfd8f41b629da9ee6e57257f2d6094c760264e985e65fa1a9b66cdf8ef76"
+        },
+        "inputs_digest": "sha256:a72940176261d5168d634f7ff19bfed00cd19e65e6fde8f6ff4a71dde3254ceb",
+        "derived_facts": {
+          "baseline.member_count": {
+            "type": "Integer",
+            "value": 9
+          },
+          "baseline.blocking_unknown_count": {
+            "type": "Integer",
+            "value": 1
+          },
+          "baseline.contested_assertion_count": {
+            "type": "Integer",
+            "value": 0
+          },
+          "baseline.closed": {
+            "type": "Boolean",
+            "value": true
+          }
+        },
+        "results": [
+          {
+            "rule": "identites.contractor-end-confirmed",
+            "version": "1",
+            "mandatory": true,
+            "applicability": {
+              "engine": "air.expr/0.3",
+              "execution": "EXECUTED",
+              "result": "SATISFIED",
+              "diagnostics": [],
+              "request_digest": "sha256:b5568dc11378b226d375b2ef25a89a0dad40867c4563fc29347c596f48d4df6a",
+              "value": {
+                "type": "Boolean",
+                "value": true
+              },
+              "cost": {
+                "steps": 1,
+                "limit": 20000
+              }
+            },
+            "execution": "EXECUTED",
+            "result": "CONFLICTING",
+            "evaluation": {
+              "engine": "air.expr/0.3",
+              "execution": "EXECUTED",
+              "result": "CONFLICTING",
+              "diagnostics": [
+                {
+                  "code": "AIR_EXPR_CONFLICTING",
+                  "input": "inputs.contractor_end_confirmed"
+                }
+              ],
+              "request_digest": "sha256:0278cab0634065d99fc3310d32db7edc2ccc023cf35a4c7185d7793e76572809",
+              "value": {
+                "type": "Boolean",
+                "state": "CONFLICTING"
+              },
+              "cost": {
+                "steps": 1,
+                "limit": 20000
+              }
+            }
+          },
+          {
+            "rule": "identites.owner-review",
+            "version": "1",
+            "mandatory": true,
+            "applicability": {
+              "engine": "air.expr/0.3",
+              "execution": "EXECUTED",
+              "result": "SATISFIED",
+              "diagnostics": [],
+              "request_digest": "sha256:b5568dc11378b226d375b2ef25a89a0dad40867c4563fc29347c596f48d4df6a",
+              "value": {
+                "type": "Boolean",
+                "value": true
+              },
+              "cost": {
+                "steps": 1,
+                "limit": 20000
+              }
+            },
+            "execution": "NOT_EXECUTED",
+            "result": "UNKNOWN",
+            "reason": "Authenticated human review is not implemented; supplied approvals are not accepted"
+          }
+        ],
+        "blockers": [
+          {
+            "code": "AIR_GATE_REQUIRED_RULE",
+            "rule": "identites.contractor-end-confirmed",
+            "result": "CONFLICTING"
+          },
+          {
+            "code": "AIR_GATE_REQUIRED_RULE",
+            "rule": "identites.owner-review",
+            "result": "UNKNOWN"
+          },
+          {
+            "code": "AIR_GATE_BLOCKING_UNKNOWNS",
+            "references": [
+              {
+                "id": "urn:asteria:unknown:d03",
+                "revision": 1
+              }
+            ]
+          }
+        ],
+        "gate_decision": "BLOCKED",
+        "decision_ready": false,
+        "authorization_granted": false,
+        "policy_authority": "CALLER_SUPPLIED_DIAGNOSTIC_ONLY",
+        "coverage": {
+          "scope": "Exact foundation baseline and supplied rule set only",
+          "normative": {
+            "executed": [
+              "bootstrap-schema",
+              "bootstrap-temporal",
+              "bootstrap-scope",
+              "bootstrap-identity",
+              "foundation-reference-types",
+              "AIR-V003"
+            ],
+            "not_executed": [
+              "AIR-V001",
+              "AIR-V002",
+              "AIR-V004",
+              "AIR-V005",
+              "AIR-V006",
+              "AIR-V007",
+              "AIR-V008",
+              "AIR-V009",
+              "AIR-V010",
+              "AIR-V011",
+              "AIR-V012",
+              "AIR-V013",
+              "AIR-V014",
+              "AIR-V015",
+              "AIR-V016",
+              "AIR-V017",
+              "AIR-V018",
+              "AIR-V019",
+              "AIR-V020",
+              "AIR-V021",
+              "AIR-V022",
+              "AIR-V023",
+              "AIR-V024",
+              "AIR-V025",
+              "AIR-V026",
+              "AIR-V027",
+              "AIR-V028",
+              "AIR-V029",
+              "AIR-V030",
+              "AIR-V031",
+              "AIR-V032",
+              "AIR-V033",
+              "AIR-V034",
+              "AIR-V035",
+              "AIR-V036",
+              "AIR-V037",
+              "AIR-V038",
+              "AIR-V039",
+              "AIR-V040",
+              "AIR-V041",
+              "AIR-V042",
+              "AIR-V043",
+              "AIR-V044",
+              "AIR-V045",
+              "AIR-V046",
+              "AIR-V047",
+              "AIR-V048",
+              "AIR-V049",
+              "AIR-V050",
+              "AIR-V051",
+              "AIR-V052",
+              "AIR-V053",
+              "AIR-V054",
+              "AIR-V055",
+              "AIR-V056",
+              "AIR-V057",
+              "AIR-V058",
+              "AIR-V059",
+              "AIR-V060",
+              "AIR-V061",
+              "AIR-V062",
+              "AIR-V063",
+              "AIR-V064",
+              "AIR-V065",
+              "AIR-V066",
+              "AIR-V067",
+              "AIR-V068",
+              "AIR-V069",
+              "AIR-V070",
+              "AIR-V071",
+              "AIR-V072",
+              "AIR-V073",
+              "AIR-V074",
+              "AIR-V075",
+              "AIR-V076",
+              "AIR-V077",
+              "AIR-V078",
+              "AIR-V079",
+              "AIR-V080",
+              "AIR-V081",
+              "AIR-V082",
+              "AIR-V083",
+              "AIR-V084"
+            ],
+            "reference_resolution": "EXECUTED"
+          },
+          "executed": [
+            "identites.contractor-end-confirmed"
+          ],
+          "not_executed": [
+            "identites.owner-review"
+          ],
+          "failed": []
+        },
+        "cost": {
+          "steps": 3,
+          "limit": 20000
+        },
+        "report_digest": "sha256:9df16b9a2b2fb7d4f64fa1a41aa7b24c226d2ec07e5f94dd66cc40f22415fb6b"
+      },
+      "external_proof": {
+        "synthetic_external_tests_executed": 1,
+        "business_runtime_tests_executed": false,
+        "signed_report_imported": true,
+        "tampering_refused": true,
+        "idempotent": true,
+        "cli_http_mcp_same_digest": true,
+        "executor_revocation_removes_qualification": true,
+        "qualified_before_revocation": 1,
+        "qualified_after_revocation": 0
+      }
+    }
+  ]
+}

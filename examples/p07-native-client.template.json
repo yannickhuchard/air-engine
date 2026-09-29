@@ -1,0 +1,23 @@
+{
+  "format": "air.native-client-reception/1",
+  "client": null,
+  "client_version": null,
+  "surface": null,
+  "os": null,
+  "transport": null,
+  "execution_kind": "NATIVE_CLIENT",
+  "air_version": null,
+  "source_sha256": null,
+  "cases": {
+    "IDE-01": {"status": "NOT_EXECUTED", "evidence": null},
+    "IDE-02": {"status": "NOT_EXECUTED", "evidence": null},
+    "IDE-03": {"status": "NOT_EXECUTED", "evidence": null},
+    "IDE-04": {"status": "NOT_EXECUTED", "evidence": null},
+    "IDE-05": {"status": "NOT_EXECUTED", "evidence": null},
+    "IDE-06": {"status": "NOT_EXECUTED", "evidence": null},
+    "IDE-07": {"status": "NOT_EXECUTED", "evidence": null},
+    "IDE-08": {"status": "NOT_EXECUTED", "evidence": null},
+    "IDE-09": {"status": "NOT_EXECUTED", "evidence": null},
+    "IDE-10": {"status": "NOT_EXECUTED", "evidence": null}
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "note": "Âge de mesure 75 s, seuil expérimental 60 s ; variante 30 s. Le seuil est fictif et reste à faire accepter, sans commande de machine.",
+  "expected_initial_result": "VIOLATED",
+  "initial_inputs": {
+    "inputs.observation_age": {
+      "type": "Duration",
+      "value": "75"
+    }
+  },
+  "corrected_inputs": {
+    "inputs.observation_age": {
+      "type": "Duration",
+      "value": "30"
+    }
+  },
+  "rule_set": {
+    "id": "urn:asteria:diagnostic:atelier",
+    "version": "1",
+    "rules": [
+      {
+        "id": "atelier.observation-freshness",
+        "version": "1",
+        "mandatory": true,
+        "method": "EXPRESSION",
+        "applicability": {
+          "language": "AIR-Expr",
+          "language_version": "0.1",
+          "result_type": "Boolean",
+          "required_inputs": [],
+          "ast": {
+            "literal": {
+              "type": "Boolean",
+              "value": true
+            }
+          }
+        },
+        "predicate": {
+          "language": "AIR-Expr",
+          "language_version": "0.1",
+          "result_type": "Boolean",
+          "required_inputs": [
+            {
+              "name": "inputs.observation_age",
+              "type": "Duration"
+            }
+          ],
+          "ast": {
+            "op": "lte",
+            "args": [
+              {
+                "ref": "inputs.observation_age"
+              },
+              {
+                "literal": {
+                  "type": "Duration",
+                  "value": "60"
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "atelier.owner-review",
+        "version": "1",
+        "mandatory": true,
+        "method": "MANUAL",
+        "applicability": {
+          "language": "AIR-Expr",
+          "language_version": "0.1",
+          "result_type": "Boolean",
+          "required_inputs": [],
+          "ast": {
+            "literal": {
+              "type": "Boolean",
+              "value": true
+            }
+          }
+        }
+      }
+    ]
+  }
+}

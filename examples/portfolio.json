@@ -1,0 +1,89 @@
+{
+  "organization": {
+    "name": "Asteria Industrie",
+    "urn_prefix": "asteria",
+    "namespace_prefix": "asteria"
+  },
+  "portfolio": {
+    "name": "Portefeuille des architectures de solution Asteria",
+    "description": "Trois projets pilotes et un socle partagé sur une même installation AIR."
+  },
+  "projects": [
+    {
+      "code": "sav",
+      "title": "Portail SAV et orchestration des interventions",
+      "purpose": "Réclamations clients et interventions.",
+      "namespace": "asteria.sav",
+      "urn_segment": "sav"
+    },
+    {
+      "code": "atelier",
+      "title": "Maintenance connectée d’un atelier",
+      "purpose": "Mesures machines et inspections.",
+      "namespace": "asteria.atelier",
+      "urn_segment": "atelier"
+    },
+    {
+      "code": "identites",
+      "title": "Arrivées, mobilités et départs",
+      "purpose": "Cycle de vie des accès.",
+      "namespace": "asteria.identites",
+      "urn_segment": "identites"
+    }
+  ],
+  "shared": {
+    "code": "socle",
+    "title": "Socle partagé",
+    "purpose": "Périmètres et sources communs aux projets.",
+    "namespace": "asteria.shared",
+    "urn_segment": "socle"
+  },
+  "subjects": [
+    {
+      "subject": "architect-D01",
+      "label": "Architecte SAV",
+      "projects": [
+        "sav"
+      ],
+      "reviews": [
+        "atelier"
+      ]
+    },
+    {
+      "subject": "architect-D02",
+      "label": "Architecte atelier",
+      "projects": [
+        "atelier"
+      ],
+      "reviews": [
+        "sav"
+      ]
+    },
+    {
+      "subject": "architect-D03",
+      "label": "Architecte identités",
+      "projects": [
+        "identites"
+      ]
+    },
+    {
+      "subject": "portfolio-architect",
+      "label": "Architecte du portefeuille",
+      "projects": [
+        "sav",
+        "atelier",
+        "identites"
+      ],
+      "shared_write": true
+    }
+  ],
+  "profiles": [
+    "air.foundation/0.2",
+    "air.construction/0.4",
+    "air.architecture/0.26"
+  ],
+  "review": {
+    "independent_review_required": true,
+    "namespace_policy": "EXPLICIT"
+  }
+}

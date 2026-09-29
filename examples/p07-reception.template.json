@@ -1,0 +1,17 @@
+{
+  "format": "air.p07-reception/1",
+  "profile": "LOCAL_ARCHITECT_WORKSTATION",
+  "air_version": null,
+  "source_sha256": null,
+  "clients": {"chatgpt": null, "claude-code": null, "codex": null},
+  "journeys": {
+    "individual_identities": null,
+    "independent_review": null,
+    "network_recovery": null,
+    "credential_expiry": null,
+    "credential_rotation": null,
+    "cross_client_resume": null,
+    "explicit_workstation_exchange": null,
+    "cli_api_mcp_parity": null
+  }
+}

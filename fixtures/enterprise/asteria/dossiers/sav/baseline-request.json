@@ -1,0 +1,74 @@
+{
+  "meta": {
+    "id": "urn:asteria:baseline:d01",
+    "type": "air.Baseline",
+    "revision": 1,
+    "name": "Baseline de connaissance — Portail SAV et orchestration des interventions",
+    "description": "Jeu entièrement fictif Asteria Industrie. Portail SAV et orchestration des interventions",
+    "namespace": "asteria.sav",
+    "owner": "urn:asteria:identity:nora-simon",
+    "classification": {
+      "level": "INTERNAL"
+    },
+    "lifecycle": "DRAFT",
+    "recorded_at": "2026-09-21T09:00:00Z",
+    "validity": {
+      "start": "2026-10-05T00:00:00Z",
+      "end": "2026-11-30T00:00:00Z"
+    },
+    "provenance": {
+      "recorded_by": "urn:asteria:identity:lea-morel",
+      "method": "Fixture synthétique de recette, sans observation réelle",
+      "source_refs": [
+        {
+          "id": "urn:asteria:source:company",
+          "revision": 1
+        },
+        {
+          "id": "urn:asteria:source:sav",
+          "revision": 1
+        }
+      ]
+    }
+  },
+  "profile": "air.foundation/0.2",
+  "members": [
+    {
+      "id": "urn:asteria:source:company",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:scope:identity",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:scope:integration",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:source:sav",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:scope:sav",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:assertion:d01",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:evidence:d01",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:assumption:d01",
+      "revision": 1
+    },
+    {
+      "id": "urn:asteria:unknown:d01",
+      "revision": 1
+    }
+  ],
+  "parent_baselines": []
+}

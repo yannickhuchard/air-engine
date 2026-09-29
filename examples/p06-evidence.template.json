@@ -1,0 +1,10 @@
+{
+  "format": "air.p06-evidence/1",
+  "criterion": null,
+  "status": "NOT_EXECUTED",
+  "deployment_sha256": null,
+  "performed_by": null,
+  "performed_at": null,
+  "observations": {},
+  "inputs": {}
+}

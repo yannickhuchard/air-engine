@@ -1,0 +1,15 @@
+{
+  "format": "air.p06-reception/1",
+  "profile": "CENTRALIZED_SERVICE",
+  "status": "NOT_RECEIVED",
+  "production_ready": false,
+  "deployment": {"artifact_sha256": null, "commit": null, "version": null, "os": null, "python": null, "database": null, "hardware": null, "filesystem": null, "identity_mode": null},
+  "owners": {"operations": null, "security": null, "independent_operator": null, "independent_reviewer": null, "decision": null},
+  "targets": {"approved_at": null, "approved_by": null, "capacity_targets_sha256": null, "representative_workload_sha256": null, "rpo_seconds": null, "total_incident_rto_seconds": null, "concurrent_people_and_agents": null, "growth_and_storage_budget": null},
+  "retention": {"source_audit_indefinite_accepted": null, "audit_exports_days": null, "backups_days": null, "offsite_location_reference": null, "key_custody_reference": null},
+  "receipts": {"capacity_comparison": null, "fault_matrix": null, "resource_budgets": null, "independent_restore": null, "offsite_restore": null, "alert_delivery": null, "certificate_renewal": null, "security_review": null, "sqlite_postgresql_threshold_decision": null},
+  "support": {"owner": null, "private_channel_reference": null, "versions_and_end_dates": null, "incident_targets": null, "end_of_support_notice": null},
+  "blocking_findings": null,
+  "residual_risks_accepted_by": null,
+  "decision_record_reference": null
+}

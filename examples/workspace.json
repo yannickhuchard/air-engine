@@ -1,0 +1,50 @@
+{
+  "organization": {
+    "name": "Asteria Industrie",
+    "urn_prefix": "asteria",
+    "namespace_prefix": "asteria"
+  },
+  "repository": {
+    "name": "Référentiel d’architecture de solution Asteria",
+    "description": "Quatre domaines partageant une même installation AIR."
+  },
+  "domains": [
+    {
+      "code": "sav",
+      "title": "Portail SAV et orchestration des interventions",
+      "purpose": "Réclamations clients et interventions.",
+      "namespace": "asteria.sav",
+      "urn_segment": "sav"
+    },
+    {
+      "code": "atelier",
+      "title": "Maintenance connectée d’un atelier",
+      "purpose": "Mesures machines et inspections.",
+      "namespace": "asteria.atelier",
+      "urn_segment": "atelier"
+    },
+    {
+      "code": "identites",
+      "title": "Arrivées, mobilités et départs",
+      "purpose": "Cycle de vie des accès.",
+      "namespace": "asteria.identites",
+      "urn_segment": "identites"
+    },
+    {
+      "code": "socle",
+      "title": "Socle partagé",
+      "purpose": "Périmètres et sources communs aux trois dossiers.",
+      "namespace": "asteria.shared",
+      "urn_segment": "socle"
+    }
+  ],
+  "profiles": [
+    "air.foundation/0.2",
+    "air.construction/0.4",
+    "air.architecture/0.26"
+  ],
+  "review": {
+    "independent_review_required": true,
+    "namespace_policy": "EXPLICIT"
+  }
+}

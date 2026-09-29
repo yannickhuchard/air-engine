@@ -1,0 +1,25 @@
+meta:
+  id: urn:air:example:source:workshop
+  type: air.Source
+  revision: 1
+  name: Claims workshop
+  description: Example source record; no attachment is downloaded.
+  namespace: example.claims
+  owner: urn:identity:example:architecture
+  classification:
+    level: INTERNAL
+  lifecycle: DRAFT
+  recorded_at: "2026-09-19T00:00:00Z"
+  validity:
+    start: "2026-09-19T00:00:00Z"
+    end: null
+  provenance:
+    recorded_by: urn:identity:example:architect
+    method: manual example
+    source_refs: []
+body:
+  kind: INTERVIEW
+  locator: "urn:document:example:workshop"
+  captured_at: "2026-09-19T00:00:00Z"
+  access_policy: Pilot participants
+  retention_policy: Review at pilot closure

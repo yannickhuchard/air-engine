@@ -1,0 +1,1149 @@
+[
+  {
+    "meta": {
+      "id": "urn:asteria:source:company",
+      "type": "air.Source",
+      "revision": 1,
+      "name": "Contexte d’entreprise et hypothèses communes",
+      "description": "Jeu entièrement fictif Asteria Industrie. Contexte d’entreprise et hypothèses communes",
+      "namespace": "asteria.shared",
+      "owner": "urn:asteria:identity:lea-morel",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": []
+      }
+    },
+    "body": {
+      "kind": "DOCUMENT",
+      "locator": "fixtures/enterprise/asteria/company.md",
+      "source_revision": "sha256:b83bc8f0d371658fe5e6638db58922e8fd40e10c166286d164722b3b901029ba",
+      "captured_at": "2026-09-21T09:00:00Z",
+      "access_policy": "Périmètre fictif de démonstration Asteria",
+      "retention_policy": "Conserver avec la version du jeu de recette"
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:scope:identity",
+      "type": "air.Scope",
+      "revision": 1,
+      "name": "Plateforme d’identité partagée",
+      "description": "Jeu entièrement fictif Asteria Industrie. Plateforme d’identité partagée",
+      "namespace": "asteria.shared",
+      "owner": "urn:asteria:identity:marc-petit",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:company",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "includes": [],
+      "excludes": [],
+      "boundary_description": "Identités clients, salariés, prestataires et machines, avec des droits distincts.",
+      "context_dimensions": {
+        "populations": "clients; salariés; prestataires; machines",
+        "authority": "Responsable IAM"
+      }
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:scope:integration",
+      "type": "air.Scope",
+      "revision": 1,
+      "name": "Équipe d’intégration partagée",
+      "description": "Jeu entièrement fictif Asteria Industrie. Équipe d’intégration partagée",
+      "namespace": "asteria.shared",
+      "owner": "urn:asteria:identity:karim-vidal",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:company",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "includes": [],
+      "excludes": [],
+      "boundary_description": "Quatre ETP nets par semaine pour les trois dossiers, sur le calendrier synthétique commun.",
+      "context_dimensions": {
+        "capacity_basis": "Hypothèse de recette ; aucune réservation réelle",
+        "authority": "Responsable intégration"
+      }
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:source:identites",
+      "type": "air.Source",
+      "revision": 1,
+      "name": "Atelier fictif — Arrivées, mobilités et départs",
+      "description": "Jeu entièrement fictif Asteria Industrie. Atelier fictif — Arrivées, mobilités et départs",
+      "namespace": "asteria.identites",
+      "owner": "urn:asteria:identity:lea-morel",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": []
+      }
+    },
+    "body": {
+      "kind": "DOCUMENT",
+      "locator": "fixtures/enterprise/asteria/dossiers/identites/brief.md",
+      "source_revision": "sha256:9a41e69a58a29ebd784a2484192b507af993b8892d8ac64dc9124b78b938aebf",
+      "captured_at": "2026-09-21T09:00:00Z",
+      "access_policy": "Périmètre fictif de démonstration Asteria",
+      "retention_policy": "Conserver avec la version du jeu de recette"
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:scope:identites",
+      "type": "air.Scope",
+      "revision": 1,
+      "name": "Arrivées, mobilités et départs",
+      "description": "Jeu entièrement fictif Asteria Industrie. Arrivées, mobilités et départs",
+      "namespace": "asteria.identites",
+      "owner": "urn:asteria:identity:ines-colin",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:company",
+            "revision": 1
+          },
+          {
+            "id": "urn:asteria:source:identites",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "includes": [
+        {
+          "id": "urn:asteria:scope:identity",
+          "revision": 1
+        },
+        {
+          "id": "urn:asteria:scope:integration",
+          "revision": 1
+        }
+      ],
+      "excludes": [],
+      "boundary_description": "Périmètre du dossier D03 ; critères, exclusions et inconnues conservés dans le brief sourcé.",
+      "context_dimensions": {
+        "dossier": "D03",
+        "company": "Asteria Industrie — fictive",
+        "stage": "Cadrage synthétique non approuvé"
+      }
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:assertion:d03",
+      "type": "air.Assertion",
+      "revision": 1,
+      "name": "Assertion — Arrivées, mobilités et départs",
+      "description": "Connaissance synthétique du dossier D03 ; aucune qualification d’une entreprise réelle.",
+      "namespace": "asteria.identites",
+      "owner": "urn:asteria:identity:ines-colin",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:company",
+            "revision": 1
+          },
+          {
+            "id": "urn:asteria:source:identites",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "statement": "Une proposition de changement d’accès ne vaut pas approbation ni exécution.",
+      "subject_scope": {
+        "id": "urn:asteria:scope:identites",
+        "revision": 1
+      },
+      "epistemic_status": "SUPPORTED",
+      "evidence": [
+        {
+          "id": "urn:asteria:evidence:d03",
+          "revision": 1
+        }
+      ]
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:evidence:d03",
+      "type": "air.Evidence",
+      "revision": 1,
+      "name": "Evidence — Arrivées, mobilités et départs",
+      "description": "Connaissance synthétique du dossier D03 ; aucune qualification d’une entreprise réelle.",
+      "namespace": "asteria.identites",
+      "owner": "urn:asteria:identity:ines-colin",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:company",
+            "revision": 1
+          },
+          {
+            "id": "urn:asteria:source:identites",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "source": {
+        "id": "urn:asteria:source:identites",
+        "revision": 1
+      },
+      "selector": "Section « Périmètre, alternatives et contrats à construire » (ou contrat à construire pour D01)",
+      "evidence_kind": "DOCUMENT_EXCERPT",
+      "supports_or_refutes": [
+        {
+          "id": "urn:asteria:assertion:d03",
+          "revision": 1,
+          "direction": "SUPPORTS"
+        }
+      ],
+      "limitations": [
+        "Confirme le contenu du brief fictif ; ne prouve aucun comportement observé ni revue humaine."
+      ]
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:assumption:d03",
+      "type": "air.Assumption",
+      "revision": 1,
+      "name": "Assumption — Arrivées, mobilités et départs",
+      "description": "Connaissance synthétique du dossier D03 ; aucune qualification d’une entreprise réelle.",
+      "namespace": "asteria.identites",
+      "owner": "urn:asteria:identity:ines-colin",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:company",
+            "revision": 1
+          },
+          {
+            "id": "urn:asteria:source:identites",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "statement": "Le SIRH et le registre des prestataires permettent de rapprocher une personne de ses comptes.",
+      "used_by": [
+        {
+          "id": "urn:asteria:scope:identites",
+          "revision": 1
+        }
+      ],
+      "impact_if_false": "Créer un travail de rapprochement et conserver les accès non confirmés comme lacunes.",
+      "validation_plan": "Faire contrôler les correspondances synthétiques par RH, IAM et les sponsors.",
+      "review_due": "2026-10-01T09:00:00Z",
+      "state": "OPEN"
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:unknown:d03",
+      "type": "air.Unknown",
+      "revision": 1,
+      "name": "Unknown — Arrivées, mobilités et départs",
+      "description": "Connaissance synthétique du dossier D03 ; aucune qualification d’une entreprise réelle.",
+      "namespace": "asteria.identites",
+      "owner": "urn:asteria:identity:ines-colin",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:company",
+            "revision": 1
+          },
+          {
+            "id": "urn:asteria:source:identites",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "question": "Qui confirme la date de fin du prestataire dont l’échéance est absente ?",
+      "affected_objects": [
+        {
+          "id": "urn:asteria:scope:identites",
+          "revision": 1
+        }
+      ],
+      "resolution_owner": "urn:asteria:identity:ines-colin",
+      "blocking_policy": "BLOCK",
+      "state": "OPEN"
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:identites:requirement",
+      "type": "air.Requirement",
+      "revision": 1,
+      "name": "Préparer une révocation traçable sans confondre proposition, approbation et exécution.",
+      "description": "Spécification synthétique — Préparer une révocation traçable sans confondre proposition, approbation et exécution.",
+      "namespace": "asteria.identites",
+      "owner": "urn:asteria:identity:ines-colin",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:identites",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "statement": "Préparer une révocation traçable sans confondre proposition, approbation et exécution.",
+      "kind": "FUNCTIONAL",
+      "priority": "MUST",
+      "applicability": "Pilote identites ; toutes les occurrences décrites dans ce dossier.",
+      "acceptance": [
+        {
+          "id": "urn:asteria:construction:identites:criterion0",
+          "revision": 1
+        },
+        {
+          "id": "urn:asteria:construction:identites:criterion1",
+          "revision": 1
+        },
+        {
+          "id": "urn:asteria:construction:identites:criterion2",
+          "revision": 1
+        }
+      ],
+      "source": [
+        {
+          "id": "urn:asteria:source:identites",
+          "revision": 1
+        }
+      ]
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:identites:criterion0",
+      "type": "air.AcceptanceCriterion",
+      "revision": 1,
+      "name": "Réception 1 — ProposeAccessRevocation",
+      "description": "Spécification synthétique — Réception 1 — ProposeAccessRevocation",
+      "namespace": "asteria.identites",
+      "owner": "urn:asteria:identity:ines-colin",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:identites",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "condition": "Départ nominal : liste de propositions, aucune commande IAM ni approbation fabriquée.",
+      "verification_method": "TEST",
+      "acceptance_authority": "urn:asteria:authority:identites",
+      "cases": [
+        {
+          "id": "urn:asteria:construction:identites:case0",
+          "revision": 1
+        }
+      ]
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:identites:case0",
+      "type": "air.VerificationCase",
+      "revision": 1,
+      "name": "Scénario 1 — ProposeAccessRevocation",
+      "description": "Spécification synthétique — Scénario 1 — ProposeAccessRevocation",
+      "namespace": "asteria.identites",
+      "owner": "urn:asteria:identity:ines-colin",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:identites",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "target": {
+        "id": "urn:asteria:construction:identites:function",
+        "revision": 1
+      },
+      "method": "TEST",
+      "inputs": [
+        {
+          "name": "departure",
+          "data_type": "DepartureNotification",
+          "description": "Personne, comptes liés, provenance RH ou sponsor et date effective"
+        }
+      ],
+      "oracle": "Départ nominal : liste de propositions, aucune commande IAM ni approbation fabriquée.",
+      "acceptance": "Observer tous les résultats attendus et conserver les preuves corrélées.",
+      "independence_basis": "Scénario conçu depuis le brief ; exécution et revue indépendante non réalisées."
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:identites:criterion1",
+      "type": "air.AcceptanceCriterion",
+      "revision": 1,
+      "name": "Réception 2 — ProposeAccessRevocation",
+      "description": "Spécification synthétique — Réception 2 — ProposeAccessRevocation",
+      "namespace": "asteria.identites",
+      "owner": "urn:asteria:identity:ines-colin",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:identites",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "condition": "Dates contradictoires : blocage et désignation du responsable de résolution.",
+      "verification_method": "TEST",
+      "acceptance_authority": "urn:asteria:authority:identites",
+      "cases": [
+        {
+          "id": "urn:asteria:construction:identites:case1",
+          "revision": 1
+        }
+      ]
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:identites:case1",
+      "type": "air.VerificationCase",
+      "revision": 1,
+      "name": "Scénario 2 — ProposeAccessRevocation",
+      "description": "Spécification synthétique — Scénario 2 — ProposeAccessRevocation",
+      "namespace": "asteria.identites",
+      "owner": "urn:asteria:identity:ines-colin",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:identites",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "target": {
+        "id": "urn:asteria:construction:identites:function",
+        "revision": 1
+      },
+      "method": "TEST",
+      "inputs": [
+        {
+          "name": "departure",
+          "data_type": "DepartureNotification",
+          "description": "Personne, comptes liés, provenance RH ou sponsor et date effective"
+        }
+      ],
+      "oracle": "Dates contradictoires : blocage et désignation du responsable de résolution.",
+      "acceptance": "Observer tous les résultats attendus et conserver les preuves corrélées.",
+      "independence_basis": "Scénario conçu depuis le brief ; exécution et revue indépendante non réalisées."
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:identites:criterion2",
+      "type": "air.AcceptanceCriterion",
+      "revision": 1,
+      "name": "Réception 3 — ProposeAccessRevocation",
+      "description": "Spécification synthétique — Réception 3 — ProposeAccessRevocation",
+      "namespace": "asteria.identites",
+      "owner": "urn:asteria:identity:ines-colin",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:identites",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "condition": "Compte non rapproché : inconnue visible, aucune action automatique sur un autre compte.",
+      "verification_method": "TEST",
+      "acceptance_authority": "urn:asteria:authority:identites",
+      "cases": [
+        {
+          "id": "urn:asteria:construction:identites:case2",
+          "revision": 1
+        }
+      ]
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:identites:case2",
+      "type": "air.VerificationCase",
+      "revision": 1,
+      "name": "Scénario 3 — ProposeAccessRevocation",
+      "description": "Spécification synthétique — Scénario 3 — ProposeAccessRevocation",
+      "namespace": "asteria.identites",
+      "owner": "urn:asteria:identity:ines-colin",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:identites",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "target": {
+        "id": "urn:asteria:construction:identites:function",
+        "revision": 1
+      },
+      "method": "TEST",
+      "inputs": [
+        {
+          "name": "departure",
+          "data_type": "DepartureNotification",
+          "description": "Personne, comptes liés, provenance RH ou sponsor et date effective"
+        }
+      ],
+      "oracle": "Compte non rapproché : inconnue visible, aucune action automatique sur un autre compte.",
+      "acceptance": "Observer tous les résultats attendus et conserver les preuves corrélées.",
+      "independence_basis": "Scénario conçu depuis le brief ; exécution et revue indépendante non réalisées."
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:identites:failure0",
+      "type": "air.FailureMode",
+      "revision": 1,
+      "name": "ConflictingEndDate",
+      "description": "Spécification synthétique — ConflictingEndDate",
+      "namespace": "asteria.identites",
+      "owner": "urn:asteria:identity:ines-colin",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:identites",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "trigger": "Dates de fin de mission incompatibles",
+      "effect": "Chemin nominal interrompu ; Bloquer la proposition et saisir le responsable de source",
+      "detection": "Contrôle explicite de la condition : Dates de fin de mission incompatibles",
+      "response": "Bloquer la proposition et saisir le responsable de source",
+      "recovery_condition": "Date faisant foi revue par le responsable"
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:identites:failure1",
+      "type": "air.FailureMode",
+      "revision": 1,
+      "name": "UnresolvedAccount",
+      "description": "Spécification synthétique — UnresolvedAccount",
+      "namespace": "asteria.identites",
+      "owner": "urn:asteria:identity:ines-colin",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:identites",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "trigger": "Compte ou identité non rapproché avec certitude",
+      "effect": "Chemin nominal interrompu ; Conserver une inconnue ; aucune révocation automatique par rapprochement approximatif",
+      "detection": "Contrôle explicite de la condition : Compte ou identité non rapproché avec certitude",
+      "response": "Conserver une inconnue ; aucune révocation automatique par rapprochement approximatif",
+      "recovery_condition": "Correspondance de compte revue et tracée"
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:identites:function",
+      "type": "air.Function",
+      "revision": 1,
+      "name": "ProposeAccessRevocation",
+      "description": "Spécification synthétique — ProposeAccessRevocation",
+      "namespace": "asteria.identites",
+      "owner": "urn:asteria:identity:ines-colin",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:identites",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "kind": "SOFTWARE",
+      "inputs": [
+        {
+          "name": "departure",
+          "data_type": "DepartureNotification",
+          "description": "Personne, comptes liés, provenance RH ou sponsor et date effective"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "proposal",
+          "data_type": "RevocationProposal",
+          "description": "Liste des comptes et actions proposées, contrôles et confirmations attendues"
+        }
+      ],
+      "preconditions": [
+        "Source RH ou sponsor compétent identifiée ; opérateur habilité à préparer la proposition."
+      ],
+      "postconditions": [
+        "Chaque compte attendu apparaît avec son statut de vérification.",
+        "Une proposition ne révoque aucun accès et ne vaut pas confirmation de propagation."
+      ],
+      "effects": [
+        {
+          "kind": "STATE_CHANGE",
+          "description": "Créer un enregistrement de conception prévu par ProposeAccessRevocation ; aucune exécution par AIR."
+        }
+      ],
+      "exceptions": [
+        {
+          "id": "urn:asteria:construction:identites:failure0",
+          "revision": 1
+        },
+        {
+          "id": "urn:asteria:construction:identites:failure1",
+          "revision": 1
+        }
+      ],
+      "atomic": true,
+      "satisfies": [
+        {
+          "id": "urn:asteria:construction:identites:requirement",
+          "revision": 1
+        }
+      ]
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:identites:requester",
+      "type": "air.Actor",
+      "revision": 1,
+      "name": "RH, sponsors et IAM",
+      "description": "Spécification synthétique — RH, sponsors et IAM",
+      "namespace": "asteria.identites",
+      "owner": "urn:asteria:identity:ines-colin",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:identites",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "kind": "HUMAN",
+      "roles": [],
+      "boundary": {
+        "id": "urn:asteria:scope:identites",
+        "revision": 1
+      }
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:identites:service",
+      "type": "air.Actor",
+      "revision": 1,
+      "name": "ProposeAccessRevocation service",
+      "description": "Spécification synthétique — ProposeAccessRevocation service",
+      "namespace": "asteria.identites",
+      "owner": "urn:asteria:identity:ines-colin",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:identites",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "kind": "SOFTWARE",
+      "roles": [],
+      "boundary": {
+        "id": "urn:asteria:scope:identites",
+        "revision": 1
+      }
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:identites:contract",
+      "type": "air.SemanticContract",
+      "revision": 1,
+      "name": "Contrat ProposeAccessRevocation",
+      "description": "Spécification synthétique — Contrat ProposeAccessRevocation",
+      "namespace": "asteria.identites",
+      "owner": "urn:asteria:identity:ines-colin",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:identites",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "operations": [
+        {
+          "name": "ProposeAccessRevocation",
+          "function": {
+            "id": "urn:asteria:construction:identites:function",
+            "revision": 1
+          }
+        }
+      ],
+      "participants": [
+        {
+          "actor": {
+            "id": "urn:asteria:construction:identites:requester",
+            "revision": 1
+          },
+          "role": "Demandeur habilité selon le périmètre métier"
+        },
+        {
+          "actor": {
+            "id": "urn:asteria:construction:identites:service",
+            "revision": 1
+          },
+          "role": "Fournisseur de l’opération"
+        }
+      ],
+      "authorization": "Contrôler identité et périmètre de la demande ; une proposition AIR ne confère aucun mandat.",
+      "state_effects": [
+        {
+          "kind": "STATE_CHANGE",
+          "description": "Créer un enregistrement de conception prévu par ProposeAccessRevocation ; aucune exécution par AIR."
+        }
+      ],
+      "error_contract": [
+        {
+          "code": "ConflictingEndDate",
+          "failure_mode": {
+            "id": "urn:asteria:construction:identites:failure0",
+            "revision": 1
+          },
+          "response": "Bloquer la proposition et saisir le responsable de source"
+        },
+        {
+          "code": "UnresolvedAccount",
+          "failure_mode": {
+            "id": "urn:asteria:construction:identites:failure1",
+            "revision": 1
+          },
+          "response": "Conserver une inconnue ; aucune révocation automatique par rapprochement approximatif"
+        }
+      ],
+      "quality": [],
+      "compatibility_policy": "Toute modification d’entrée, sortie, condition, erreur ou effet rouvre la revue du contrat ; aucun binding qualifié."
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:identites:unit",
+      "type": "air.ConstructionUnit",
+      "revision": 1,
+      "name": "Construire et vérifier ProposeAccessRevocation",
+      "description": "Spécification synthétique — Construire et vérifier ProposeAccessRevocation",
+      "namespace": "asteria.identites",
+      "owner": "urn:asteria:identity:ines-colin",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:identites",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "realizes": [
+        {
+          "id": "urn:asteria:construction:identites:function",
+          "revision": 1
+        },
+        {
+          "id": "urn:asteria:construction:identites:contract",
+          "revision": 1
+        }
+      ],
+      "work_kind": "SOFTWARE",
+      "outputs": [
+        {
+          "name": "ProposeAccessRevocation implementation",
+          "kind": "CODE_AND_TESTS",
+          "description": "Livrable futur : opération, documentation, tests nominaux et erreurs. Aucun code métier généré dans cette tranche AIR."
+        }
+      ],
+      "acceptance": [
+        {
+          "id": "urn:asteria:construction:identites:criterion0",
+          "revision": 1
+        },
+        {
+          "id": "urn:asteria:construction:identites:criterion1",
+          "revision": 1
+        },
+        {
+          "id": "urn:asteria:construction:identites:criterion2",
+          "revision": 1
+        }
+      ],
+      "justified_by": [
+        {
+          "id": "urn:asteria:construction:identites:requirement",
+          "revision": 1
+        }
+      ],
+      "resource_demand": [],
+      "estimate": {
+        "id": "urn:asteria:construction:identites:estimate",
+        "revision": 1
+      }
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:identites:estimate",
+      "type": "air.Estimate",
+      "revision": 1,
+      "name": "Estimation synthétique ProposeAccessRevocation",
+      "description": "Spécification synthétique — Estimation synthétique ProposeAccessRevocation",
+      "namespace": "asteria.identites",
+      "owner": "urn:asteria:identity:ines-colin",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:identites",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "target": {
+        "id": "urn:asteria:construction:identites:unit",
+        "revision": 1
+      },
+      "measure": "effort",
+      "value_or_distribution": {
+        "value": "8",
+        "unit": "person_day"
+      },
+      "basis": [
+        "Ordre de grandeur pédagogique du pilote, non calibré et non engagé."
+      ],
+      "scope_assumptions": [
+        {
+          "id": "urn:asteria:assumption:d03",
+          "revision": 1
+        }
+      ],
+      "calibration_class": "SYNTHETIC_UNCALIBRATED"
+    }
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "format": "air.operations-targets/1",
+  "version": null,
+  "environment": {"os": null, "python": null, "database": null},
+  "fixtures_sha256": null,
+  "workload_minimum": {"concurrency": null, "revisions": null, "jobs": null, "artifact_bytes_each": null, "elapsed_seconds": null},
+  "latency_p95_seconds": {"import": null, "baseline": null, "query": null, "simulate": null, "plan": null, "artifact_write": null, "artifact_read": null, "job_submit": null, "job_execute": null, "job_read": null},
+  "max_server_peak_rss_bytes": null,
+  "max_child_peak_rss_bytes": null,
+  "rto_seconds": null
+}

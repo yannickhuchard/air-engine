@@ -1,0 +1,16 @@
+{
+  "format": "air.p06-workstation/1",
+  "profile": "LOCAL_ARCHITECT_WORKSTATION",
+  "version": null,
+  "source_sha256": null,
+  "inputs": {"targets": null, "capacity": null, "recovery": null, "workstation": null},
+  "data_policy": {
+    "backup_method": null,
+    "recovery_procedure": null,
+    "retention_reference": null,
+    "support_reference": null,
+    "source_audit": "RETAINED_NO_AUTOMATIC_PURGE",
+    "loss_window": "SINCE_LAST_SUCCESSFUL_BACKUP",
+    "physical_device_loss_tested": false
+  }
+}

@@ -1,0 +1,1149 @@
+[
+  {
+    "meta": {
+      "id": "urn:asteria:source:company",
+      "type": "air.Source",
+      "revision": 1,
+      "name": "Contexte d’entreprise et hypothèses communes",
+      "description": "Jeu entièrement fictif Asteria Industrie. Contexte d’entreprise et hypothèses communes",
+      "namespace": "asteria.shared",
+      "owner": "urn:asteria:identity:lea-morel",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": []
+      }
+    },
+    "body": {
+      "kind": "DOCUMENT",
+      "locator": "fixtures/enterprise/asteria/company.md",
+      "source_revision": "sha256:b83bc8f0d371658fe5e6638db58922e8fd40e10c166286d164722b3b901029ba",
+      "captured_at": "2026-09-21T09:00:00Z",
+      "access_policy": "Périmètre fictif de démonstration Asteria",
+      "retention_policy": "Conserver avec la version du jeu de recette"
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:scope:identity",
+      "type": "air.Scope",
+      "revision": 1,
+      "name": "Plateforme d’identité partagée",
+      "description": "Jeu entièrement fictif Asteria Industrie. Plateforme d’identité partagée",
+      "namespace": "asteria.shared",
+      "owner": "urn:asteria:identity:marc-petit",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:company",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "includes": [],
+      "excludes": [],
+      "boundary_description": "Identités clients, salariés, prestataires et machines, avec des droits distincts.",
+      "context_dimensions": {
+        "populations": "clients; salariés; prestataires; machines",
+        "authority": "Responsable IAM"
+      }
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:scope:integration",
+      "type": "air.Scope",
+      "revision": 1,
+      "name": "Équipe d’intégration partagée",
+      "description": "Jeu entièrement fictif Asteria Industrie. Équipe d’intégration partagée",
+      "namespace": "asteria.shared",
+      "owner": "urn:asteria:identity:karim-vidal",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:company",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "includes": [],
+      "excludes": [],
+      "boundary_description": "Quatre ETP nets par semaine pour les trois dossiers, sur le calendrier synthétique commun.",
+      "context_dimensions": {
+        "capacity_basis": "Hypothèse de recette ; aucune réservation réelle",
+        "authority": "Responsable intégration"
+      }
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:source:sav",
+      "type": "air.Source",
+      "revision": 1,
+      "name": "Atelier fictif — Portail SAV et orchestration des interventions",
+      "description": "Jeu entièrement fictif Asteria Industrie. Atelier fictif — Portail SAV et orchestration des interventions",
+      "namespace": "asteria.sav",
+      "owner": "urn:asteria:identity:lea-morel",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": []
+      }
+    },
+    "body": {
+      "kind": "DOCUMENT",
+      "locator": "fixtures/enterprise/asteria/dossiers/sav/brief.md",
+      "source_revision": "sha256:4a226045b8ff2ec52af341e74580ea9a19711023fee1b4ad883ccd02241f7bf9",
+      "captured_at": "2026-09-21T09:00:00Z",
+      "access_policy": "Périmètre fictif de démonstration Asteria",
+      "retention_policy": "Conserver avec la version du jeu de recette"
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:scope:sav",
+      "type": "air.Scope",
+      "revision": 1,
+      "name": "Portail SAV et orchestration des interventions",
+      "description": "Jeu entièrement fictif Asteria Industrie. Portail SAV et orchestration des interventions",
+      "namespace": "asteria.sav",
+      "owner": "urn:asteria:identity:nora-simon",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:company",
+            "revision": 1
+          },
+          {
+            "id": "urn:asteria:source:sav",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "includes": [
+        {
+          "id": "urn:asteria:scope:identity",
+          "revision": 1
+        },
+        {
+          "id": "urn:asteria:scope:integration",
+          "revision": 1
+        }
+      ],
+      "excludes": [],
+      "boundary_description": "Périmètre du dossier D01 ; critères, exclusions et inconnues conservés dans le brief sourcé.",
+      "context_dimensions": {
+        "dossier": "D01",
+        "company": "Asteria Industrie — fictive",
+        "stage": "Cadrage synthétique non approuvé"
+      }
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:assertion:d01",
+      "type": "air.Assertion",
+      "revision": 1,
+      "name": "Assertion — Portail SAV et orchestration des interventions",
+      "description": "Connaissance synthétique du dossier D01 ; aucune qualification d’une entreprise réelle.",
+      "namespace": "asteria.sav",
+      "owner": "urn:asteria:identity:nora-simon",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:company",
+            "revision": 1
+          },
+          {
+            "id": "urn:asteria:source:sav",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "statement": "Le pilote SAV doit enregistrer une demande sans décider sa couverture de garantie.",
+      "subject_scope": {
+        "id": "urn:asteria:scope:sav",
+        "revision": 1
+      },
+      "epistemic_status": "SUPPORTED",
+      "evidence": [
+        {
+          "id": "urn:asteria:evidence:d01",
+          "revision": 1
+        }
+      ]
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:evidence:d01",
+      "type": "air.Evidence",
+      "revision": 1,
+      "name": "Evidence — Portail SAV et orchestration des interventions",
+      "description": "Connaissance synthétique du dossier D01 ; aucune qualification d’une entreprise réelle.",
+      "namespace": "asteria.sav",
+      "owner": "urn:asteria:identity:nora-simon",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:company",
+            "revision": 1
+          },
+          {
+            "id": "urn:asteria:source:sav",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "source": {
+        "id": "urn:asteria:source:sav",
+        "revision": 1
+      },
+      "selector": "Section « Périmètre, alternatives et contrats à construire » (ou contrat à construire pour D01)",
+      "evidence_kind": "DOCUMENT_EXCERPT",
+      "supports_or_refutes": [
+        {
+          "id": "urn:asteria:assertion:d01",
+          "revision": 1,
+          "direction": "SUPPORTS"
+        }
+      ],
+      "limitations": [
+        "Confirme le contenu du brief fictif ; ne prouve aucun comportement observé ni revue humaine."
+      ]
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:assumption:d01",
+      "type": "air.Assumption",
+      "revision": 1,
+      "name": "Assumption — Portail SAV et orchestration des interventions",
+      "description": "Connaissance synthétique du dossier D01 ; aucune qualification d’une entreprise réelle.",
+      "namespace": "asteria.sav",
+      "owner": "urn:asteria:identity:nora-simon",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:company",
+            "revision": 1
+          },
+          {
+            "id": "urn:asteria:source:sav",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "statement": "Le client peut fournir un identifiant stable de soumission.",
+      "used_by": [
+        {
+          "id": "urn:asteria:scope:sav",
+          "revision": 1
+        }
+      ],
+      "impact_if_false": "Prévoir une déduplication métier complémentaire.",
+      "validation_plan": "Qualifier le contrat de soumission avec les gestionnaires SAV et l’équipe intégration.",
+      "review_due": "2026-10-01T09:00:00Z",
+      "state": "OPEN"
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:unknown:d01",
+      "type": "air.Unknown",
+      "revision": 1,
+      "name": "Unknown — Portail SAV et orchestration des interventions",
+      "description": "Connaissance synthétique du dossier D01 ; aucune qualification d’une entreprise réelle.",
+      "namespace": "asteria.sav",
+      "owner": "urn:asteria:identity:nora-simon",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:company",
+            "revision": 1
+          },
+          {
+            "id": "urn:asteria:source:sav",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "question": "L’ERP fournit-il une clé de déduplication fiable ?",
+      "affected_objects": [
+        {
+          "id": "urn:asteria:scope:sav",
+          "revision": 1
+        }
+      ],
+      "resolution_owner": "urn:asteria:identity:nora-simon",
+      "blocking_policy": "BLOCK",
+      "state": "OPEN"
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:sav:requirement",
+      "type": "air.Requirement",
+      "revision": 1,
+      "name": "Enregistrer une déclaration SAV durable, distincte de toute décision de garantie.",
+      "description": "Spécification synthétique — Enregistrer une déclaration SAV durable, distincte de toute décision de garantie.",
+      "namespace": "asteria.sav",
+      "owner": "urn:asteria:identity:nora-simon",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:sav",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "statement": "Enregistrer une déclaration SAV durable, distincte de toute décision de garantie.",
+      "kind": "FUNCTIONAL",
+      "priority": "MUST",
+      "applicability": "Pilote sav ; toutes les occurrences décrites dans ce dossier.",
+      "acceptance": [
+        {
+          "id": "urn:asteria:construction:sav:criterion0",
+          "revision": 1
+        },
+        {
+          "id": "urn:asteria:construction:sav:criterion1",
+          "revision": 1
+        },
+        {
+          "id": "urn:asteria:construction:sav:criterion2",
+          "revision": 1
+        }
+      ],
+      "source": [
+        {
+          "id": "urn:asteria:source:sav",
+          "revision": 1
+        }
+      ]
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:sav:criterion0",
+      "type": "air.AcceptanceCriterion",
+      "revision": 1,
+      "name": "Réception 1 — SubmitClaim",
+      "description": "Spécification synthétique — Réception 1 — SubmitClaim",
+      "namespace": "asteria.sav",
+      "owner": "urn:asteria:identity:nora-simon",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:sav",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "condition": "Dépôt nominal puis doublon : même identifiant, une seule déclaration, aucune garantie accordée.",
+      "verification_method": "TEST",
+      "acceptance_authority": "urn:asteria:authority:sav",
+      "cases": [
+        {
+          "id": "urn:asteria:construction:sav:case0",
+          "revision": 1
+        }
+      ]
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:sav:case0",
+      "type": "air.VerificationCase",
+      "revision": 1,
+      "name": "Scénario 1 — SubmitClaim",
+      "description": "Spécification synthétique — Scénario 1 — SubmitClaim",
+      "namespace": "asteria.sav",
+      "owner": "urn:asteria:identity:nora-simon",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:sav",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "target": {
+        "id": "urn:asteria:construction:sav:function",
+        "revision": 1
+      },
+      "method": "TEST",
+      "inputs": [
+        {
+          "name": "declaration",
+          "data_type": "ClaimDeclaration",
+          "description": "Déclaration, tenant et clé de soumission stable"
+        }
+      ],
+      "oracle": "Dépôt nominal puis doublon : même identifiant, une seule déclaration, aucune garantie accordée.",
+      "acceptance": "Observer tous les résultats attendus et conserver les preuves corrélées.",
+      "independence_basis": "Scénario conçu depuis le brief ; exécution et revue indépendante non réalisées."
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:sav:criterion1",
+      "type": "air.AcceptanceCriterion",
+      "revision": 1,
+      "name": "Réception 2 — SubmitClaim",
+      "description": "Spécification synthétique — Réception 2 — SubmitClaim",
+      "namespace": "asteria.sav",
+      "owner": "urn:asteria:identity:nora-simon",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:sav",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "condition": "Demande pour un autre client : refus sans divulgation ni écriture.",
+      "verification_method": "TEST",
+      "acceptance_authority": "urn:asteria:authority:sav",
+      "cases": [
+        {
+          "id": "urn:asteria:construction:sav:case1",
+          "revision": 1
+        }
+      ]
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:sav:case1",
+      "type": "air.VerificationCase",
+      "revision": 1,
+      "name": "Scénario 2 — SubmitClaim",
+      "description": "Spécification synthétique — Scénario 2 — SubmitClaim",
+      "namespace": "asteria.sav",
+      "owner": "urn:asteria:identity:nora-simon",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:sav",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "target": {
+        "id": "urn:asteria:construction:sav:function",
+        "revision": 1
+      },
+      "method": "TEST",
+      "inputs": [
+        {
+          "name": "declaration",
+          "data_type": "ClaimDeclaration",
+          "description": "Déclaration, tenant et clé de soumission stable"
+        }
+      ],
+      "oracle": "Demande pour un autre client : refus sans divulgation ni écriture.",
+      "acceptance": "Observer tous les résultats attendus et conserver les preuves corrélées.",
+      "independence_basis": "Scénario conçu depuis le brief ; exécution et revue indépendante non réalisées."
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:sav:criterion2",
+      "type": "air.AcceptanceCriterion",
+      "revision": 1,
+      "name": "Réception 3 — SubmitClaim",
+      "description": "Spécification synthétique — Réception 3 — SubmitClaim",
+      "namespace": "asteria.sav",
+      "owner": "urn:asteria:identity:nora-simon",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:sav",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "condition": "Persistance indisponible : aucun faux reçu, reprise avec la même clé sans doublon.",
+      "verification_method": "TEST",
+      "acceptance_authority": "urn:asteria:authority:sav",
+      "cases": [
+        {
+          "id": "urn:asteria:construction:sav:case2",
+          "revision": 1
+        }
+      ]
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:sav:case2",
+      "type": "air.VerificationCase",
+      "revision": 1,
+      "name": "Scénario 3 — SubmitClaim",
+      "description": "Spécification synthétique — Scénario 3 — SubmitClaim",
+      "namespace": "asteria.sav",
+      "owner": "urn:asteria:identity:nora-simon",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:sav",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "target": {
+        "id": "urn:asteria:construction:sav:function",
+        "revision": 1
+      },
+      "method": "TEST",
+      "inputs": [
+        {
+          "name": "declaration",
+          "data_type": "ClaimDeclaration",
+          "description": "Déclaration, tenant et clé de soumission stable"
+        }
+      ],
+      "oracle": "Persistance indisponible : aucun faux reçu, reprise avec la même clé sans doublon.",
+      "acceptance": "Observer tous les résultats attendus et conserver les preuves corrélées.",
+      "independence_basis": "Scénario conçu depuis le brief ; exécution et revue indépendante non réalisées."
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:sav:failure0",
+      "type": "air.FailureMode",
+      "revision": 1,
+      "name": "UnauthorizedClaim",
+      "description": "Spécification synthétique — UnauthorizedClaim",
+      "namespace": "asteria.sav",
+      "owner": "urn:asteria:identity:nora-simon",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:sav",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "trigger": "Client ou représentation non autorisé",
+      "effect": "Chemin nominal interrompu ; Refuser sans divulguer ni modifier une déclaration",
+      "detection": "Contrôle explicite de la condition : Client ou représentation non autorisé",
+      "response": "Refuser sans divulguer ni modifier une déclaration",
+      "recovery_condition": "Nouvelle demande avec mandat valide"
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:sav:failure1",
+      "type": "air.FailureMode",
+      "revision": 1,
+      "name": "RegistrationUnavailable",
+      "description": "Spécification synthétique — RegistrationUnavailable",
+      "namespace": "asteria.sav",
+      "owner": "urn:asteria:identity:nora-simon",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:sav",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "trigger": "Persistance indisponible",
+      "effect": "Chemin nominal interrompu ; Retourner une erreur corrélée ; retry avec la même clé, jamais de reçu fictif",
+      "detection": "Contrôle explicite de la condition : Persistance indisponible",
+      "response": "Retourner une erreur corrélée ; retry avec la même clé, jamais de reçu fictif",
+      "recovery_condition": "Persistance rétablie et retry idempotent"
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:sav:function",
+      "type": "air.Function",
+      "revision": 1,
+      "name": "SubmitClaim",
+      "description": "Spécification synthétique — SubmitClaim",
+      "namespace": "asteria.sav",
+      "owner": "urn:asteria:identity:nora-simon",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:sav",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "kind": "SOFTWARE",
+      "inputs": [
+        {
+          "name": "declaration",
+          "data_type": "ClaimDeclaration",
+          "description": "Déclaration, tenant et clé de soumission stable"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "receipt",
+          "data_type": "ClaimRegistrationReceipt",
+          "description": "Identifiant durable et état SUBMITTED, aucune décision de couverture"
+        }
+      ],
+      "preconditions": [
+        "Acteur authentifié et habilité pour le client concerné."
+      ],
+      "postconditions": [
+        "Un doublon tenant/clé renvoie le reçu initial sans nouvelle déclaration.",
+        "La déclaration et son horodatage sont conservés ; la garantie reste à évaluer."
+      ],
+      "effects": [
+        {
+          "kind": "STATE_CHANGE",
+          "description": "Créer un enregistrement de conception prévu par SubmitClaim ; aucune exécution par AIR."
+        }
+      ],
+      "exceptions": [
+        {
+          "id": "urn:asteria:construction:sav:failure0",
+          "revision": 1
+        },
+        {
+          "id": "urn:asteria:construction:sav:failure1",
+          "revision": 1
+        }
+      ],
+      "atomic": true,
+      "satisfies": [
+        {
+          "id": "urn:asteria:construction:sav:requirement",
+          "revision": 1
+        }
+      ]
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:sav:requester",
+      "type": "air.Actor",
+      "revision": 1,
+      "name": "Équipe SAV et intégration",
+      "description": "Spécification synthétique — Équipe SAV et intégration",
+      "namespace": "asteria.sav",
+      "owner": "urn:asteria:identity:nora-simon",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:sav",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "kind": "HUMAN",
+      "roles": [],
+      "boundary": {
+        "id": "urn:asteria:scope:sav",
+        "revision": 1
+      }
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:sav:service",
+      "type": "air.Actor",
+      "revision": 1,
+      "name": "SubmitClaim service",
+      "description": "Spécification synthétique — SubmitClaim service",
+      "namespace": "asteria.sav",
+      "owner": "urn:asteria:identity:nora-simon",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:sav",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "kind": "SOFTWARE",
+      "roles": [],
+      "boundary": {
+        "id": "urn:asteria:scope:sav",
+        "revision": 1
+      }
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:sav:contract",
+      "type": "air.SemanticContract",
+      "revision": 1,
+      "name": "Contrat SubmitClaim",
+      "description": "Spécification synthétique — Contrat SubmitClaim",
+      "namespace": "asteria.sav",
+      "owner": "urn:asteria:identity:nora-simon",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:sav",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "operations": [
+        {
+          "name": "SubmitClaim",
+          "function": {
+            "id": "urn:asteria:construction:sav:function",
+            "revision": 1
+          }
+        }
+      ],
+      "participants": [
+        {
+          "actor": {
+            "id": "urn:asteria:construction:sav:requester",
+            "revision": 1
+          },
+          "role": "Demandeur habilité selon le périmètre métier"
+        },
+        {
+          "actor": {
+            "id": "urn:asteria:construction:sav:service",
+            "revision": 1
+          },
+          "role": "Fournisseur de l’opération"
+        }
+      ],
+      "authorization": "Contrôler identité et périmètre de la demande ; une proposition AIR ne confère aucun mandat.",
+      "state_effects": [
+        {
+          "kind": "STATE_CHANGE",
+          "description": "Créer un enregistrement de conception prévu par SubmitClaim ; aucune exécution par AIR."
+        }
+      ],
+      "error_contract": [
+        {
+          "code": "UnauthorizedClaim",
+          "failure_mode": {
+            "id": "urn:asteria:construction:sav:failure0",
+            "revision": 1
+          },
+          "response": "Refuser sans divulguer ni modifier une déclaration"
+        },
+        {
+          "code": "RegistrationUnavailable",
+          "failure_mode": {
+            "id": "urn:asteria:construction:sav:failure1",
+            "revision": 1
+          },
+          "response": "Retourner une erreur corrélée ; retry avec la même clé, jamais de reçu fictif"
+        }
+      ],
+      "quality": [],
+      "compatibility_policy": "Toute modification d’entrée, sortie, condition, erreur ou effet rouvre la revue du contrat ; aucun binding qualifié."
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:sav:unit",
+      "type": "air.ConstructionUnit",
+      "revision": 1,
+      "name": "Construire et vérifier SubmitClaim",
+      "description": "Spécification synthétique — Construire et vérifier SubmitClaim",
+      "namespace": "asteria.sav",
+      "owner": "urn:asteria:identity:nora-simon",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:sav",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "realizes": [
+        {
+          "id": "urn:asteria:construction:sav:function",
+          "revision": 1
+        },
+        {
+          "id": "urn:asteria:construction:sav:contract",
+          "revision": 1
+        }
+      ],
+      "work_kind": "SOFTWARE",
+      "outputs": [
+        {
+          "name": "SubmitClaim implementation",
+          "kind": "CODE_AND_TESTS",
+          "description": "Livrable futur : opération, documentation, tests nominaux et erreurs. Aucun code métier généré dans cette tranche AIR."
+        }
+      ],
+      "acceptance": [
+        {
+          "id": "urn:asteria:construction:sav:criterion0",
+          "revision": 1
+        },
+        {
+          "id": "urn:asteria:construction:sav:criterion1",
+          "revision": 1
+        },
+        {
+          "id": "urn:asteria:construction:sav:criterion2",
+          "revision": 1
+        }
+      ],
+      "justified_by": [
+        {
+          "id": "urn:asteria:construction:sav:requirement",
+          "revision": 1
+        }
+      ],
+      "resource_demand": [],
+      "estimate": {
+        "id": "urn:asteria:construction:sav:estimate",
+        "revision": 1
+      }
+    }
+  },
+  {
+    "meta": {
+      "id": "urn:asteria:construction:sav:estimate",
+      "type": "air.Estimate",
+      "revision": 1,
+      "name": "Estimation synthétique SubmitClaim",
+      "description": "Spécification synthétique — Estimation synthétique SubmitClaim",
+      "namespace": "asteria.sav",
+      "owner": "urn:asteria:identity:nora-simon",
+      "classification": {
+        "level": "INTERNAL"
+      },
+      "lifecycle": "DRAFT",
+      "recorded_at": "2026-09-21T09:00:00Z",
+      "validity": {
+        "start": "2026-10-05T00:00:00Z",
+        "end": "2026-11-30T00:00:00Z"
+      },
+      "provenance": {
+        "recorded_by": "urn:asteria:identity:lea-morel",
+        "method": "Fixture synthétique de recette, sans observation réelle",
+        "source_refs": [
+          {
+            "id": "urn:asteria:source:sav",
+            "revision": 1
+          }
+        ]
+      }
+    },
+    "body": {
+      "target": {
+        "id": "urn:asteria:construction:sav:unit",
+        "revision": 1
+      },
+      "measure": "effort",
+      "value_or_distribution": {
+        "value": "12",
+        "unit": "person_day"
+      },
+      "basis": [
+        "Ordre de grandeur pédagogique du pilote, non calibré et non engagé."
+      ],
+      "scope_assumptions": [
+        {
+          "id": "urn:asteria:assumption:d01",
+          "revision": 1
+        }
+      ],
+      "calibration_class": "SYNTHETIC_UNCALIBRATED"
+    }
+  }
+]

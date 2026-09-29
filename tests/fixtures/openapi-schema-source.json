@@ -1,0 +1,8 @@
+{
+  "source": "https://spec.openapis.org/oas/3.1/schema/2022-10-07",
+  "sha256": "da01ba28852cac0de53893797cb8d1942bc3b05084f526dcc216717dec314ed0",
+  "retrieved": "2026-09-20",
+  "bytes": 33992,
+  "purpose": "Test-only OpenAPI 3.1 structural validation; no runtime download",
+  "external_refs": []
+}

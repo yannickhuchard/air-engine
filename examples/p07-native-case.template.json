@@ -1,0 +1,11 @@
+{
+  "case": null,
+  "client": null,
+  "client_version": null,
+  "execution_kind": "NATIVE_CLIENT",
+  "air_version": null,
+  "source_sha256": null,
+  "transcript_sha256": null,
+  "observations": [],
+  "expected_only": true
+}

@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools==84.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "air-engine"
+version = "0.34.0rc9"
+description = "Architecture Intermediate Representation â€” local-first foundation"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.115,<1", "uvicorn>=0.34,<1", "SQLAlchemy>=2.0.38,<2.1",
+  "jsonschema[format]>=4.23,<5", "PyYAML>=6.0.2,<7", "rfc8785>=0.1.4,<1",
+]
+
+[project.optional-dependencies]
+postgres = ["psycopg[binary]>=3.2,<4"]
+oidc = ["PyJWT[crypto]>=2.10.1,<3"]
+proofs = ["cryptography>=44,<52"]
+backup = ["cryptography>=44,<52"]
+dev = ["pytest>=8.3,<10", "httpx>=0.28,<1"]
+
+[project.scripts]
+air = "air.cli:main"
+air-mcp = "air.mcp:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--basetemp=tmp/pytest"
+
+[tool.setuptools.package-data]
+air = ["assets/*.js", "assets/*.css", "skills/*/SKILL.md", "skills/*/references/*.md"]

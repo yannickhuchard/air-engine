@@ -1,0 +1,16 @@
+/tmp/
+.venv/
+.air/
+.air-*/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+build/
+dist/
+.env
+*.db
+*.db-wal
+*.db-shm
+.mcp.json
+.claude/settings.local.json
