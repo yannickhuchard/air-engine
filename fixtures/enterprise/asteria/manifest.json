@@ -31,7 +31,7 @@
     },
     {
       "id": "D02",
-      "title": "Maintenance connectÃ©e dâ€™un atelier",
+      "title": "Maintenance connectée d’un atelier",
       "brief": "dossiers/atelier/brief.md",
       "bootstrap": "dossiers/atelier/bootstrap.json",
       "shared_refs": [
@@ -52,7 +52,7 @@
     },
     {
       "id": "D03",
-      "title": "ArrivÃ©es, mobilitÃ©s et dÃ©parts",
+      "title": "Arrivées, mobilités et départs",
       "brief": "dossiers/identites/brief.md",
       "bootstrap": "dossiers/identites/bootstrap.json",
       "shared_refs": [
@@ -75,7 +75,7 @@
   "milestone": {
     "id": "DEMO-METIER-1",
     "status": "PASS_SCOPED",
-    "reason": "Conception traÃ§able exÃ©cutÃ©e par HTTP/MCP sur SQLite/local neuve ; refus, vues et restauration vÃ©rifiÃ©s. Pas dâ€™exÃ©cution des systÃ¨mes mÃ©tier ni de conformitÃ© complÃ¨te.",
+    "reason": "Conception traçable exécutée par HTTP/MCP sur SQLite/local neuve ; refus, vues et restauration vérifiés. Pas d’exécution des systèmes métier ni de conformité complète.",
     "requires": [
       {
         "id": "M1-BASELINE",
@@ -83,7 +83,7 @@
           "L01",
           "L03"
         ],
-        "criterion": "RÃ©fÃ©rences exactes et typÃ©es ; baseline fermÃ©e, immuable et rejouable pour chaque dossier.",
+        "criterion": "Références exactes et typées ; baseline fermée, immuable et rejouable pour chaque dossier.",
         "status": "PASS_SCOPED"
       },
       {
@@ -92,7 +92,7 @@
           "L02",
           "L06"
         ],
-        "criterion": "Sources, preuves, assertions, hypothÃ¨ses et inconnues distinguÃ©es ; preuve manquante visible et bloquante si requise.",
+        "criterion": "Sources, preuves, assertions, hypothèses et inconnues distinguées ; preuve manquante visible et bloquante si requise.",
         "status": "PASS_SCOPED"
       },
       {
@@ -100,7 +100,7 @@
         "lots": [
           "L07"
         ],
-        "criterion": "Au moins une exigence, une fonction, un contrat et une unitÃ© de construction traÃ§ables par dossier.",
+        "criterion": "Au moins une exigence, une fonction, un contrat et une unité de construction traçables par dossier.",
         "status": "PASS_SCOPED"
       },
       {
@@ -109,7 +109,7 @@
           "L03",
           "L11"
         ],
-        "criterion": "Une proposition modifie une nouvelle version ; diff et impacts sur les trois dossiers reliÃ©s Ã  la version partagÃ©e exacte.",
+        "criterion": "Une proposition modifie une nouvelle version ; diff et impacts sur les trois dossiers reliés à la version partagée exacte.",
         "status": "PASS_SCOPED"
       },
       {
@@ -117,7 +117,7 @@
         "lots": [
           "L04"
         ],
-        "criterion": "Droits par pÃ©rimÃ¨tre testÃ©s ; proposition, approbation et exÃ©cution distinctes ; refus dâ€™une approbation auto-dÃ©clarÃ©e.",
+        "criterion": "Droits par périmètre testés ; proposition, approbation et exécution distinctes ; refus d’une approbation auto-déclarée.",
         "status": "PASS_SCOPED"
       },
       {
@@ -126,7 +126,7 @@
           "L07",
           "L08"
         ],
-        "criterion": "Vue lisible par mÃ©tier et ingÃ©nierie, produite depuis le modÃ¨le avec preuves, lacunes et contrÃ´les non exÃ©cutÃ©s.",
+        "criterion": "Vue lisible par métier et ingénierie, produite depuis le modèle avec preuves, lacunes et contrôles non exécutés.",
         "status": "PASS_SCOPED"
       },
       {
@@ -136,11 +136,11 @@
           "L16",
           "L17"
         ],
-        "criterion": "Les trois dossiers se rejouent sur une installation SQLite/local neuve en suivant documentation et skill ; restauration des mÃªmes rÃ©visions.",
+        "criterion": "Les trois dossiers se rejouent sur une installation SQLite/local neuve en suivant documentation et skill ; restauration des mêmes révisions.",
         "status": "PASS_SCOPED"
       }
     ],
-    "acceptance": "Chaque critÃ¨re possÃ¨de un rÃ©sultat dâ€™exÃ©cution et des artefacts de preuve ; NOT_EXECUTED ou UNKNOWN requis empÃªche la rÃ©ception.",
+    "acceptance": "Chaque critère possède un résultat d’exécution et des artefacts de preuve ; NOT_EXECUTED ou UNKNOWN requis empêche la réception.",
     "evidence": "docs/validation.md"
   },
   "portfolio": {
