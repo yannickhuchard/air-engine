@@ -33,8 +33,8 @@ Puis écrire `.mcp.json` à la racine, avec les chemins absolus de ce poste ; le
 protégé et aucun jeton n’apparaît dans la configuration :
 
 ~~~json
-{"mcpServers": {"air": {"command": "D:/development/air/.venv/Scripts/python.exe",
-  "args": ["-m", "air.mcp", "--home", "D:/development/air/.air", "--credential", "claude-code.json", "--port", "8740"]}}}
+{"mcpServers": {"air": {"command": "C:/AIR/air-engine/.venv/Scripts/python.exe",
+  "args": ["-m", "air.mcp", "--home", "C:/AIR/air-engine/.air", "--credential", "claude-code.json", "--port", "8740"]}}}
 ~~~
 
 `ide-setup` produit cette configuration et les fichiers `.claude/` d’un **référentiel d’architecture**, pas de ce

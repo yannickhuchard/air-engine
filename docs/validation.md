@@ -15,7 +15,9 @@ La publication 0.35 ne comprend pas le PDF original du white paper, les dossiers
 privés ou les journaux de sessions. Les tests de l’inventaire lié à ce PDF et du
 budget et de la consultation privés ProxiBot sont exclus de la sélection publique ; les contrôles du
 moteur et les exemples Asteria sont inclus. Le test des baselines historiques
-utilise la même fixture publique déjà distribuée avec rc9.
+utilise la même fixture publique déjà distribuée avec rc9. Le seul test de
+conservation des simulations historiques qui dépend du helper privé de recette
+ProxiBot est explicitement ignoré lorsque ce helper n’est pas distribué.
 
 Pour contribuer : `python scripts/install.py --extras dev,proofs,backup`, puis
 `.venv/Scripts/python.exe scripts/check.py -q` sous Windows

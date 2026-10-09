@@ -112,7 +112,11 @@ def test_historical_simulation_inputs_allow_only_separate_journey_document_chang
     import sys
     from pathlib import Path
     sys.path.insert(0,str(Path('scripts').resolve()))
-    from prepare_robot_delivery_acceptance import retained_inputs
+    import pytest
+    retained_inputs = pytest.importorskip(
+        'prepare_robot_delivery_acceptance',
+        reason='Private ProxiBot acceptance helper is outside the public engine snapshot',
+    ).retained_inputs
     before=sample();after=deepcopy(before);after[-2]['body']['goal']='New narrative'
     valid, changes=retained_inputs(before,after)
     assert valid and len(changes)==1 and changes[0]['scope']=='NON_SIMULATION_JOURNEY_DOCUMENT'

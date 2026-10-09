@@ -17,8 +17,9 @@ synchronisation livrée. Ne jamais remplir les preuves manquantes artificielleme
 
 La qualification locale G1 porte sur 0.34.0rc9 ; la branche 0.35.0.dev1 doit qualifier
 ses nouveautés séparément. Lire `docs/perimetre-local-supporte.md`,
-`docs/contrat-client-agent.md`, `docs/lot-distribution-reproductible.md` et les statuts P05/G1/G2 dans
-`docs/traceability/production-roadmap.json` avant un déploiement partagé.
+`docs/contrat-client-agent.md`, `docs/lot-distribution-reproductible.md` et
+`docs/validation.md` avant un déploiement partagé. La qualification historique
+rc9 ne reçoit pas les sources publiques 0.35 comme une production globale.
 Sous Windows, les données privées exigent un volume avec ACL persistantes (par exemple NTFS) ;
 FAT/exFAT est refusé. Ne pas contourner ce contrôle ni confondre espace libre et stockage qualifié.
 

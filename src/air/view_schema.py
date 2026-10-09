@@ -9,7 +9,7 @@ def bodies(record, text, uri, ref):
     dependency = record({'name': {'type': 'string', 'minLength': 1, 'maxLength': 128}, 'version': {'type': 'string', 'minLength': 1, 'maxLength': 128}})
     toolchain = record({'binding': {'const': 'air.toolchain/0.20'}, 'engine': {'const': 'air.audience/0.19'},
         'air_version': text, 'python_version': text, 'source_observation': {'const': 'MODULE_STARTUP'},
-        'components': {'type': 'array', 'items': component, 'minItems': 1, 'maxItems': 128},
+        'components': {'type': 'array', 'items': component, 'minItems': 1, 'maxItems': 256},
         'dependencies': {'type': 'array', 'items': dependency, 'minItems': 1, 'maxItems': 32}, 'source_digest': CHECKSUM})
     def artifact(media_type):
         return record({'locator': uri, 'media_type': {'const': media_type}, 'size': {'type': 'integer', 'minimum': 1, 'maximum': 16777216},

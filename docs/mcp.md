@@ -12,7 +12,7 @@ AIR définit 78 outils, dont seul le sous-ensemble autorisé est exposé à la c
 Installer et démarrer AIR, puis créer un jeton dédié au rôle reader ou editor. Appliquer au besoin une politique de namespace décrite dans lot-collaboration-projections.md. Le client lance l'interpréteur installé avec les arguments suivants, en remplaçant les chemins par ceux de son installation :
 
 ~~~json
-{"command":"D:/development/air/.venv/Scripts/python.exe","args":["-m","air.mcp","--home","D:/development/air/.air","--credential","agent.json","--port","8740"]}
+{"command":"C:/AIR/air-engine/.venv/Scripts/python.exe","args":["-m","air.mcp","--home","C:/AIR/air-engine/.air","--credential","agent.json","--port","8740"]}
 ~~~
 
 Sur Unix, employer le chemin absolu .venv/bin/python. Cet objet décrit le processus ; le conteneur de configuration varie selon le client. Ne pas écraser une configuration existante. Le raccourci air-mcp est également installé. Aucun secret n'apparaît dans les arguments : le processus lit le fichier privé, puis transmet le jeton uniquement à l'API loopback. L'API réévalue authentification et autorisations à chaque appel.
