@@ -1,0 +1,119 @@
+{
+  "schema": "air.public-development-validation/1",
+  "date": "2026-10-10",
+  "status": "PASS_SCOPED_DEVELOPMENT_SOURCES",
+  "version": "0.35.0.dev1",
+  "repository": "https://github.com/yannickhuchard/air-engine",
+  "license": "Apache-2.0",
+  "platform": "Windows / Python 3.12.14 / SQLite / local identity",
+  "content_review": {
+    "schema": "air.public-content-review/1",
+    "status": "PASS_SCOPED",
+    "files": 603,
+    "runtime_files": 161,
+    "runtime_matches_selected_source_except_recorded_corrections": true,
+    "runtime_corrections": [
+      "bpmn-LICENSE.txt CRLF bytes match the existing pinned original hash",
+      "View toolchain bound raised from 128 to 256; all 132 modules retained"
+    ],
+    "private_history_included": false,
+    "original_documents_included": false,
+    "private_projects_included": false,
+    "secret_signature_matches": 0,
+    "secret_scan_scope": "Selected text files and named signatures, not a proof of all possible secret encodings",
+    "asset_hashes_verified": [
+      "bpmn-js 18.16.0",
+      "Mermaid Tiny 12.1.0"
+    ],
+    "ci_executed": false,
+    "excluded_private_tests": [
+      "test_normative_report.py",
+      "test_proxibot_budget.py",
+      "test_proxibot_consultation.py"
+    ]
+  },
+  "source_commit_built_and_installed": "3f8dc45f230206a45ecfb504ede1c03d760aca6f",
+  "source_archive_sha256": "f310bf6cc85394cc9f8e4ee6e828e25f7fe3081a22d4a1bfdea7f5aebe344c8c",
+  "wheel_sha256": "f14fe573bebcf1063dbd2c831354b74ee155e56904c6679dd4c0d301a9408b3e",
+  "tests": {
+    "initial_full_public_suite": {
+      "passed": 1147,
+      "failed": 16,
+      "skipped": 2,
+      "failure_names": [
+        "test_sources_are_pinned_and_all_fixture_references_present",
+        "test_three_dossiers_coexist_in_one_authenticated_registry",
+        "test_portfolio_oracle_is_consistent_not_a_planner_result",
+        "test_preflight_does_not_claim_business_demo_or_normative_rules",
+        "test_historical_simulation_inputs_allow_only_separate_journey_document_changes",
+        "test_video_authoring_rejects_source_traversal",
+        "test_optional_authoring_preserves_existing_work",
+        "test_view_capture_atomic_identity_artifacts_and_historical_replay",
+        "test_view_capture_idempotency_and_concurrent_writers",
+        "test_view_capture_rolls_back_all_artifacts_view_and_guards",
+        "test_captured_bytes_require_the_entire_source_context",
+        "test_captured_artifacts_fail_closed_when_context_guard_is_missing",
+        "test_view_capture_registry_transfer_preserves_products_and_guards",
+        "test_view_capture_api_and_mcp_managed_writes",
+        "test_view_capture_sqlite_backup_restore_preserves_history",
+        "test_captured_sqlite_products_import_into_selected_backend"
+      ],
+      "skipped_names": [
+        "tests.test_oidc",
+        "test_tls_and_signed_oidc_are_independent_options"
+      ]
+    },
+    "corrected_affected_modules": {
+      "passed": 33,
+      "failed": 0,
+      "skipped": 1,
+      "failure_names": [],
+      "skipped_names": [
+        "test_historical_simulation_inputs_allow_only_separate_journey_document_changes"
+      ]
+    },
+    "full_suite_rerun_after_corrections": false,
+    "failure_reconciliation": {
+      "fixture_sources": "4 passing after restoring immutable original document bytes",
+      "private_project_helper": "1 explicit skip; private ProxiBot acceptance helper not distributed",
+      "optional_story_authoring": "2 passing after including the generic authoring scripts",
+      "captured_views": "9 original failures corrected; complete capture module passes after raising bounded provenance to 256 components"
+    }
+  },
+  "installation": {
+    "status": "PASS_SCOPED",
+    "fresh_environment": true,
+    "installed_from_wheel": true,
+    "offline_installation": true,
+    "reinstallation_preserves_identity_and_revision": true,
+    "recovery_preserves_digest_and_revokes_old_identity": true,
+    "server_stopped": true,
+    "default_backend": "SQLite",
+    "default_auth": "local",
+    "production_ready": false
+  },
+  "demonstration": {
+    "status": "PASS_SCOPED",
+    "milestone": "DEMO-METIER-1",
+    "dossiers": 3,
+    "business_execution": "NOT_EXECUTED",
+    "site_status": "PASS_SCOPED",
+    "diagrams": 84,
+    "browser_views": 12,
+    "remote_browser_requests": 0,
+    "browser_page_errors": 0
+  },
+  "boundaries": {
+    "ci_executed": false,
+    "private_history_published": false,
+    "private_project_data_published": false,
+    "original_white_paper_published": false,
+    "native_client_qualification": false,
+    "second_physical_workstation": false,
+    "other_operating_systems_received": false,
+    "postgres_oidc_received_for_this_snapshot": false,
+    "global_production_received": false,
+    "rc9_release_changed": false,
+    "plugin_directory_approval_inferred": false
+  }
+}

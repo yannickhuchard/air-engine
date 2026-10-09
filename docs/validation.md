@@ -3,8 +3,16 @@
 La branche principale contient 0.35.0.dev1, version de développement. Les
 résultats locaux de publication sont consignés dans
 `traceability/public-development-035.json` avec leurs empreintes et limites.
-Les vérifications seront enregistrées après leur exécution, sans résultat prévu
-transformé en preuve.
+La première suite publique a donné 1147 succès, 16 échecs et 2 skips.
+Les échecs ont été traités : sources de fixture conservées, scripts optionnels
+réintégrés, helper privé explicitement exclu et provenance des vues corrigée.
+Le rejeu des cinq modules concernés donne 33 succès et 1 skip explicite.
+La suite complète n’a pas été répétée après ces corrections.
+
+Le wheel corrigé a passé installation neuve hors ligne, réinstallation et
+restauration avec révocation de l’ancienne identité. Trois dossiers Asteria
+et leurs 84 diagrammes ont été générés ; 12 vues News ont passé les contrôles
+Chromium locaux à quatre largeurs. Aucune CI ni recette native n’est déduite.
 
 La release [0.34.0rc9](https://github.com/yannickhuchard/air-engine/releases/tag/v0.34.0rc9)
 et ses archives restent inchangées. Ses preuves s’appliquent uniquement à cette
