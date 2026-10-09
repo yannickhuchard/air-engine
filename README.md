@@ -1,92 +1,74 @@
-# AIR — Architecture Workspace
+# AIR · Architecture Workspace
 
-**Architecture Intermediate Representation**, développé par **Yannick Huchard**.
-Logiciel libre sous [Apache-2.0](LICENSE). Concevoir, vérifier, simuler et livrer
-des dossiers d’architecture destinés aux ingénieurs, chefs de projet et opérations.
+**Du besoin métier aux plans que vos équipes peuvent comprendre, vérifier et réaliser.**
 
-Cette distribution publique utilise le moteur **0.34.0rc9**. Le noyau est celui de
-la candidate reçue sur poste Windows ; les archives publiques sont reconstruites et
-leurs validations sont documentées dans [docs/validation.md](docs/validation.md).
-Elle ne prétend pas à la conformité AIR complète ni à l’exécution des systèmes métier.
-Les développements expérimentaux 0.35 ne sont pas inclus.
+AIR (*Architecture Intermediate Representation*) relie besoins, composants, données, décisions et preuves dans un modèle versionné. Votre assistant agentique aide à construire le dossier ; le moteur garde les sources et effectue les contrôles. Créé par **Yannick Huchard**, logiciel libre sous [Apache-2.0](LICENSE).
 
-## Installer sur son poste
+[Installer](docs/installation.md) · [Découvrir trois exemples](fixtures/enterprise/asteria/README.md) · [Connecter un assistant](docs/agents.md) · [Utiliser le plugin](https://github.com/yannickhuchard/air-plugin)
 
-Python 3.11+ avec pip/venv, répertoire inscriptible et accès au registre pip ou à un
-miroir. Windows/Python 3.12 est la plateforme de réception de cette distribution.
-Le code est portable ; les autres plateformes nécessitent leur propre recette.
-SQLite et identité locale sont les valeurs par défaut. Aucun Docker, Node,
-hébergement cloud ou fournisseur d’identité n’est obligatoire.
+## Pourquoi utiliser AIR ?
 
-Télécharger la source depuis [Releases](https://github.com/yannickhuchard/air-engine/releases)
-ou cloner ce dépôt, puis :
+| Vous voulez… | AIR vous aide à… |
+| --- | --- |
+| Concevoir une solution avec les équipes métier | Relier besoins, exigences et fonctions aux plans de réalisation |
+| Expliquer les choix au management | Présenter les décisions, conséquences et informations manquantes |
+| Transmettre aux ingénieurs et opérations | Livrer un dossier sourcé, des contrats et des critères de réception |
+| Éviter les affirmations sans preuve | Distinguer faits, hypothèses, contradictions et validations non exécutées |
+| Travailler avec un IDE agentique | Utiliser les mêmes services depuis la CLI et le MCP |
+
+AIR conçoit, vérifie et simule des **plans pour la réalisation ultérieure**. Il n’exécute pas les activités métier des systèmes décrits.
+
+## Installer en quelques minutes
+
+Python 3.11+ avec pip/venv et un répertoire inscriptible. Cloner ce dépôt ou télécharger une [release](https://github.com/yannickhuchard/air-engine/releases), puis :
 
 ```text
 python scripts/install.py --start
 ```
 
-Le script installe dans `.venv`, protège `.air`, initialise SQLite et l’identité,
-puis vérifie le service. Arrêter : `python scripts/install.py --stop`.
-Les jetons restent dans des fichiers protégés ; ne pas les coller dans un chat.
-L’[installation détaillée](docs/installation.md) couvre les roues, le mode hors ligne,
-les options indépendantes PostgreSQL/OIDC et la sauvegarde.
-Un IDE peut suivre [.agents/skills/air-install/SKILL.md](.agents/skills/air-install/SKILL.md).
+L’installateur crée `.venv`, initialise SQLite, protège l’identité locale et vérifie le service. Arrêter avec `python scripts/install.py --stop`.
 
-## Comprendre l’utilité avec trois dossiers
+**Pas de Docker, Node, cloud ou fournisseur d’identité obligatoire.** PostgreSQL et OIDC sont des options indépendantes. Garder les jetons dans leurs fichiers protégés ; ne pas les coller dans un chat. [Installation détaillée et reprise](docs/installation.md).
 
-Pour recevoir la distribution sur un autre poste, utiliser le
-[kit de recette publique](docs/reception-second-poste.md). Il vérifie les artefacts,
-l’installation et les trois dossiers, avec une attestation humaine séparée.
+## Comprendre avant de créer votre projet
 
-[Asteria Industrie](fixtures/enterprise/asteria/README.md) est une entreprise fictive
-avec trois dossiers partageant identité et intégration :
+[Asteria Industrie](fixtures/enterprise/asteria/README.md) est une entreprise fictive avec trois dossiers partageant un socle :
 
-| Dossier | Besoin | Ce que le moteur doit rendre visible |
+| Dossier | Besoin | Ce qui reste visible |
 | --- | --- | --- |
-| SAV | Portail et orchestration des interventions | Confirmation ERP manquante : UNKNOWN |
-| Atelier | Collecte de mesures et contrôle qualité | Mesure périmée : VIOLATED |
-| Identités | Arrivées, mobilités et départs | Sources contradictoires : CONFLICTING |
+| SAV | Orchestrer une intervention depuis un portail | Confirmation ERP absente : UNKNOWN |
+| Atelier | Contrôler la qualité avec des mesures | Mesure périmée : VIOLATED |
+| Identités | Gérer arrivées, mobilités et départs | Sources contradictoires : CONFLICTING |
 
 ```text
 .venv/Scripts/python.exe scripts/demo_metier.py --output tmp/demo-public
 ```
 
-Sur Unix, utiliser `.venv/bin/python`. Le parcours produit trois vues HTML et un
-rapport dans le dossier de sortie, avec données isolées, contrôles HTTP/MCP,
-reprise de contexte et restauration. Il arrête son serveur de démonstration.
-Les portes bloquées montrent les décisions à prendre ; elles ne sont pas un échec
-du logiciel. Les neuf scénarios sur les futurs systèmes métier restent non exécutés.
+Unix : `.venv/bin/python`. Le parcours produit des vues HTML et un rapport isolés. Ces cas illustrent des contrôles de conception ; les neuf scénarios des futurs systèmes métier restent non exécutés. Les portes bloquées montrent les décisions à prendre.
 
-## Travailler avec un agent
+## Votre travail avec l’assistant
 
-Le [plugin AIR — Architecture Workspace](https://github.com/yannickhuchard/air-plugin)
-fournit les skills d’installation et de conception. [Connexion des agents](docs/agents.md).
-Un IDE local peut utiliser CLI/MCP stdio. ChatGPT nécessite une connexion supportée
-à cette installation ; le plugin n’est pas encore publié dans l’annuaire OpenAI.
-Installer les skills ne connecte pas automatiquement le poste.
+Installer le [plugin AIR](https://github.com/yannickhuchard/air-plugin), puis configurer une connexion MCP autorisée à ce moteur. Codex et Claude Code peuvent utiliser une connexion locale ; ChatGPT exige une connexion distante adaptée au client. Le plugin seul ne connecte pas le poste.
 
-Les dossiers restent dans l’installation de leur propriétaire. Les extraits utilisés
-avec un modèle cloud quittent le poste. Certaines présentations HTML chargent Mermaid
-depuis jsDelivr et des polices Google : ne pas les présenter comme entièrement hors ligne.
-L’installation locale et les calculs du moteur n’exigent pas ces services.
+> « Utilise AIR pour construire ce dossier. Pose les questions une par une, explique les écarts, puis vérifie les plans et prépare les livrables. »
 
-## Développer et contribuer
+Le dossier et ses versions restent le référentiel, même si vous changez d’assistant. [Connexion des agents](docs/agents.md).
+
+## Quelle version est incluse ?
+
+Cette distribution contient **0.34.0rc9**, reçue sur Windows/Python 3.12/SQLite dans son périmètre documenté. Les archives et [preuves de validation](docs/validation.md) portent leurs propres empreintes. Les autres OS, nouvelles connexions natives et conformité AIR totale ne sont pas déduits de ce reçu.
+
+Les nouveautés 0.35 de développement, dont le site PWA récent, Customer Journey Maps interactives, News et actualisation vidéo, **ne sont pas incluses ici**. Une mise à jour de ce README n’est pas une nouvelle release moteur.
+
+Certaines vues rc9 chargent Mermaid et des polices depuis des services externes ; ne pas les présenter comme entièrement hors ligne. Le moteur et ses calculs n’exigent pas ces services. Les contenus transmis à un modèle cloud suivent les règles de votre entreprise et de ce fournisseur.
+
+## Contribuer et recevoir la distribution
 
 ```text
 python scripts/install.py --extras dev,proofs,backup
 .venv/Scripts/python.exe -m pytest -q
 ```
 
-Les tests inclus portent sur le moteur et ses exemples. Les reçus privés et les
-scripts de sessions natives du développeur ne sont pas distribués. Aucun workflow CI
-automatique n’est activé. [Provenance et licences tierces](docs/publication.md).
-Les dossiers d’entreprise ne sont pas couverts par la licence du logiciel.
+[Kit de recette sur un autre poste](docs/reception-second-poste.md) · [Provenance et licences](docs/publication.md) · [Issues](https://github.com/yannickhuchard/air-engine/issues).
 
-Support communautaire : [issues](https://github.com/yannickhuchard/air-engine/issues),
-sans engagement de délai. N’y déposer ni secret ni dossier confidentiel ; demander
-d’abord un canal privé pour un incident sensible.
-
-English: AIR is a local architecture design, validation and simulation engine.
-Run `python scripts/install.py --start`, then follow the synthetic Asteria examples.
-It does not execute your future business system. ChatGPT directory availability
-is pending; local storage does not prevent authorized data being sent to a model provider.
+Aucune CI push/PR n’est activée. La licence du logiciel ne publie pas les dossiers d’entreprise. Nous séparons les contrôles réalisés, les hypothèses et les validations qui restent à faire.
