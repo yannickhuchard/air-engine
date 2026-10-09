@@ -22,7 +22,7 @@ def treatment(case, baseline, call, workspace, home, port, with_workbench=False,
     assert observation_identity != decision_identity
     def meta(kind, suffix, author):
         value = deepcopy(case['observation']['meta'])
-        value.update(id='urn:asteria:collaboration:' + case['id'].lower() + ':' + suffix, type='air.' + kind, name=suffix + ' — ' + case['title'])
+        value.update(id='urn:asteria:collaboration:' + case['id'].lower() + ':' + suffix, type='air.' + kind, name=suffix + ' - ' + case['title'])
         value['provenance']['recorded_by'] = author
         value['provenance']['method'] = 'Explicit fictitious team contribution in the AIR demonstration'
         return value
@@ -48,7 +48,7 @@ def treatment(case, baseline, call, workspace, home, port, with_workbench=False,
     incident = deepcopy(case['incident']);incident['meta']['revision'] = 2;incident['body']['learning'] = [exact(drift)]
     call('/v1/draft-bundles', [drift, incident], architect)
     request = deepcopy(case['baseline_request']);request['profile'] = COLLABORATION_PROFILE
-    request['meta'].update(id='urn:asteria:collaboration-baseline:' + case['id'].lower(), name='Décision de traitement — ' + case['title'])
+    request['meta'].update(id='urn:asteria:collaboration-baseline:' + case['id'].lower(), name='Décision de traitement - ' + case['title'])
     replaced = {drift['meta']['id']: exact(drift), incident['meta']['id']: exact(incident)}
     request['members'] = [replaced.get(r['id'], r) for r in request['members']] + [exact(resolution), exact(decision)]
     request['parent_baselines'] = [exact(baseline['baseline'])]

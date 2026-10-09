@@ -16,6 +16,7 @@ from air.foundation import InvalidModel, check_schema, exact, key
 from air.projections import SNAPSHOT, snapshot
 
 SIMULATION_ENGINE = 'air.scenario-simulation/0.32'
+SYNCHRONIZED_ENGINE = 'air.scenario-simulation/0.35'
 GATE_ENGINE = 'air.readiness-gate/0.32'
 SIMULATE_REQUEST = record({'baseline': SNAPSHOT, 'scenario': SNAPSHOT})
 RECORD_REQUEST = record({'baseline': SNAPSHOT, 'scenario': SNAPSHOT, 'run_id': {'type': 'string', 'format': 'uri', 'maxLength': 512},
@@ -36,7 +37,10 @@ SIMULATION_LIMITS = [
 
 def _members(store, principal, policy, snapshot_ref):
     exported = snapshot(ScopedStore(store, principal, policy), snapshot_ref)
-    try: bounded(exported)
+    # Dependency locks and validation receipts repeat the authorized members.
+    # The evaluator consumes the exact baseline and model objects; charge its
+    # unchanged 1 MiB input budget to those, not the transport envelope.
+    try: bounded({'baseline': exported['baseline'], 'objects': exported['objects']})
     except ExprError as exc: raise InvalidModel('Baseline exceeds the simulation budget') from exc
     return exported, {key(exact(o)): o for o in exported['objects']}
 
@@ -138,6 +142,17 @@ def simulate_scenario(store, principal, policy, request):
     durations = {s['step']: s for s in model['body']['steps']}
     outgoing = defaultdict(list)
     for flow in workflow['body']['flows']: outgoing[flow['source']].append(flow)
+    joins = {s['id']: s.get('join', 'ANY') for s in workflow['body']['steps']}
+    synchronized = any(s['binding'] == 'air.workflow-step/0.35' for s in workflow['body']['steps'])
+    from air.expr import engine_for, UNITS_ENGINE
+    expression_engines = sorted({engine_for(f['guard']) for f in workflow['body']['flows'] if 'guard' in f})
+    incoming = defaultdict(set)
+    for flow in workflow['body']['flows']: incoming[flow['target']].add(flow['id'])
+    if any(joins[s] == 'ALL' and incoming[s] for s in workflow['body']['start_steps']):
+        raise InvalidModel('An ALL join with incoming flows cannot also be a start step')
+    if any('start_step' in c and joins[c['start_step']] == 'ALL' and incoming[c['start_step']]
+           for c in body['classes']):
+        raise InvalidModel('A scenario cannot bypass an ALL join with incoming flows')
     unguarded = sorted(f['id'] for f in workflow['body']['flows'] if 'guard' not in f)
     # a guard depends only on the class context: evaluate it once per class
     decisions, undecided = {}, Counter()
@@ -154,6 +169,7 @@ def simulate_scenario(store, principal, policy, request):
     rng = random.Random(body['seed'])
     weights = [c['weight'] for c in body['classes']];total_weight = sum(weights)
     latencies, per_class, not_reached = [], defaultdict(Counter), Counter()
+    blocked_joins = Counter()
     for _ in range(body['runs']):
         pick = rng.random() * total_weight;acc = 0
         for cls in body['classes']:
@@ -161,15 +177,22 @@ def simulate_scenario(store, principal, policy, request):
             if pick < acc: break
         start, finish, order = {}, {}, []
         # alternative triggers: a class that names its start step enters the workflow only there
-        frontier = [(0.0, s) for s in ([cls['start_step']] if 'start_step' in cls else sorted(workflow['body']['start_steps']))]
+        frontier = [(0.0, s, '') for s in ([cls['start_step']] if 'start_step' in cls else sorted(workflow['body']['start_steps']))]
+        arrivals = defaultdict(dict)
         while frontier:
-            frontier.sort();begin, step = frontier.pop(0)
+            frontier.sort();begin, step, via = frontier.pop(0)
             if step in finish: continue
+            if joins[step] == 'ALL' and incoming[step]:
+                arrivals[step][via] = begin
+                if not incoming[step] <= arrivals[step].keys(): continue
+                begin = max(arrivals[step][f] for f in incoming[step])
             spent = _sample(rng, durations[step]['distribution']) if step in durations else 0.0
             start[step], finish[step] = begin, begin + spent;order.append(step)
             for flow in sorted(outgoing.get(step, []), key=lambda f: f['id']):
                 if decisions[(cls['name'], flow['id'])] and flow['target'] not in finish:
-                    frontier.append((finish[step], flow['target']))
+                    frontier.append((finish[step], flow['target'], flow['id']))
+        for step in arrivals:
+            if step not in finish: blocked_joins[(cls['name'], step)] += 1
         per_class[cls['name']][' > '.join(order)] += 1
         measure = body['measure']
         if measure['from_step'] in start and measure['to_step'] in finish:
@@ -185,6 +208,7 @@ def simulate_scenario(store, principal, policy, request):
     conditional_verdict = verdict
     inconclusive_reasons = (['UNDECIDED_GUARDS'] if undecided else []) + (['UNMODELLED_STEPS'] if unmodelled else [])
     if observed is None: inconclusive_reasons.append('NO_MEASURED_RUNS')
+    if blocked_joins: inconclusive_reasons.append('BLOCKED_SYNCHRONIZATIONS')
     if inconclusive_reasons: verdict = 'INCONCLUSIVE'
     used = sorted(set(durations) & steps)
     qualification = 'CALIBRATED' if used and set(used) <= set(calibrated_steps) and not unmodelled else 'DECLARED'
@@ -207,6 +231,16 @@ def simulate_scenario(store, principal, policy, request):
         'undecided_guards': [{'class': c, 'flow': f, 'result': r, 'count': n} for (c, f, r), n in sorted(undecided.items())],
         'verification_case': body.get('verification_case'), 'limits': SIMULATION_LIMITS,
         'external_effects': False, 'authorization_granted': False}
+    if synchronized:
+        report['engine'] = SYNCHRONIZED_ENGINE
+        report['synchronizations'] = {'semantics': 'ALL_STATIC_INCOMING_FLOWS_OR_ANY_FIRST_ARRIVAL',
+            'blocked': [{'class': c, 'step': s, 'runs': n} for (c, s), n in sorted(blocked_joins.items())]}
+        report['limits'] = [s for s in SIMULATION_LIMITS if 'OR-join' not in s] + [
+            'ALL joins require every declared incoming flow; an untaken branch blocks the join',
+            'Each step executes at most once per run; repeated loop iterations and mutable business state are not modelled']
+    if UNITS_ENGINE in expression_engines:
+        report['engine'] = SYNCHRONIZED_ENGINE
+        report['expression_engines'] = expression_engines
     report['report_digest'] = artifact_digest(report)
     return report
 
@@ -235,12 +269,12 @@ def record_simulation(store, principal, policy, settings, request):
             'name': 'Simulation run of ' + scenario['meta']['name'], 'recorded_at': stamp, 'validity': {'start': stamp, 'end': None},
             'description': 'Seeded model-based simulation; verdict ' + report['verdict'] + ' at p' + str(report['target']['percentile'])
                            + ' = ' + str(report['observed_at_target_percentile']) + ' ms against ' + str(report['target']['max_ms']) + ' ms'}
-    meta['provenance'] = {**scenario['meta']['provenance'], 'recorded_by': executor, 'method': 'air_record_simulation ' + SIMULATION_ENGINE}
+    meta['provenance'] = {**scenario['meta']['provenance'], 'recorded_by': executor, 'method': 'air_record_simulation ' + report['engine']}
     run = {'meta': meta, 'body': {'case': {'id': case_ref['id'], 'revision': case_ref['revision']}, 'method': 'SIMULATION',
         'result': {'PASS': 'PASS', 'FAIL': 'FAIL'}.get(report['verdict'], 'INCONCLUSIVE'), 'proof_level': report['proof_level'],
         'executed_at': stamp, 'executor': executor, 'summary': meta['description'], 'report': stored['artifact_reference'],
         'scenario': {'id': scenario['meta']['id'], 'revision': scenario['meta']['revision']}}}
-    return {'engine': SIMULATION_ENGINE, 'report': report, 'report_artifact': stored['artifact_reference'], 'verification_run': run,
+    return {'engine': report['engine'], 'report': report, 'report_artifact': stored['artifact_reference'], 'verification_run': run,
             'registry_written': False, 'artifact_stored': True,
             'next_steps': ['Show the verdict and its limits; after approval add verification_run to a change (air_rebase_drafts) and deposit it']}
 

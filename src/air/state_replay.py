@@ -1,7 +1,7 @@
 """Illustrative state replay with explicit inputs, no external effects and shared budgets."""
 from air.access import ScopedStore
 from air.core import TEXT, record, digest
-from air.expr import Program, Budget, evaluate, typed, wire, artifact_digest, bounded, ExprError
+from air.expr import Program, Budget, evaluate, typed, wire, artifact_digest, bounded, ExprError, engine_for, UNITS_ENGINE
 from air.foundation import check_schema, exact, key, InvalidModel
 from air.projections import SNAPSHOT, snapshot
 from air.state_schema import ID, RESERVED, expressions
@@ -27,6 +27,7 @@ def replay(store, principal, policy, request):
     if not machine or machine['meta']['type'] != 'air.StateMachine': raise InvalidModel('Machine must be an exact member of the baseline')
     if digest(machine) != request['machine']['digest']: raise Conflict('Machine digest differs')
     declarations = {}
+    uses_units = any(engine_for(expr) == UNITS_ENGINE for _, expr in expressions(machine))
     for path, expression in expressions(machine): declarations.update(Program(expression).inputs)
     def context(value):
         if RESERVED in value: raise InvalidModel('Reserved state input is supplied only by the replay engine')
@@ -62,7 +63,8 @@ def replay(store, principal, policy, request):
         result = evaluate({'expression': expression, 'inputs': inputs}, budget=budget)
         diagnostics = [{k: str(v)[:256] for k, v in d.items()} for d in result['diagnostics'][:4]]
         return {'execution': result['execution'], 'result': result['result'], 'diagnostics': diagnostics,
-                'diagnostics_total': len(result['diagnostics']), 'cost': result['cost']}
+                'diagnostics_total': len(result['diagnostics']), 'cost': result['cost'],
+                **({'expression_engine': result['engine']} if uses_units else {})}
     def invariants(values, state):
         results = []
         for index, expression in enumerate(body['invariants']):
@@ -122,6 +124,9 @@ def replay(store, principal, policy, request):
                   stimuli_unprocessed=len(stimuli) - len(report['trace']),
                   stimuli_refused=sum(1 for f in report['trace'] if f.get('outcome') in ('NO_TRANSITION', 'TERMINAL_STATE', 'UNKNOWN')),
                   cost={'steps': budget.used, 'expression_calls': calls})
+    if uses_units:
+        report['engine'] = 'air.state-replay/0.35'
+        report['expression_engines'] = sorted({engine_for(expr) for _, expr in expressions(machine)})
     report['report_digest'] = artifact_digest(report)
     try: bounded(report)
     except ExprError as exc: raise InvalidModel('State replay report exceeds its budget') from exc

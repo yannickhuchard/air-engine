@@ -48,7 +48,7 @@ MONTHS = {'fr': ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'ao�
 
 
 def n(value, digits=0, lang='fr'):
-    if value is None: return '—'
+    if value is None: return '-'
     q = Decimal(1) if digits == 0 else Decimal(1).scaleb(-digits)
     text = '{:,}'.format(Decimal(value).quantize(q))
     return text.replace(',', '\u202f').replace('.', ',') if lang == 'fr' else text
@@ -129,7 +129,7 @@ def gantt(phases, critical=(), width=900, row=30, lang='fr'):
         s, e = date.fromisoformat(p['start']), date.fromisoformat(p['end']);y = 24 + i * row
         x = left + plot * (s - t0).days / span;w = max(plot * (e - s).days / span, 4)
         out.append('<text x="8" y="%.1f" class="label">%s</text>' % (y + row / 2 + 4, H(p['name'][:60])))
-        out.append('<rect x="%.1f" y="%.1f" width="%.1f" height="%d" rx="3" class="%s"><title>%s — %s → %s</title></rect>' % (
+        out.append('<rect x="%.1f" y="%.1f" width="%.1f" height="%d" rx="3" class="%s"><title>%s - %s → %s</title></rect>' % (
             x, y + 5, w, row - 10, 'crit' if p['id'] in critical else 'phase', H(p['objective']), p['start'], p['end']))
     out.append('</svg>')
     return ''.join(out)
@@ -366,7 +366,7 @@ def storyline(g, gates, request, lang='fr', f=None):
                                               'Value is created in %d end-to-end chains of activities, from the customer request to the result') % len(streams),
           [{'type': 'flows', 'items': [(s['meta']['name'], [st['name'] + ((' · ' + st['lead_time']) if st.get('lead_time') else '') for st in s['body']['stages']]) for s in streams]}], sources=streams)
     caps = g.of('Capability');by_ctx = defaultdict(list)
-    for c in caps: by_ctx[g.name(c['body']['context']) if 'context' in c['body'] else '—'].append(c['meta']['name'])
+    for c in caps: by_ctx[g.name(c['body']['context']) if 'context' in c['body'] else '-'].append(c['meta']['name'])
     slide('capabilities', T('Métier', 'Business'), T('Le programme couvre %d savoir-faire de l’entreprise, répartis en %d domaines de responsabilité',
                                                    'The programme covers %d business capabilities, grouped into %d areas of responsibility') % (len(caps), len(by_ctx)),
           [{'type': 'grid', 'items': sorted(by_ctx.items())}], sources=caps)
@@ -475,7 +475,7 @@ def storyline(g, gates, request, lang='fr', f=None):
                                           T('Coût total', 'Total cost'), T('dont outils d’IA', 'of which AI tools'), T('Avis', 'Opinion')],
                 'rows': [[label(r['namespace']), r['name'], T('oui', 'yes') if r['uses_ai'] else T('non', 'no'), N(r['months'], 1) + T(' mois', ' months'),
                           (N(-r['delta_months'], 1) + T(' mois', ' months')) if r['delta_months'] is not None else T('référence', 'reference'),
-                          K(r['total_cost']) if r['total_cost'] is not None else '—', K(r['subscription']), status_name.get(r['status'], r['status'].lower()).capitalize()] for r in maps]}]
+                          K(r['total_cost']) if r['total_cost'] is not None else '-', K(r['subscription']), status_name.get(r['status'], r['status'].lower()).capitalize()] for r in maps]}]
               + [{'type': 'note', 'text': (T('Pour le projet %s, nous recommandons %s : ', 'For the %s project, we recommend %s: ') % (q(label(r['namespace'])), q(r['name'])))
                                           + ((T('il termine %s mois plus tôt que le scénario sans IA', 'it finishes %s months earlier than the scenario without AI') % N(-r['delta_months'], 1))
                                              if r['delta_months'] is not None and r['delta_months'] < 0 else T('c’est le scénario de référence', 'it is the reference scenario'))
@@ -721,7 +721,8 @@ def render(decks, request):
     out += ['<div class="nav"></div>',
             '<script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";mermaid.initialize({startOnLoad:true,theme:"neutral"});</script>',
             '<script>' + JS + '</script></body></html>']
-    return '\n'.join(out)
+    from air.editorial import html as editorial_html
+    return editorial_html('\n'.join(out))
 
 
 def build(g, gates, request):

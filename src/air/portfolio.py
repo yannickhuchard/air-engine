@@ -9,11 +9,13 @@ All projects share one AIR instance; federation across instances is not implemen
 from collections import Counter, defaultdict
 from air.access import ScopedStore
 from air.atelier import collate, gitattributes, no_secret, product, render_json, render_text, toolchain
+from air.editorial import RULE as EDITORIAL_RULE
 from air.core import digest, record, reference_slots, TEXT
 from air.expr import artifact_digest, bounded, ExprError
 from air.foundation import check_schema, exact, InvalidModel, key
 from air.projections import snapshot, SNAPSHOT
 from air.workspace import CODE, DOMAIN, PROFILES, _domain_view
+from air import transformation_view
 
 ENGINE = 'air.portfolio/0.31'
 INDEX_FILE_MAX = 2097152
@@ -125,8 +127,8 @@ def cell(value):
 def _conventions(request, projects, shared, subjects):
     rows = ['| ' + ' | '.join(map(cell, (view['code'], view['namespace'], view['urn_base'], view['baseline_id'], view['code'] + '/'))) + ' |'
             for view in projects + ([shared] if shared else [])]
-    subject_rows = ['| ' + cell(s['subject']) + ' | ' + cell(s.get('label') or '—') + ' | ' + cell(', '.join(sorted(s['projects'])) or '—') + ' | '
-                    + cell(', '.join(sorted(s.get('reviews', []))) or '—') + ' | ' + ('oui' if s.get('shared_write') else 'non') + ' |' for s in subjects]
+    subject_rows = ['| ' + cell(s['subject']) + ' | ' + cell(s.get('label') or '-') + ' | ' + cell(', '.join(sorted(s['projects'])) or '-') + ' | '
+                    + cell(', '.join(sorted(s.get('reviews', []))) or '-') + ' | ' + ('oui' if s.get('shared_write') else 'non') + ' |' for s in subjects]
     return render_text([
         '# Conventions du portefeuille',
         '',
@@ -230,7 +232,7 @@ def _readme(request, projects, shared):
 
 def _agents(request):
     return render_text([
-        '# Instructions d’agent — ' + cell(request['portfolio']['name']),
+        '# Instructions d’agent - ' + cell(request['portfolio']['name']),
         '',
         'Ces instructions sont portables entre clients agentiques et complètent celles de l’installation AIR.',
         '',
@@ -242,6 +244,7 @@ def _agents(request):
         '',
         '## Règles de travail',
         '',
+        '- ' + EDITORIAL_RULE,
         '- Référencer les objets exactement : identifiant, révision et empreinte.',
         '- Ne jamais afficher, recopier ou transmettre un jeton ; l’adaptateur lit lui-même le fichier protégé.',
         '- Ce dépôt ne porte aucun brouillon : les objets se conçoivent dans le dépôt du projet ou du socle concerné.',
@@ -259,9 +262,9 @@ def _agents(request):
 
 
 def _charter(request, projects, shared, subjects):
-    subject_rows = ['| ' + cell(s['subject']) + ' | ' + cell(s.get('label') or 'À compléter') + ' | ' + cell(', '.join(sorted(s['projects'])) or '—') + ' |' for s in subjects]
+    subject_rows = ['| ' + cell(s['subject']) + ' | ' + cell(s.get('label') or 'À compléter') + ' | ' + cell(', '.join(sorted(s['projects'])) or '-') + ' |' for s in subjects]
     return render_text([
-        '# Charte du pilote — ' + cell(request['portfolio']['name']),
+        '# Charte du pilote - ' + cell(request['portfolio']['name']),
         '',
         'Fichier déposé une fois par ' + ENGINE + ' ; il appartient à l’équipe et n’est jamais régénéré.',
         'Compléter chaque section marquée « À compléter » avant le premier dépôt de brouillon.',
@@ -272,8 +275,8 @@ def _charter(request, projects, shared, subjects):
         '',
         '## Périmètre',
         '',
-        *['- `' + cell(view['code']) + '` — ' + cell(view['title']) + ' : ' + cell(view['purpose']) for view in projects],
-        *(['- `' + cell(shared['code']) + '` — socle partagé : ' + cell(shared['purpose'])] if shared else []),
+        *['- `' + cell(view['code']) + '` - ' + cell(view['title']) + ' : ' + cell(view['purpose']) for view in projects],
+        *(['- `' + cell(shared['code']) + '` - socle partagé : ' + cell(shared['purpose'])] if shared else []),
         '',
         '## Mandats',
         '',
@@ -470,6 +473,7 @@ def index_portfolio(store, principal, policy, request):
     owner = {view['namespace']: view['code'] for view in repositories}
     entries, identities, edges, seen_edges, gaps = [], {}, Counter(), set(), []
     referrers, member_sets = defaultdict(set), {}
+    exports = []
     for view in repositories:
         pin = pins.get(view['code'])
         if pin is None:
@@ -477,6 +481,7 @@ def index_portfolio(store, principal, policy, request):
             if view is not shared: gaps.append({'code': 'NO_BASELINE_DECLARED', 'project': view['code'], 'severity': 'BLOCKING', 'resolution': 'PIN_A_CLOSED_BASELINE'})
             continue
         exported = snapshot(guarded, pin)  # a closed baseline read through the caller's policy, or a refusal
+        exports.append(exported)
         entry = _entry(view, pin, exported, owner);entries.append(entry)
         if entry['baseline']['namespace'] != view['namespace']:
             gaps.append({'code': 'BASELINE_NAMESPACE_MISMATCH', 'project': view['code'], 'baseline_namespace': entry['baseline']['namespace'], 'severity': 'BLOCKING', 'resolution': 'REVIEW_REQUIRED'})
@@ -525,6 +530,9 @@ def index_portfolio(store, principal, policy, request):
             item['resolution'] = 'REVIEW_REQUIRED'
             gaps.append({'code': 'SHARED_IDENTITY_VERSION_DIVERGENCE', 'id': object_id, 'repositories': sorted(holders), 'severity': 'BLOCKING', 'resolution': 'REVIEW_REQUIRED'})
         shared_identities.append(item)
+    work = transformation_view.project(exports)
+    for gap in work['gaps']:
+        gaps.append({**gap, 'severity': 'BLOCKING', 'resolution': 'REVIEW_DESIGN_WORK_DECLARATIONS'})
     indexed = [e for e in entries if e['status'] == 'INDEXED' and (shared is None or e['code'] != shared['code'])]
     core = {'engine': ENGINE, 'regime': 'PORTFOLIO_INDEX', 'portfolio': portfolio['portfolio'], 'organization': portfolio['organization'],
         'manifest_digest': artifact_digest(_manifest(portfolio, projects, shared, subjects)),
@@ -532,6 +540,8 @@ def index_portfolio(store, principal, policy, request):
         'projects': entries, 'shared_namespace': shared_namespace, 'shared_identities': shared_identities,
         'dependencies': [{'from': a, 'to': b, 'references': n, 'referencing_objects': len(referrers[(a, b)])} for (a, b), n in sorted(edges.items())],
         'stale_dependencies': stale[:500], 'gaps': gaps,
+        'transformation': {'engine': work['engine'], 'projection_digest': work['projection_digest'], 'result': work['result'],
+            'totals': work['totals'], 'path': 'transformation.html', 'data': 'transformation.json', 'completion_attested': False},
         'totals': {'projects_declared': len(projects), 'projects_indexed': len(indexed), 'shared_pinned': bool(shared and shared['code'] in pins),
                    'objects_owned': sum(e['objects_owned'] for e in indexed), 'objects_referenced': sum(e['objects_referenced'] for e in indexed),
                    'distinct_identities': len(identities), 'shared_identities': len(shared_identities),
@@ -546,7 +556,9 @@ def index_portfolio(store, principal, policy, request):
         'semantic_compatibility_executed': False, 'limitations': LIMITATIONS, 'request_digest': artifact_digest(request)}
     core['index_digest'] = artifact_digest(core)  # registry state at the pins and the request: nothing about the workstation
     files = [product('portfolio-index.json', 'application/json', render_json(core), 'GENERATED', INDEX_FILE_MAX),
-             product('docs/portefeuille.md', 'text/markdown', _index_markdown(core), 'GENERATED', INDEX_FILE_MAX)]
+             product('docs/portefeuille.md', 'text/markdown', _index_markdown(core), 'GENERATED', INDEX_FILE_MAX),
+             product('transformation.json', 'application/json', render_json(work), 'GENERATED', INDEX_FILE_MAX),
+             product('transformation.html', 'text/html', transformation_view.html(work, standalone=True), 'GENERATED', INDEX_FILE_MAX)]
     # what this generation wrote, so that the next one replaces its own files and never a hand edit
     files.append(product('portfolio-index.manifest.json', 'application/json', render_json({'engine': ENGINE, 'index_digest': core['index_digest'],
         'files': [{'path': f['path'], 'content_digest': f['content_digest']} for f in files]}), 'GENERATED'))
@@ -572,25 +584,28 @@ def _index_markdown(core):
     short = lambda value: value.split(':', 1)[1][:12] if ':' in value else value
     rows = []
     for entry in core['projects']:
-        if entry['status'] != 'INDEXED': rows.append('| ' + cell(entry['code']) + ' | — | — | — | — | ' + entry['status'] + ' |');continue
+        if entry['status'] != 'INDEXED': rows.append('| ' + cell(entry['code']) + ' | - | - | - | - | ' + entry['status'] + ' |');continue
         b = entry['baseline']
         rows.append('| ' + ' | '.join((cell(entry['code']), '`' + cell(b['id']) + '`', str(b['revision']), str(entry['objects_owned']),
                                        str(entry['objects_referenced']), short(b['digest']))) + ' |')
-    chain_rows = ['| ' + cell(entry['code']) + ' | ' + ' | '.join(str(entry['chain'][kind]) if entry['chain'][kind] else '—' for kind in CHAIN) + ' |'
+    chain_rows = ['| ' + cell(entry['code']) + ' | ' + ' | '.join(str(entry['chain'][kind]) if entry['chain'][kind] else '-' for kind in CHAIN) + ' |'
                   for entry in core['projects'] if entry['status'] == 'INDEXED']
     shared_rows = ['| `' + cell(s['id']) + '` | ' + s['status'] + ' | ' + ', '.join(cell(code) + ' r' + str(v['revision']) for code, v in s['repositories'].items()) + ' |'
                    for s in core['shared_identities']]
     dependency_rows = ['| ' + cell(d['from']) + ' | ' + cell(d['to']) + ' | ' + str(d['referencing_objects']) + ' | ' + str(d['references']) + ' |' for d in core['dependencies']]
-    gap_rows = ['- **' + g['code'] + '** — ' + cell(', '.join(k + ' : ' + (', '.join(v) if isinstance(v, list) else str(v)) for k, v in g.items() if k not in ('code', 'severity', 'resolution')))
+    gap_rows = ['- **' + g['code'] + '** - ' + cell(', '.join(k + ' : ' + (', '.join(v) if isinstance(v, list) else str(v)) for k, v in g.items() if k not in ('code', 'severity', 'resolution')))
                 + ' (' + g['severity'] + ', ' + g['resolution'] + ')' for g in core['gaps']]
     totals = core['totals']
     return render_text([
-        '# Portefeuille — ' + cell(core['portfolio']['name']),
+        '# Portefeuille - ' + cell(core['portfolio']['name']),
         '',
         'Index produit par ' + ENGINE + ' ; exact aux baselines épinglées ci-dessous, empreinte `' + core['index_digest'] + '`.',
         'Résultat : **' + core['result'] + '**. Relancer `air portfolio-index` pour rafraîchir ; rien ici n’est corrigé automatiquement.',
         '',
         '## Vue d’ensemble',
+        '',
+        '[Piloter programmes, projets et tâches](../transformation.html). [Graphe exact et témoins](../transformation.json).',
+        'Statuts déclarés de conception, sans attestation de réalisation métier ni fédération entre installations.',
         '',
         '| Dépôt | Baseline | Rév. | Objets possédés | Objets référencés | Empreinte |',
         '| --- | --- | --- | --- | --- | --- |',

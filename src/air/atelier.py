@@ -8,6 +8,7 @@ from air import __version__
 from air.core import TEXT
 from air.expr import artifact_digest
 from air.foundation import InvalidModel, TooLarge
+from air import editorial
 
 SEGMENT = re.compile(r'^\.?[A-Za-z0-9][A-Za-z0-9._-]{0,63}$')
 ABSOLUTE = re.compile(r'^(?:/(?!/)|[A-Za-z]:[\\/])')
@@ -43,7 +44,7 @@ def render_json(value):
 
 
 def render_text(lines):
-    return '\n'.join(lines).rstrip('\n') + '\n'
+    return editorial.markdown('\n'.join(lines).rstrip('\n') + '\n')
 
 
 def gitattributes():
@@ -68,6 +69,8 @@ def safe_path(path):
 def product(path, media_type, content, zone, max_size=FILE_MAX):
     if zone not in ZONES: raise InvalidModel('Unsupported generated zone')
     safe_path(path)
+    if media_type in ('text/html', 'image/svg+xml'): content = editorial.html(content)
+    elif media_type == 'text/markdown': content = editorial.markdown(content)
     raw = content.encode('utf-8')
     if not raw: raise InvalidModel('Generated file is empty: ' + path)
     if len(raw) > max_size: raise TooLarge('Generated file exceeds ' + str(max_size // 1024) + ' KiB (' + str(len(raw)) + ' bytes): ' + path)
@@ -167,7 +170,7 @@ def previous_generation(root, files):
             manifest = json.loads(target.read_text(encoding='utf-8'))
         except (OSError, ValueError, UnicodeError):
             continue
-        if not isinstance(manifest, dict) or not str(manifest.get('engine', '')).startswith(('air.ide-adapter/', 'air.deliverables/', 'air.portfolio/')): continue
+        if not isinstance(manifest, dict) or not str(manifest.get('engine', '')).startswith(('air.ide-adapter/', 'air.deliverables/', 'air.portfolio/', 'air.branding/')): continue
         for entry in manifest.get('files', []):
             if isinstance(entry, dict) and isinstance(entry.get('path'), str) and isinstance(entry.get('content_digest'), str):
                 recorded[entry['path']] = entry['content_digest']

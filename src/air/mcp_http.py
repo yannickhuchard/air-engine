@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse, Response
 from starlette.concurrency import run_in_threadpool
 from sqlalchemy.exc import OperationalError
 from air.access import ScopedStore, Forbidden, NotFound
-from air import acceptance, agent, deliverables, presentation, readiness
+from air import acceptance, agent, business_paths, branding, deliverables, presentation, readiness
 from air.core import capabilities
 from air.construction import assess_baseline
 from air.foundation import InvalidModel
@@ -21,6 +21,10 @@ from air.authority import publish_offer, get_offer
 from air.workbench import compile_workbench
 from air.business import assess as assess_goal
 from air.knowledge import inspect_knowledge
+from air.temporal import reconstruct
+from air.currency import convert as convert_currency
+from air import federation
+from air.connectors import preview as preview_connector
 from air.organization import inspect_organization
 from air.workflow import inspect_workflow
 from air.data_validation import validate_payload
@@ -28,9 +32,11 @@ from air.state_replay import replay as replay_state
 from air.policy_check import check_policy
 from air.architecture import inspect_architecture
 from air.openapi_compiler import compile_openapi
+from air import question_capsule
 from air.workspace import compile_workspace
 from air.ide_adapter import compile_adapter
 from air.portfolio import compile_portfolio, index_portfolio
+from air import transformation_view, project_updates, video_refresh
 from air.baseline_closure import compute_closure
 from air import artifacts, view_capture
 from air.audience import compile_view as compile_audience_view
@@ -45,7 +51,9 @@ def invoke(store, principal, name, args, settings=None):
     guarded = ScopedStore(store, principal, principal["policy"])
     actor = principal["subject"]
     try:
+        if name == "air_query_business_paths": return business_paths.query_paths(store, principal, principal["policy"], args)
         if name == "air_guide": return agent.guide(store, principal, principal["policy"], args)
+        if name == "air_resume_question": return question_capsule.resume(store, principal, principal["policy"], settings, args)
         if name == "air_list_revisions": return agent.list_revisions(store, principal, principal["policy"], args)
         if name == "air_browse_baseline": return agent.browse_baseline(store, principal, principal["policy"], args)
         if name == "air_describe_type": return agent.describe_type(store, principal, principal["policy"], args)
@@ -55,6 +63,7 @@ def invoke(store, principal, name, args, settings=None):
         if name == "air_walk_scenarios": return acceptance.walk_baseline(store, principal, principal["policy"], args)
         if name == "air_compile_presentation": return presentation.compile_presentation(store, principal, principal["policy"], {**args, "content": args.get("content", "OUTLINE")})
         if name == "air_compile_deliverables": return deliverables.compile_deliverables(store, principal, principal["policy"], args)
+        if name == "air_compile_branding": return branding.compile_branding(store, principal, principal["policy"], args)
         if name == "air_assess_readiness": return readiness.assess_readiness(store, principal, principal["policy"], args)
         if name == "air_simulate_scenario": return readiness.simulate_scenario(store, principal, principal["policy"], args)
         if name == "air_record_simulation": return readiness.record_simulation(store, principal, principal["policy"], settings, args)
@@ -71,6 +80,9 @@ def invoke(store, principal, name, args, settings=None):
         if name == "air_compute_baseline_closure": return compute_closure(store, principal, principal["policy"], args)
         if name == "air_compile_portfolio": return compile_portfolio(store, principal, principal["policy"], args)
         if name == "air_index_portfolio": return index_portfolio(store, principal, principal["policy"], args)
+        if name == "air_query_transformation": return transformation_view.query(store, principal, principal["policy"], args)
+        if name == "air_query_project_updates": return project_updates.query(store, principal, principal["policy"], args)
+        if name == "air_refresh_videos": return video_refresh.prepare(store, principal, principal["policy"], args)
         if name == "air_inspect_architecture": return inspect_architecture(store, principal, principal["policy"], args)
         if name == "air_check_policy": return check_policy(store, principal, principal["policy"], args)
         if name == "air_replay_state_machine": return replay_state(store, principal, principal["policy"], args)
@@ -78,6 +90,11 @@ def invoke(store, principal, name, args, settings=None):
         if name == "air_inspect_workflow": return inspect_workflow(store, principal, principal["policy"], args)
         if name == "air_inspect_organization": return inspect_organization(store, principal, principal["policy"], args)
         if name == "air_inspect_knowledge": return inspect_knowledge(store, principal, principal["policy"], args)
+        if name == "air_reconstruct_temporal": return reconstruct(store, principal, principal["policy"], args)
+        if name == "air_convert_currency": return convert_currency(store, principal, principal["policy"], args)
+        if name == "air_receive_checkpoint": return federation.ingest(store, principal, principal["policy"], settings, args)
+        if name == "air_read_checkpoint": return federation.read(store, principal, principal["policy"], settings, args)
+        if name == "air_preview_connector": return preview_connector(store, principal, principal["policy"], args)
         if name == "air_assess_goal_targets": return assess_goal(store, principal, principal["policy"], args)
         if name == "air_compile_workbench": return compile_workbench(store, principal, principal["policy"], settings, args)
         if name == "air_whoami": return collaboration.whoami(principal, settings)

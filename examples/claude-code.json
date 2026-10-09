@@ -1,12 +1,12 @@
 {
   "client": "claude-code",
   "workspace": {
-    "name": "Asteria architecture",
-    "organization": "Asteria Industrie (fiction)"
+    "name": "AIR — moteur",
+    "organization": "Yay Software"
   },
   "server": {
-    "interpreter": "C:/AIR/.venv/Scripts/python.exe",
-    "home": "C:/AIR/.air",
+    "interpreter": "D:/development/air/.venv/Scripts/python.exe",
+    "home": "D:/development/air/.air",
     "credential": "claude-code.json",
     "port": 8740
   },

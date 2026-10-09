@@ -61,7 +61,7 @@ def rehearse():
             prefix = 'urn:asteria:knowledge:' + code.lower() + ':'
             def obj(kind, suffix, body):
                 meta = deepcopy(goal['meta']);meta.update(id=prefix + suffix, type='air.' + kind, revision=1,
-                    name=kind + ' — ' + code + ' — ' + suffix, recorded_at=now, validity={'start': now, 'end': None}, owner=identity,
+                    name=kind + ' - ' + code + ' - ' + suffix, recorded_at=now, validity={'start': now, 'end': None}, owner=identity,
                     description='Déclaration entièrement fictive pour la recette du dossier de connaissance.')
                 meta['provenance'] = {'recorded_by': identity, 'method': 'Authored fictitious declarations; not an independent observation', 'source_refs': [{'id': prefix + 'source', 'revision': 1}]}
                 return {'meta': meta, 'body': body}
@@ -76,7 +76,7 @@ def rehearse():
             conflict = obj('Conflict', 'conflict', {'statements': [exact(a) for a in assertions], 'overlap_scope': scope, 'reason': 'Désaccord déclaré à instruire sur une même opération, un même périmètre et une période commune.'})
             additions = [document_source, *assertions, *evidence, conclusion, inference, conflict]
             call(architect, 'air_import_drafts', {'objects': additions})
-            meta = deepcopy(original['baseline']['meta']);meta.update(id='urn:asteria:knowledge-baseline:' + code.lower(), revision=1, recorded_at=now, name='Connaissance et conflits — ' + case['title'])
+            meta = deepcopy(original['baseline']['meta']);meta.update(id='urn:asteria:knowledge-baseline:' + code.lower(), revision=1, recorded_at=now, name='Connaissance et conflits - ' + case['title'])
             opened = call(architect, 'air_freeze_baseline', {'meta': meta, 'profile': KNOWLEDGE_PROFILE, 'members': [exact(o) for o in original['objects'] + additions], 'parent_baselines': [exact(original['baseline'])]})
             assert len(opened['baseline']['body']['members']) == 47
             open_pin = {**exact(opened['baseline']), 'digest': opened['digest']}

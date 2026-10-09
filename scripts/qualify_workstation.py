@@ -131,8 +131,8 @@ def qualify(work_root,output,cycles=10):
     dossier = {'format':'air.p06-workstation/1','profile':'LOCAL_ARCHITECT_WORKSTATION',
         'version':__version__,'source_sha256':source_fingerprint(),'inputs':inputs,
         'data_policy':{'backup_method':'Explicit consistent SQLite snapshot; encryption available as an optional extra',
-          'recovery_procedure':'docs/installation.md','retention_reference':'docs/installation.md',
-          'support_reference':'README.md','source_audit':'RETAINED_NO_AUTOMATIC_PURGE',
+          'recovery_procedure':'docs/lot-poste-local.md','retention_reference':'docs/lot-poste-local.md',
+          'support_reference':'SECURITY.md','source_audit':'RETAINED_NO_AUTOMATIC_PURGE',
           'loss_window':'SINCE_LAST_SUCCESSFUL_BACKUP','physical_device_loss_tested':False}}
     save('dossier',dossier)
     result = check(output/'dossier.json');save('result',result)

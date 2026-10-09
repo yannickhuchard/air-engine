@@ -7,7 +7,7 @@ NAMES = ['Constraint', 'Control', 'Obligation', 'Policy', 'Risk', 'Waiver']
 
 
 def bodies(record, text, uri, ref, refs, nonempty, instant):
-    expression = record({'language': {'const': 'AIR-Expr'}, 'language_version': {'const': '0.1'}, 'ast': {'type': 'object'},
+    expression = record({'language': {'const': 'AIR-Expr'}, 'language_version': {'enum': ['0.1', '0.2']}, 'ast': {'type': 'object'},
         'result_type': {'const': 'Boolean'}, 'required_inputs': {'type': 'array', 'items': record({'name': text, 'type': text}), 'maxItems': 128}},
         ['language', 'language_version', 'ast', 'result_type'])
     condition = {'oneOf': [text, expression]}

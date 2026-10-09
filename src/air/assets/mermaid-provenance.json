@@ -1,0 +1,11 @@
+{
+  "package": "@mermaid-js/tiny",
+  "version": "12.1.0",
+  "license": "MIT",
+  "source": "https://registry.npmjs.org/@mermaid-js/tiny/-/tiny-12.1.0.tgz",
+  "archive_integrity": "sha512-z/N9vnXv+5Ffcdj19viXxPhSy7Jt5y4vtS+Aa9iZVGIo2U0KKNgO2U+xm8plHh3y5eUVkschMCXfc/DIz8A6uQ==",
+  "sha256": "143c1b9345c45963ff429da4bdcd9051316a43522ea9edd7ccb7a87ff947a804",
+  "upstream": "https://github.com/mermaid-js/mermaid",
+  "usage": "https://mermaid.js.org/config/usage.html",
+  "bundled_notices": "Preserved in mermaid-12.1.0.js; DOMPurify Apache-2.0 license text accompanies the bundle."
+}

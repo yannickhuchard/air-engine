@@ -37,21 +37,21 @@ def cases_for(store):
                 type='air.' + kind, name=name, recorded_at='2026-09-19T10:05:00Z', validity={'start': '2026-09-19T10:00:00Z', 'end': None})
             value['provenance'] = {'recorded_by': value['owner'], 'method': 'Deterministic fictitious runtime sample for AIR reception', 'source_refs': []}
             return value
-        source = {'meta': meta('Source', 'source', 'Synthetic observation source — ' + case['id']),
+        source = {'meta': meta('Source', 'source', 'Synthetic observation source - ' + case['id']),
             'body': {'kind': 'TELEMETRY', 'locator': 'urn:asteria:synthetic-runtime:' + case['id'], 'source_revision': 'synthetic/0.12',
                 'captured_at': '2026-09-19T10:05:00Z', 'access_policy': 'Same namespace policy', 'retention_policy': 'Retain with immutable observation'}}
         values = [{'type': 'Boolean', 'value': False}, {'type': 'Quantity[second]', 'value': '540'}, {'type': 'Boolean', 'state': 'CONFLICTING'}]
         signals = ['erp_confirmation_available', 'measurement_age_seconds', 'identity_status_consistent']
-        observation = {'meta': meta('RuntimeObservation', 'observation', 'Synthetic runtime observation — ' + case['id']),
+        observation = {'meta': meta('RuntimeObservation', 'observation', 'Synthetic runtime observation - ' + case['id']),
             'body': {'instance_or_scope': exact(scope), 'metric_or_signal': signals[index],
                 'window': {'start': '2026-09-19T10:00:00Z', 'end': '2026-09-19T10:05:00Z'}, 'value_or_artifact': values[index],
                 'coverage': {'scope': exact(scope), 'included': [{k: plan['demands'][index]['unit'][k] for k in ('id', 'revision')}],
                     'excluded': [], 'completeness': 'PARTIAL', 'limitations': ['Five-minute fictitious sample; no real ERP, machine or IAM collection']}}}
         observation['meta']['provenance']['source_refs'] = [exact(source)]
-        drift = {'meta': meta('Drift', 'drift', 'Declared deviation — ' + case['id']), 'body': {'expected': exact(expected),
+        drift = {'meta': meta('Drift', 'drift', 'Declared deviation - ' + case['id']), 'body': {'expected': exact(expected),
             'observed': [exact(observation)], 'comparison_method': 'Explicit AIR-Expr mapping supplied for this synthetic sample',
             'impact': 'Potential impact on ' + case['title'] + '; scope and treatment require human examination'}}
-        incident = {'meta': meta('Incident', 'incident', 'Declared incident — ' + case['id']), 'body': {'affected_scope': exact(scope),
+        incident = {'meta': meta('Incident', 'incident', 'Declared incident - ' + case['id']), 'body': {'affected_scope': exact(scope),
             'occurrence': deepcopy(observation['body']['window']), 'description': 'Fictitious runtime discrepancy for ' + case['title'],
             'observations': [exact(observation)], 'learning': [exact(drift)]}}
         for obj in (drift, incident): obj['meta']['provenance']['source_refs'] = [exact(source)]
@@ -62,7 +62,7 @@ def cases_for(store):
             'as_of': '2026-09-19T10:06:00Z', 'window': observation['body']['window'], 'max_age_seconds': 120,
             'bindings': [{'input': 'signal', 'observation': {**exact(observation), 'digest': digest(observation)}}],
             'method': {'basis': 'DECLARED_MAPPING', 'rationale': 'Synthetic interpretation for demonstration; not an automatic compilation of the acceptance criterion', 'expression': expression}}
-        baseline_meta = deepcopy(original['baseline']['meta']);baseline_meta.update(id='urn:asteria:runtime-baseline:' + case['id'].lower(), name='Runtime context — ' + case['id'])
+        baseline_meta = deepcopy(original['baseline']['meta']);baseline_meta.update(id='urn:asteria:runtime-baseline:' + case['id'].lower(), name='Runtime context - ' + case['id'])
         baseline = {'meta': baseline_meta, 'profile': RUNTIME_PROFILE, 'members': [exact(o) for o in original['objects'] + [source, observation, drift, incident]], 'parent_baselines': [exact(original['baseline'])]}
         cases.append({'id': case['id'], 'title': case['title'], 'namespace': namespace, 'source': source, 'observation': observation,
             'drift': drift, 'incident': incident, 'baseline_request': baseline, 'comparison': comparison, 'design_baseline': plan['demands'][index]['baseline']})

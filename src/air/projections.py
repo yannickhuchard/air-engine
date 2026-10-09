@@ -199,7 +199,7 @@ def view(store, request):
         return '<a href="#' + anchor(ref) + '">' + escape(obj["meta"]["name"]) + '</a>'
     chunks = ['<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">',
               '<meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;; base-uri &#39;none&#39;; form-action &#39;none&#39;">',
-              '<title>' + escape(baseline["meta"]["name"]) + ' — AIR</title><style>' + STYLE + '</style></head><body>',
+              '<title>' + escape(baseline["meta"]["name"]) + ' - AIR</title><style>' + STYLE + '</style></head><body>',
               '<header><p>Dossier d’architecture • AIR</p><h1>' + escape(baseline["meta"]["name"]) + '</h1><p>' + escape(baseline["meta"]["description"]) + '</p></header><main>',
               '<aside class="notice"><strong>Conception à vérifier</strong><p>Cette vue décrit le système prévu. Les scénarios de réception ne sont pas exécutés ; aucune approbation ou action métier n’est accordée.</p></aside>',
               '<nav aria-label="Sections"><a href="#construction">Construction</a><a href="#reception">Réception</a><a href="#unknowns">Inconnues</a><a href="#registre">Registre et sources</a></nav>',
@@ -229,7 +229,7 @@ def view(store, request):
         dom_id = anchor(exact(obj))
         mappings.append({"anchor": dom_id, "object": exact(obj)})
         chunks.append('<details id="' + dom_id + '"><summary>' + escape(obj["meta"]["name"]) + '</summary><p class="caption">' + escape(obj["meta"]["type"]) + ' • révision ' + str(identity[1]) + '</p><pre>' + escape(json.dumps(obj, ensure_ascii=False, indent=2)) + '</pre></details>')
-    chunks.append('</section><footer><p>Vue dérivée en lecture seule. Toute correction passe par une nouvelle révision et une proposition.</p><p class="digest">Baseline : ' + escape(request["baseline"]["id"]) + ' — ' + escape(request["baseline"]["digest"]) + '</p></footer></main></body></html>')
+    chunks.append('</section><footer><p>Vue dérivée en lecture seule. Toute correction passe par une nouvelle révision et une proposition.</p><p class="digest">Baseline : ' + escape(request["baseline"]["id"]) + ' - ' + escape(request["baseline"]["digest"]) + '</p></footer></main></body></html>')
     content = ''.join(chunks)
     return {"engine": ENGINE, "baseline": request["baseline"], "media_type": "text/html; charset=utf-8",
             "content": content, "digest": "sha256:" + hashlib.sha256(content.encode()).hexdigest(), "mapping": mappings,

@@ -1,0 +1,16 @@
+{
+  "profile": {
+    "name": "Morgan Conseil — client Boréal",
+    "tagline": "Architecture et transformation",
+    "logo_svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><rect x=\"10\" y=\"10\" width=\"80\" height=\"80\" rx=\"20\" fill=\"#26394d\"/><path d=\"M25 72L50 28L75 72M35 55H65\" fill=\"none\" stroke=\"#ffffff\" stroke-width=\"6\"/></svg>",
+    "colors": {
+      "header": "#26394d",
+      "link": "#244867",
+      "accent": "#edd08d"
+    },
+    "fonts": {
+      "body": "Verdana",
+      "display": "Georgia"
+    }
+  }
+}

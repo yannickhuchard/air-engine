@@ -1,0 +1,16 @@
+{
+  "profile": {
+    "name": "Asteria Industrie",
+    "tagline": "Architecture du groupe",
+    "logo_svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><rect x=\"10\" y=\"10\" width=\"80\" height=\"80\" rx=\"20\" fill=\"#123e55\"/><path d=\"M25 72L50 28L75 72M35 55H65\" fill=\"none\" stroke=\"#ffffff\" stroke-width=\"6\"/></svg>",
+    "colors": {
+      "header": "#123e55",
+      "link": "#145a74",
+      "accent": "#7ae0ce"
+    },
+    "fonts": {
+      "body": "Arial",
+      "display": "Bahnschrift"
+    }
+  }
+}

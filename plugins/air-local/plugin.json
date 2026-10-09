@@ -1,0 +1,20 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "air-local",
+  "version": "0.1.8",
+  "description": "AIR - Architecture Workspace : concevoir, vérifier et livrer des projets d’architecture avec un moteur AIR local.",
+  "author": {
+    "name": "Yannick Huchard",
+    "url": "https://github.com/yannickhuchard"
+  },
+  "homepage": "https://github.com/yannickhuchard/air-plugin",
+  "repository": "https://github.com/yannickhuchard/air-plugin",
+  "keywords": [
+    "architecture",
+    "air",
+    "local",
+    "sqlite",
+    "mcp"
+  ],
+  "license": "Apache-2.0"
+}

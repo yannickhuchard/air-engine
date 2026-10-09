@@ -86,11 +86,11 @@ def assess(store, principal, policy, exported, request):
             from air.external_proofs import assess as assess_external
             entry.update(assess_external(store, principal, policy, exported, run, raw))
         if method == 'SIMULATION':
-            from air.readiness import simulate_scenario, _members, SIMULATION_ENGINE
+            from air.readiness import simulate_scenario, _members, SIMULATION_ENGINE, SYNCHRONIZED_ENGINE
             try:
                 if descriptor['media_type'] != 'application/json': raise InvalidModel('Simulation reports must be JSON artifacts')
                 saved = json.loads(raw.decode('utf-8'), object_pairs_hook=pairs)
-                if not isinstance(saved, dict) or saved.get('engine') != SIMULATION_ENGINE:
+                if not isinstance(saved, dict) or saved.get('engine') not in (SIMULATION_ENGINE, SYNCHRONIZED_ENGINE):
                     raise InvalidModel('Unsupported simulation report engine')
                 origin = saved['baseline'];scenario = saved['scenario']
                 check_schema(origin, SNAPSHOT);check_schema(scenario, SNAPSHOT)
@@ -112,7 +112,7 @@ def assess(store, principal, policy, exported, request):
             except (KeyError, TypeError, ValueError, UnicodeError, RecursionError) as exc:
                 raise InvalidModel('Simulation evidence could not be reproduced: ' + str(exc)) from exc
             entry.update(status='QUALIFIED_MODEL_REPLAY' if reproduced['model_qualification'] == 'CALIBRATED' else 'REPLAYED_DECLARED_MODEL',
-                simulation_engine=SIMULATION_ENGINE, reproduced_report_digest=reproduced['report_digest'],
+                simulation_engine=reproduced['engine'], reproduced_report_digest=reproduced['report_digest'],
                 model_qualification=reproduced['model_qualification'],
                 measurement_provenance_automatically_qualified=False,
                 measurement_freshness_automatically_qualified=False)

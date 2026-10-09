@@ -38,7 +38,8 @@ def test_workspace_is_deterministic_bounded_and_writes_nothing(store):
     assert set(files) == {'.github/workflows/air-check.yml', '.gitattributes', '.gitignore', 'AGENTS.md', 'README.md', 'air-workspace.json',
         'air-workspace.request.json', 'docs/conventions-referentiel.md', 'domains/atelier/README.md', 'domains/atelier/dossier.json',
         'domains/atelier/drafts/README.md', 'domains/sav/README.md', 'domains/sav/dossier.json', 'domains/sav/drafts/README.md',
-        'policies/namespace-policy.example.json'}
+        'policies/namespace-policy.example.json'} | {'domains/' + code + '/' + folder + '/README.md'
+            for code in ('sav', 'atelier') for folder in ('questions', 'reviews', 'handoff')}
     manifest = json.loads(files['air-workspace.json'])
     assert [d['baseline_id'] for d in manifest['domains']] == ['urn:air:asteria:atelier:baseline', 'urn:air:asteria:sav:baseline']
     assert json.loads(files['domains/sav/dossier.json'])['namespace'] == 'asteria.sav'
@@ -58,7 +59,19 @@ def test_workspace_stays_regenerable_and_scales(store):
     many = {**WORKSPACE, 'domains': [{'code': 'd%02d' % i, 'title': 'Domaine %02d' % i, 'purpose': 'Finalité.',
         'namespace': 'asteria.d%02d' % i, 'urn_segment': 'd%02d' % i} for i in range(64)]}
     wide = compile_workspace(store, USER, AccessPolicy(), many)
-    assert len(wide['files']) == 9 + 3 * 64 and wide['total_size'] <= atelier.TOTAL_MAX
+    assert len(wide['files']) == 9 + 6 * 64 and wide['total_size'] <= atelier.TOTAL_MAX
+
+
+def test_workspace_declares_delivery_profile_without_claiming_reception(store):
+    from air.core import DELIVERY_PROFILE
+    request = {**WORKSPACE, 'profiles':[DELIVERY_PROFILE]}
+    before = store.counts()
+    result = compile_workspace(store, USER, AccessPolicy(), request)
+    files = contents(result)
+    assert json.loads(files['air-workspace.json'])['profiles'] == [DELIVERY_PROFILE]
+    assert json.loads(files['domains/sav/dossier.json'])['profiles'] == [DELIVERY_PROFILE]
+    assert not result['conformance_claimed'] and not result['baselines_created']
+    assert store.counts() == before
 
 
 def test_workspace_draft_skeleton_is_a_valid_typed_object(store):

@@ -135,7 +135,7 @@ def test_index_reports_agreement_dependencies_chain_and_missing_pins(store, exam
     assert entry['objects_owned'] == 1 and entry['objects_referenced'] == 1
     assert entry['referenced_repositories'] == [{'repository': 'socle', 'namespace': 'asteria.shared', 'objects': 1}]
     files = contents(result)
-    assert set(files) == {'portfolio-index.json', 'docs/portefeuille.md', 'portfolio-index.manifest.json'}
+    assert set(files) == {'portfolio-index.json', 'docs/portefeuille.md', 'portfolio-index.manifest.json', 'transformation.json', 'transformation.html'}
     written = json.loads(files['portfolio-index.json'])
     assert written['index_digest'] == result['index_digest'] and 'generator' not in written and 'AGREEMENT' in files['docs/portefeuille.md']
     assert not result['registry_written'] and not result['authorization_granted'] and not result['semantic_compatibility_executed']

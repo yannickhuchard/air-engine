@@ -15,6 +15,9 @@ ENGINE = 'air.runtime-comparison/0.12'
 KEY = {'type': 'string', 'minLength': 1, 'maxLength': 128}
 INGEST = record({'idempotency_key': KEY, 'source': SNAPSHOT,
     'observations': {'type': 'array', 'items': schema('air.RuntimeObservation'), 'minItems': 1, 'maxItems': 128}})
+from air.packages import RECORD_REF
+INGEST['properties'].update(source_artifact=RECORD_REF, connector={'const': 'air.observations-json/1'})
+INGEST['dependentRequired'] = {'source_artifact': ['connector'], 'connector': ['source_artifact']}
 COMPARE = record({'scope': SNAPSHOT, 'expected': SNAPSHOT, 'as_of': INSTANT,
     'window': record({'start': INSTANT, 'end': INSTANT}), 'max_age_seconds': {'type': 'integer', 'minimum': 0, 'maximum': 31622400},
     'bindings': {'type': 'array', 'minItems': 1, 'maxItems': 128, 'items': record({
@@ -30,6 +33,11 @@ def ingest(store, principal, policy, settings, request):
     report = validate(request['observations'])
     if not report['valid']: raise InvalidModel('Invalid runtime observations', report)
     request['observations'] = sorted([json.loads(canonical(o)) for o in request['observations']], key=lambda o: key(exact(o)))
+    if 'source_artifact' in request:
+        from air.connectors import mapped_observations
+        _, mapped = mapped_observations(store, principal, policy, request['source_artifact'])
+        if mapped != request['observations']:
+            raise InvalidModel('Connector ingestion differs from the exact artifact mapping')
     guarded = ScopedStore(store, principal, policy)
     guarded.check_read([request['source']])
     refs = [ref for obj in request['observations'] for _, ref, _ in reference_slots(obj)]

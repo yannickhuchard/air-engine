@@ -27,6 +27,10 @@ def test_view_capture_atomic_identity_artifacts_and_historical_replay(store, tmp
     assert result['created'] and result['output']['source_context_required']
     obj = result['view']['object'];pin = {**exact(obj), 'digest': result['view']['digest']}
     assert obj['meta']['type'] == 'air.View' and validate(obj)['valid']
+    from importlib import resources
+    expected_components = {'air/' + path.name for path in resources.files('air').iterdir()
+                           if path.name.endswith('.py') and path.is_file()}
+    assert {item['name'] for item in obj['body']['generator']['components']} == expected_components
     assert 'air.View' not in DATA_TYPES and obj['body']['generator']['source_observation'] == 'MODULE_STARTUP'
     before = store.counts(), store.audit_log()
     def unavailable(*args): raise AssertionError('Historical capture must not call the current generator')

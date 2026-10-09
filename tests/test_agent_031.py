@@ -151,6 +151,31 @@ def test_validation_shows_the_construction_diagnostic_a_change_introduces_with_i
     assert effect['missing_state_effects'] == [{'kind': 'STATE_CHANGE', 'description': 'Proposal becomes RECORDED'}] and effect['fix_hint']
 
 
+def test_rebase_preserves_deposited_drafts_outside_seed_baseline(store, tmp_path, example):
+    objects, user, token, request = prepare_architecture(store, tmp_path, example)
+    # An interrupted creation deposited the full bundle but froze only sources.
+    exported = store.export_baseline(request['baseline'])
+    meta = deepcopy(exported['baseline']['meta']);meta['id'] = 'urn:architecture:seed'
+    sources = [o for o in objects if o['meta']['type'] == 'air.Source']
+    seed = store.create_baseline({'meta':meta,'profile':ARCHITECTURE_PROFILE,
+        'members':[exact(o) for o in sources],'parent_baselines':[]}, 'architect')
+    pin = {**exact(seed['baseline']),'digest':seed['digest']}
+    draft = function_revision(objects)
+    bundle = [deepcopy(o) for o in objects if o['meta']['id'] != draft['meta']['id']] + [draft]
+    before = {o['meta']['id']:digest(o) for o in objects}
+    rebased = agent.rebase_drafts(store,user,POLICY,None,{'base':pin,'objects':bundle,'include_bundle':True})
+    assert rebased['candidate']['valid'] and rebased['prepared_change']
+    assert any(r['id'] == 'urn:architecture:contract' and r['to_revision'] == 2 for r in rebased['rebased'])
+    validation = agent.validate_drafts(store,user,POLICY,{'prepared_change':rebased['prepared_change']['id']})
+    assert validation['deposit_ready'] and validation['freeze_ready']
+    again = agent.rebase_drafts(store,user,POLICY,None,{'base':pin,'objects':bundle,'include_bundle':True})
+    assert again['prepared_change']['id'] == rebased['prepared_change']['id']
+    store.put_bundle(rebased['objects'],'architect')
+    frozen = store.create_baseline(rebased['baseline_request'],'architect')
+    assert frozen['validation']['valid']
+    assert all(digest(store.get(o['meta']['id'],1)['object']) == before[o['meta']['id']] for o in objects)
+
+
 # ---------------------------------------------------------------- what the agent reads when AIR refuses
 
 def test_refusals_reach_the_agent_with_code_diagnostics_and_hint(store, tmp_path, example):

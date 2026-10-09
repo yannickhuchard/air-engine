@@ -1,0 +1,17 @@
+{
+  "name": "air-official",
+  "owner": {
+    "name": "Yannick Huchard"
+  },
+  "plugins": [
+    {
+      "name": "air-local",
+      "source": "./plugins/air-local",
+      "description": "AIR - Architecture Workspace",
+      "version": "0.1.8"
+    }
+  ],
+  "metadata": {
+    "description": "Skills AIR pour installer le moteur et concevoir des dossiers sourcés avec Claude Code."
+  }
+}

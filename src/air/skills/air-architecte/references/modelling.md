@@ -91,3 +91,22 @@ route que l'autre projet n'a pas retenue :
 
 AIR calcule le calendrier, le chemin critique, l'effort (avec ou sans IA selon `uses_ai`), la main-d'œuvre et les
 abonnements. Une seule feuille de route passe `SELECTED`, par une `Decision`.
+
+## Catalogue des parcours et usages
+
+`JourneyCatalog` : scope, purpose, journeys et personas. Chaque entrée persona
+porte la référence Actor/Stakeholder, coverage REQUIRED ou EXCLUDED, rationale
+et required_contexts (DIGITAL, PHYSICAL, GEOGRAPHIC). Les exclusions sont
+justifiées ; une liste vide de parcours expose une lacune sans fabriquer de flux.
+
+`CustomerJourney` conserve persona, goal et steps ordonnés. Les étapes ajoutent
+touchpoint_ref (Touchpoint), participants (Actor/Stakeholder), architecture_links
+(références exactes du dossier) et outcome. La catégorie et les déclencheurs
+distinguent nominal, exception, support, opérations et gouvernance.
+
+`Touchpoint` déclare purpose, usage_points non vide, participants,
+architecture_links et accessibility. `UsagePoint` déclare kind, purpose, status
+(PROPOSED ou CONFIRMED_DECLARED), parent facultatif, country, city et
+location_description pour GEOGRAPHIC. Aucun GPS ou site exact n’est imposé :
+un lieu à choisir reste explicite. Une confirmation déclarée ne vaut pas une
+autorisation légale. Lire journeys.json et ses cinq contrôles calculés.

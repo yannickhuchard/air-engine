@@ -65,7 +65,7 @@ def rehearse():
             mcp = session.handle({'jsonrpc': '2.0', 'id': 2, 'method': 'tools/call', 'params': {'name': 'air_read_artifact', 'arguments': lookup}})['result']
             assert not mcp['isError'] and base64.b64decode(mcp['structuredContent']['content_base64']) == content
             # This new Source is a retained authored document, not an independent supporting observation.
-            retained = deepcopy(original);retained['meta'].update(id='urn:asteria:artifact-source:' + code.lower(), name='Pièce jointe conservée — ' + case['title'])
+            retained = deepcopy(original);retained['meta'].update(id='urn:asteria:artifact-source:' + code.lower(), name='Pièce jointe conservée - ' + case['title'])
             retained['meta']['provenance']['source_refs'] = [exact(original)]
             retained['meta']['provenance']['method'] = 'Authored fictional summary retained as bytes; not independent evidence'
             retained['body'].update(locator=uploaded['artifact']['id'], source_revision=uploaded['content_digest'])

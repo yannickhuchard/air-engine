@@ -1,20 +1,34 @@
-# Validation de la distribution publique
+# Validation des sources publiques
 
-Version : 0.34.0rc9. Le reçu `public-validation.json` joint à la release identifie
-les résultats et les empreintes exactes de cette distribution. Consulter ce reçu
-avant d’attribuer une qualification à une archive. La réception de référence portait
-sur Windows 11, Python 3.12.14 et SQLite/local. Cette reconstruction publique ne
-réécrit pas les archives historiques.
+La branche principale contient 0.35.0.dev1, version de développement. Les
+résultats locaux de publication sont consignés dans
+`traceability/public-development-035.json` avec leurs empreintes et limites.
+La première suite publique a donné 1147 succès, 16 échecs et 2 skips.
+Les échecs ont été traités : sources de fixture conservées, scripts optionnels
+réintégrés, helper privé explicitement exclu et provenance des vues corrigée.
+Le rejeu des cinq modules concernés donne 33 succès et 1 skip explicite.
+La suite complète n’a pas été répétée après ces corrections.
 
-La recette publique couvre les tests moteur inclus, l’installation du wheel dans
-un environnement neuf, la réinstallation, la restauration et les trois dossiers
-Asteria. La validation native d’un nouveau compte ChatGPT, un second poste physique,
-macOS/Linux, PostgreSQL, l’approbation d’annuaire et la conformité AIR complète restent
-hors de ce reçu. Aucune CI n’est lancée.
+Le wheel corrigé a passé installation neuve hors ligne, réinstallation et
+restauration avec révocation de l’ancienne identité. Trois dossiers Asteria
+et leurs 84 diagrammes ont été générés ; 12 vues News ont passé les contrôles
+Chromium locaux à quatre largeurs. Aucune CI ni recette native n’est déduite.
 
-Le kit de [réception sur un second poste](reception-second-poste.md), ajouté le
-30 septembre, a été répété sur le poste de développement dans une venv neuve :
-artefacts rc9 téléchargés, installation/reprise et trois dossiers PASS_SCOPED.
-Sept tests ciblés du kit passent (empreintes altérées, destination existante,
-preuves incomplètes et absence d’attestation artificielle). Ce reçu supplémentaire
-ne modifie pas les archives rc9 et n’atteste pas un second appareil ni un client natif.
+La release [0.34.0rc9](https://github.com/yannickhuchard/air-engine/releases/tag/v0.34.0rc9)
+et ses archives restent inchangées. Ses preuves s’appliquent uniquement à cette
+distribution, pas aux nouveautés 0.35. Le kit de
+[réception second poste](reception-second-poste.md) vise rc9.
+
+La publication 0.35 ne comprend pas le PDF original du white paper, les dossiers
+privés ou les journaux de sessions. Les tests de l’inventaire lié à ce PDF et du
+budget et de la consultation privés ProxiBot sont exclus de la sélection publique ; les contrôles du
+moteur et les exemples Asteria sont inclus. Le test des baselines historiques
+utilise la même fixture publique déjà distribuée avec rc9. Le seul test de
+conservation des simulations historiques qui dépend du helper privé de recette
+ProxiBot est explicitement ignoré lorsque ce helper n’est pas distribué.
+
+Pour contribuer : `python scripts/install.py --extras dev,proofs,backup`, puis
+`.venv/Scripts/python.exe scripts/check.py -q` sous Windows
+(`.venv/bin/python` sous Unix). Le dossier temporaire doit être local et privé.
+Aucune CI push/PR n’est activée. Les autres OS, PostgreSQL/OIDC, les nouveaux
+clients natifs et la qualification globale de production restent à recevoir.

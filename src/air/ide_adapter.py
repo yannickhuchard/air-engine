@@ -6,6 +6,7 @@ commands and skill, or Codex skills and AGENTS.md section. The server stays the 
 import hashlib
 import json
 from air.atelier import absolute, BEGIN, collate, CREDENTIAL, END, LOCAL_PATH, no_secret, product, render_json, render_text, section, toolchain
+from air.editorial import RULE as EDITORIAL_RULE
 from air.core import record, TEXT
 from air.expr import artifact_digest, bounded, ExprError
 from air.foundation import check_schema, InvalidModel
@@ -24,15 +25,16 @@ REQUEST = record({
     'shared_instructions': {'type': 'string', 'pattern': r'^[A-Za-z0-9][A-Za-z0-9._/-]{0,127}\.md$'},
 }, ['client', 'workspace', 'server', 'access'])
 GUIDED = ['air_guide', 'air_list_revisions', 'air_browse_baseline', 'air_describe_type', 'air_validate_drafts', 'air_rebase_drafts',
-          'air_assess_readiness', 'air_simulate_scenario', 'air_walk_scenarios']
-READ_ONLY = sorted(GUIDED + ['air_admission_read', 'air_assess_goal_targets', 'air_capabilities', 'air_capacity_get', 'air_check_policy',
+          'air_assess_readiness', 'air_simulate_scenario', 'air_walk_scenarios', 'air_query_business_paths', 'air_resume_question', 'air_query_transformation', 'air_query_project_updates', 'air_refresh_videos']
+READ_ONLY = sorted(GUIDED + ['air_reconstruct_temporal', 'air_convert_currency', 'air_read_checkpoint', 'air_preview_connector',
+    'air_admission_read', 'air_assess_goal_targets', 'air_capabilities', 'air_capacity_get', 'air_check_policy',
     'air_collaboration_read', 'air_compile_audience_view', 'air_compile_ide_adapter', 'air_compile_openapi', 'air_compile_view',
-    'air_compile_workbench', 'air_compile_workspace', 'air_compile_portfolio', 'air_compile_deliverables', 'air_compile_presentation', 'air_index_portfolio', 'air_compute_baseline_closure',
+    'air_compile_workbench', 'air_compile_workspace', 'air_compile_portfolio', 'air_compile_deliverables', 'air_compile_branding', 'air_compile_presentation', 'air_index_portfolio', 'air_compute_baseline_closure',
     'air_describe_artifact', 'air_diff', 'air_export_baseline', 'air_get', 'air_get_job', 'air_impact', 'air_inspect_architecture',
     'air_inspect_knowledge', 'air_inspect_organization', 'air_inspect_workflow', 'air_package_read', 'air_plan', 'air_read_artifact',
     'air_read_captured_view', 'air_read_context', 'air_reconcile', 'air_replay_state_machine', 'air_runtime_compare', 'air_simulate',
     'air_validate_construction', 'air_validate_data', 'air_whoami'])
-CONTRIBUTE = ['air_cancel_job', 'air_capture_view', 'air_collaboration_submit', 'air_deposit_prepared', 'air_discover', 'air_record_simulation', 'air_freeze_baseline', 'air_freeze_prepared', 'air_get_context',
+CONTRIBUTE = ['air_receive_checkpoint', 'air_cancel_job', 'air_capture_view', 'air_collaboration_submit', 'air_deposit_prepared', 'air_discover', 'air_record_simulation', 'air_freeze_baseline', 'air_freeze_prepared', 'air_get_context',
     'air_import_artifact', 'air_import_drafts', 'air_package_prepare', 'air_propose_change', 'air_runtime_ingest', 'air_submit_job']
 COMMITTING = ['air_admission_activate', 'air_admission_admit', 'air_admission_propose', 'air_admission_release',
     'air_admission_review', 'air_admission_revoke_review', 'air_capacity_publish', 'air_closure_close',
@@ -101,7 +103,7 @@ def toml_string(value):
 
 
 def _provenance(source_digest):
-    return '<!-- ' + ENGINE + ' ' + TOOLCHAIN['air_version'] + ' — source ' + source_digest + ' — régénérer avec air ide-setup. -->'
+    return '<!-- ' + ENGINE + ' ' + TOOLCHAIN['air_version'] + ' - source ' + source_digest + ' - régénérer avec air ide-setup. -->'
 
 
 def _kind(request):
@@ -123,7 +125,7 @@ RULES = [
 def _rules(request, inline=False):
     shared = request.get('shared_instructions')
     if shared and not inline: return ['Les règles communes du dépôt sont dans [' + shared + '](' + shared + ') : les lire et ne pas les redire ici.', '']
-    return ['### Règles', '', *RULES, '']
+    return ['### Règles', '', EDITORIAL_RULE, '', *RULES, '']
 
 
 # ------------------------------------------------------------------ guided journeys
@@ -138,6 +140,7 @@ def _journeys(request):
              'steps': [
                  'Lire `air-portfolio.request.json` (la déclaration du portefeuille) et `portfolio-index.request.json` (les baselines épinglées).',
                  'Appeler `air_index_portfolio` avec `{"portfolio": <contenu de air-portfolio.request.json>, "baselines": <champ baselines de portfolio-index.request.json>, "content": "DIGESTS"}`.',
+                 'Lire les programmes, projets et tâches avec `air_query_transformation` sur les mêmes baselines exactes ; filtrer les statuts ou responsables et paginer avec next_offset. Lire transformation.html après régénération.',
                  'Comparer d’abord `engine` à celui de `portfolio-index.json` : différent, le format de l’index a changé et le fichier doit être régénéré (geste humain par la CLI), sans que les données aient forcément bougé. Même moteur : un `index_digest` différent veut dire que les données ont changé.',
                  'Pour chaque épingle, `air_list_revisions` sur l’identifiant de baseline : une révision plus récente signifie que l’index ne reflète pas l’état courant du projet ; `reviews` dit si elle a été relue. Recompiler alors avec la nouvelle épingle pour voir le verdict à jour.',
                  'Restituer : projets et responsables, possédé et emprunté, `stale_dependencies` (objets empruntés plus anciens que l’épingle du propriétaire), `declared_gaps` et en particulier ceux marqués entre projets, divergences.',
@@ -217,6 +220,7 @@ def _journeys(request):
          'description': 'Produire les livrables de l’équipe de réalisation (37 documents avec diagrammes, deck de direction bilingue) et les descriptions OpenAPI',
          'steps': [
              'Appeler `air_guide` avec `{"baseline": {"id": <baseline_id>}, "intent": "DELIVER"}` : il donne les arguments exacts de `air_compile_deliverables` et de `air_compile_openapi`.',
+             'Lire d’abord `air_compile_deliverables` avec `only: ["00-management-summary"]` ; après chaque changement figé, régénérer le résumé et le site. Lire `air_query_transformation` pour les tâches et statuts déclarés.',
              '`air_compile_deliverables` avec `content: "DIGESTS"` liste les livrables et leurs empreintes ; puis `only: ["<nom>"]` rend un document en entier. Pour plusieurs projets, épingler leurs baselines ensemble (noyau partagé compris).',
              'Écrire le dossier complet dans le dépôt est un geste de la CLI (`air deliverables --workspace docs --apply`) : sa régénération remplace ses propres fichiers et garde les modifications manuelles.',
              'Compiler chaque API avec `air_compile_openapi` ; si l’architecte le demande, écrire le contenu dans `docs/api/<nom>.openapi.json` du dépôt. Le dossier HTML (`air_compile_view`) est pour les personnes : il se produit à la CLI.',
@@ -277,7 +281,7 @@ def _section(request, allowed, denied, source_digest, client):
         BEGIN,
         _provenance(source_digest),
         '',
-        '## Référentiel AIR — ' + workspace['name'],
+        '## Référentiel AIR - ' + workspace['name'],
         '',
         'Le registre AIR de ' + workspace['organization'] + ' fait foi. Cette conversation ne conserve rien :',
         'tout résultat utile est un objet, une baseline, un reçu ou un rapport enregistré dans AIR.',
@@ -316,7 +320,7 @@ def _claude_md(request, allowed, denied, source_digest):
 
 def _agents_md(request, allowed, denied, source_digest):
     return render_text([
-        '# Instructions d’agent — ' + request['workspace']['name'],
+        '# Instructions d’agent - ' + request['workspace']['name'],
         '',
         _section(request, allowed, denied, source_digest, 'codex').rstrip('\n'),
         '',
@@ -340,7 +344,7 @@ def _settings(allowed, denied):
 
 
 def _codex_config(server, allowed, access):
-    lines = ['# Produit par ' + ENGINE + ' — régénérer avec air ide-setup. Aucun jeton : l’adaptateur lit son fichier protégé.',
+    lines = ['# Produit par ' + ENGINE + ' - régénérer avec air ide-setup. Aucun jeton : l’adaptateur lit son fichier protégé.',
              '# Codex ne charge ce fichier que pour un projet approuvé (trusted).', '',
              '[mcp_servers.air]',
              'command = ' + toml_string(server['command']),
@@ -358,10 +362,28 @@ def _skill_lines(request, allowed):
     lines = ['# Travailler le ' + ('portefeuille' if _kind(request) == 'portfolio' else 'référentiel') + ' AIR avec un agent', '',
              *_start_lines(request)]
     for journey in _journeys(request):
-        lines += ['### ' + journey['name'] + ' — ' + journey['description'], '']
+        lines += ['### ' + journey['name'] + ' - ' + journey['description'], '']
         lines += [str(i) + '. ' + step.replace('$1', '<' + (journey['hint'].split(' ')[0].strip('<>') or 'code') + '>') for i, step in enumerate(journey['steps'], 1)]
         lines.append('')
-    lines += ['## Refus attendus', '',
+    lines += ['## Pilotage et synthèse', '',
+              'Lire le Management Summary en tête du dossier. Régénérer les livrables après chaque baseline figée.',
+              'Les types TransformationProgramme, ArchitectureProject et ArchitectureTask décrivent les travaux de conception.',
+              'Clôture : décision et date exactes, aucune tâche active. Terminé et annulé restent distincts ; readiness reste indépendant.',
+              'Décrire SourcingStrategy et Decision pour le choix RFI/RFP, son périmètre, jalon, critères et preuves de consultation.',
+              'La préparation ne lance aucune consultation et ne sélectionne aucun fournisseur automatiquement.',
+              'Pour une vue globale, épingler les dossiers autorisés de la même instance avec air_index_portfolio ; lire transformation.json.',
+              'Les installations de clients indépendants ne sont pas fédérées ; ne pas réunir leurs données sans périmètre autorisé.', '',
+              '## Catalogue des parcours', '',
+              'Dans chaque dossier : JourneyCatalog (personas et exclusions), CustomerJourney (étapes),',
+              'Touchpoint et UsagePoint (DIGITAL, PHYSICAL, GEOGRAPHIC). Décrire les schémas courants,',
+              'relier chaque étape aux objets exacts du dossier, régénérer le site et examiner journeys.json.',
+              'Renseigner phases, actions, pensées, systèmes, frontstage, backstage et support pour les cartes d’expérience.',
+              'emotion : UNKNOWN sans score, HYPOTHESIS justifiée, OBSERVED avec sources exactes. Ne pas fabriquer une recherche utilisateur.',
+              'Lire les processus BPMN descriptifs et leurs exports avec layout ; ils ne sont pas exécutables dans un moteur tiers.',
+              'Présenter aussi le diagramme journey-map-*.html/svg/json : sélection, filtres, zoom et visite guidée locale.',
+              'La matrice et les fiches gardent les détails exacts ; la visite suit un ordre déclaré, sans exécution ou recherche utilisateur.',
+              'Les cinq contrôles documentaires de parcours restent distincts des douze critères readiness.', '',
+              '## Refus attendus', '',
               'Un accès hors namespace, une référence inexacte, une empreinte différente ou une porte non satisfaite',
               'produisent un refus ou un état BLOCKED. Rapporter le refus, sa cause et son `hint` ; ne pas réessayer autrement.', '',
               '## Hors périmètre', '',

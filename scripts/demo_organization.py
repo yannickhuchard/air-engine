@@ -53,14 +53,14 @@ def rehearse():
             def obj(kind, suffix, name, body):
                 meta = deepcopy(scope['meta']);meta.update(id='urn:asteria:organization:' + code.lower() + ':' + suffix, type='air.' + kind, revision=1, name=name)
                 return {'meta': meta, 'body': body}
-            authority = obj('AuthorityScope', 'authority', 'Périmètre déclaré — ' + team_name, {'principal': 'urn:asteria:team:' + code.lower() + ':engineering', 'scope': exact(scope),
+            authority = obj('AuthorityScope', 'authority', 'Périmètre déclaré - ' + team_name, {'principal': 'urn:asteria:team:' + code.lower() + ':engineering', 'scope': exact(scope),
                 'allowed_decisions': ['Proposer le contrat de conception', 'Documenter les écarts et préparer une revue'], 'limits': [limit, 'Aucun mandat d’admission ou d’activation créé par cette déclaration'],
                 'delegations': [], 'separation_rules': ['La revue de réception exige un acteur indépendant']})
-            role = obj('Role', 'role', 'Architecte référent — ' + team_name, {'responsibilities': [responsibility, 'Conserver les hypothèses, inconnues et décisions'],
+            role = obj('Role', 'role', 'Architecte référent - ' + team_name, {'responsibilities': [responsibility, 'Conserver les hypothèses, inconnues et décisions'],
                 'required_competencies': [{'binding': 'air.skill-requirement/0.21', 'competency': responsibility, 'minimum_level': 'Praticien autonome', 'assessment_method': 'Revue de dossier par un pair habilité'}], 'authority': exact(authority)})
             unit = obj('OrganizationUnit', 'unit', team_name, {'mandate': responsibility, 'parent': exact(shared), 'roles': [exact(role)]})
-            domain = obj('Domain', 'domain', 'Domaine — ' + case['title'], {'purpose': responsibility, 'scope': exact(scope), 'authority': exact(authority)})
-            actor = obj('Actor', 'coordinator', 'Référent de coordination — ' + team_name, {'kind': 'HUMAN', 'boundary': exact(scope), 'roles': [exact(role)]})
+            domain = obj('Domain', 'domain', 'Domaine - ' + case['title'], {'purpose': responsibility, 'scope': exact(scope), 'authority': exact(authority)})
+            actor = obj('Actor', 'coordinator', 'Référent de coordination - ' + team_name, {'kind': 'HUMAN', 'boundary': exact(scope), 'roles': [exact(role)]})
             additions = [authority, role, unit, domain, actor]
             assert 'error' not in client('air_import_drafts', {'objects': additions})
             meta = deepcopy(old['baseline']['meta']);meta.update(id='urn:asteria:organization-baseline:' + code.lower(), revision=1)

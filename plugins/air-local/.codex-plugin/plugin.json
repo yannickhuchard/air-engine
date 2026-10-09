@@ -1,0 +1,42 @@
+{
+  "name": "air-local",
+  "version": "0.1.8",
+  "description": "AIR - Architecture Workspace : concevoir, vérifier et livrer des projets d’architecture avec un moteur AIR local.",
+  "author": {
+    "name": "Yannick Huchard",
+    "url": "https://github.com/yannickhuchard"
+  },
+  "homepage": "https://github.com/yannickhuchard/air-plugin",
+  "repository": "https://github.com/yannickhuchard/air-plugin",
+  "keywords": [
+    "architecture",
+    "air",
+    "local",
+    "sqlite",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "AIR  -  Architecture Workspace",
+    "shortDescription": "Concevoir et vérifier vos architectures avec AIR.",
+    "longDescription": "Plugin officiel développé par Yannick Huchard. Parcours pour installer et connecter AIR, puis concevoir, vérifier, simuler et livrer des dossiers d’architecture avec le moteur AIR de votre entreprise. Le moteur et sa connexion MCP sont des prérequis séparés ; ce paquet ne fournit ni serveur central, ni hébergement. Python, SQLite et identité locale par défaut. Les applications métier futures ne sont pas exécutées par le plugin.",
+    "developerName": "Yannick Huchard",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/yannickhuchard/air-plugin",
+    "defaultPrompt": [
+      "Installe AIR pour le référentiel de cette entreprise.",
+      "Vérifie ce dossier AIR et prépare ses prochaines étapes.",
+      "Prépare les livrables de cette architecture AIR."
+    ],
+    "brandColor": "#00BFC1",
+    "composerIcon": "./assets/logo.png",
+    "logo": "./assets/logo.png",
+    "privacyPolicyURL": "https://github.com/yannickhuchard/air-plugin/blob/main/PRIVACY.md",
+    "termsOfServiceURL": "https://github.com/yannickhuchard/air-plugin/blob/main/TERMS.md"
+  },
+  "license": "Apache-2.0"
+}

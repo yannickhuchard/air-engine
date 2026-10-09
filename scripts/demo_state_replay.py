@@ -62,7 +62,7 @@ def rehearse():
                 for target, predicate in [('READY', guard), ('WAITING', negated)]:
                     transitions.append({'binding': 'air.transition/0.24', 'id': source.lower() + '_to_' + target.lower(), 'source': source, 'target': target,
                         'trigger': 'check', 'guard': deepcopy(predicate), 'effects': [{'kind': 'HUMAN_ACTION', 'description': 'Revue indépendante proposée ; aucune action ERP, machine ou IAM exécutée'}]})
-            meta = deepcopy(domain['meta']);meta.update(id='urn:asteria:state-machine:' + code.lower(), type='air.StateMachine', revision=1, name='Contrôle illustratif — ' + case['title'])
+            meta = deepcopy(domain['meta']);meta.update(id='urn:asteria:state-machine:' + code.lower(), type='air.StateMachine', revision=1, name='Contrôle illustratif - ' + case['title'])
             machine = {'meta': meta, 'body': {'states': [{'binding': 'air.state-spec/0.24', 'id': name, 'name': name, 'terminal': name == 'READY'} for name in ('PENDING', 'WAITING', 'READY')],
                 'initial_state': 'PENDING', 'transitions': transitions, 'invariants': [invariant]}}
             imported = client('air_import_drafts', {'objects': [machine]});assert 'error' not in imported, imported

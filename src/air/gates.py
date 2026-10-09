@@ -1,7 +1,7 @@
 """Replayable diagnostic gates on immutable baselines; no approval or admission."""
 from air.core import FOUNDATION_PROFILE, REF, record
 from air.expr import (ENGINE, Budget, ExprError, Program, artifact_digest, bounded,
-                      evaluate, fields, require, typed)
+                      evaluate, fields, require, typed, engine_for, UNITS_ENGINE)
 from air.foundation import InvalidModel, check_schema, exact
 from air.storage import Conflict
 
@@ -104,7 +104,10 @@ def validate_gate(store, request):
     # Even optional calculations cannot conceal malformed or exhausted execution.
     if any(r["applicability"]["execution"] != "EXECUTED" or r["execution"] in ("ERROR", "BUDGET_EXCEEDED") for r in results):
         blockers.append({"code": "AIR_GATE_INCOMPLETE_EXECUTION"})
-    report = {"profile": PROFILE, "engine": ENGINE, "gate": GATE,
+    engine = UNITS_ENGINE if any(engine_for(e) == UNITS_ENGINE
+        for r in request['rule_set']['rules']
+        for e in [r['applicability']] + ([r['predicate']] if 'predicate' in r else [])) else ENGINE
+    report = {"profile": PROFILE, "engine": engine, "gate": GATE,
               "baseline": request["baseline"], "request_digest": artifact_digest(request),
               "rule_set": {"id": request["rule_set"]["id"], "version": request["rule_set"]["version"],
                            "digest": artifact_digest(request["rule_set"])},

@@ -9,7 +9,7 @@ RESERVED = 'air_state'
 
 
 def bodies(record, text):
-    expression = record({'language': {'const': 'AIR-Expr'}, 'language_version': {'const': '0.1'},
+    expression = record({'language': {'const': 'AIR-Expr'}, 'language_version': {'enum': ['0.1', '0.2']},
         'ast': {'type': 'object'}, 'result_type': {'const': 'Boolean'},
         'required_inputs': {'type': 'array', 'items': record({'name': ID, 'type': text}), 'maxItems': 128}},
         ['language', 'language_version', 'ast', 'result_type'])

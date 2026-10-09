@@ -5,6 +5,8 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.exc import OperationalError
 from starlette.concurrency import run_in_threadpool
 from air import __version__
+from air import question_capsule
+from air import transformation_view, project_updates, video_refresh
 from air.auth import OIDCVerifier
 from air.core import capabilities, schema, TYPES, validate
 from air.parsing import parse
@@ -38,7 +40,7 @@ from air import artifacts, view_capture
 from air.audience import compile_view as compile_audience_view
 from air.packages import prepare_package, publish_package, read_package, revoke_package
 from air.access import AccessPolicy, ScopedStore, Forbidden, NotFound, PolicyUnavailable
-from air import acceptance, agent, deliverables, presentation, readiness
+from air import acceptance, agent, business_paths, branding, deliverables, presentation, readiness
 from air.reviews import create_review, read_review, revoke_review
 
 
@@ -303,6 +305,10 @@ def create_app(settings, run_worker=True):
     async def agent_guide(request: Request, principal=Depends(identity)):
         return await run_in_threadpool(agent.guide, store, principal, principal["policy"], await document(request))
 
+    @app.post("/v1/agent/questions/resume")
+    async def question_resume(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(question_capsule.resume, store, principal, principal["policy"], settings, await document(request))
+
     @app.post("/v1/agent/revisions")
     async def agent_revisions(request: Request, principal=Depends(identity)):
         return await run_in_threadpool(agent.list_revisions, store, principal, principal["policy"], await document(request))
@@ -330,6 +336,10 @@ def create_app(settings, run_worker=True):
     @app.post("/v1/deliverables/compile")
     async def deliverables_pack(request: Request, principal=Depends(identity)):
         return await run_in_threadpool(deliverables.compile_deliverables, store, principal, principal["policy"], await document(request))
+
+    @app.post("/v1/branding/compile")
+    async def branding_profile(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(branding.compile_branding, store, principal, principal["policy"], await document(request))
 
     @app.post("/v1/readiness/assess")
     async def readiness_gate(request: Request, principal=Depends(identity)):
@@ -367,6 +377,18 @@ def create_app(settings, run_worker=True):
     async def portfolio_index(request: Request, principal=Depends(identity)):
         return await run_in_threadpool(index_portfolio, store, principal, principal["policy"], await document(request))
 
+    @app.post("/v1/project-updates/query")
+    async def project_news(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(project_updates.query, store, principal, principal["policy"], await document(request))
+
+    @app.post("/v1/videos/refresh")
+    async def video_companions(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(video_refresh.prepare, store, principal, principal["policy"], await document(request))
+
+    @app.post("/v1/transformations/query")
+    async def transformation_query(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(transformation_view.query, store, principal, principal["policy"], await document(request))
+
     @app.post("/v1/architecture/inspect")
     async def architecture_dossier(request: Request, principal=Depends(identity)):
         return await run_in_threadpool(inspect_architecture, store, principal, principal["policy"], await document(request))
@@ -387,6 +409,10 @@ def create_app(settings, run_worker=True):
     async def workflow_dossier(request: Request, principal=Depends(identity)):
         return await run_in_threadpool(inspect_workflow, store, principal, principal["policy"], await document(request))
 
+    @app.post("/v1/business-paths/query")
+    async def business_path_query(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(business_paths.query_paths, store, principal, principal["policy"], await document(request))
+
     @app.post("/v1/organization/inspect")
     async def organization_dossier(request: Request, principal=Depends(identity)):
         return await run_in_threadpool(inspect_organization, store, principal, principal["policy"], await document(request))
@@ -394,6 +420,31 @@ def create_app(settings, run_worker=True):
     @app.post("/v1/knowledge/inspect")
     async def knowledge_dossier(request: Request, principal=Depends(identity)):
         return await run_in_threadpool(inspect_knowledge, store, principal, principal["policy"], await document(request))
+
+    @app.post("/v1/temporal/reconstruct")
+    async def temporal_reconstruct(request: Request, principal=Depends(identity)):
+        from air.temporal import reconstruct
+        return await run_in_threadpool(reconstruct, store, principal, principal["policy"], await document(request))
+
+    @app.post("/v1/currency/convert")
+    async def currency_convert(request: Request, principal=Depends(identity)):
+        from air.currency import convert
+        return await run_in_threadpool(convert, store, principal, principal["policy"], await document(request))
+
+    @app.post("/v1/federation/checkpoints")
+    async def federation_import(request: Request, principal=Depends(identity)):
+        from air.federation import ingest
+        return await run_in_threadpool(ingest, store, principal, principal["policy"], settings, await document(request))
+
+    @app.post("/v1/federation/read")
+    async def federation_read(request: Request, principal=Depends(identity)):
+        from air.federation import read
+        return await run_in_threadpool(read, store, principal, principal["policy"], settings, await document(request))
+
+    @app.post("/v1/connectors/preview")
+    async def connector_preview(request: Request, principal=Depends(identity)):
+        from air.connectors import preview
+        return await run_in_threadpool(preview, store, principal, principal["policy"], await document(request))
 
     @app.post("/v1/goals/assess")
     async def goal_assessment(request: Request, principal=Depends(identity)):

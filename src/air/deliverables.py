@@ -13,6 +13,9 @@ from air.core import TEXT, URI, record
 from air.expr import artifact_digest
 from air.foundation import InvalidModel, check_schema
 from air.projections import SNAPSHOT, snapshot
+from air.temporal_site import COMPARISON
+from air.branding import SELECTION as BRANDING_SELECTION
+from air.editorial import prose
 
 ENGINE = 'air.deliverables/0.32'
 REQUEST = record({'title': {**TEXT, 'maxLength': 200},
@@ -21,7 +24,11 @@ REQUEST = record({'title': {**TEXT, 'maxLength': 200},
                   'directory': {'type': 'string', 'pattern': '^[a-z][a-z0-9-]{0,62}$'},
                   'only': {'type': 'array', 'items': {'type': 'string', 'pattern': '^[0-9]{2}-[a-z0-9-]{1,62}$'}, 'minItems': 1, 'maxItems': 40, 'uniqueItems': True},
                   'title_en': {**TEXT, 'maxLength': 200}, 'client': {**TEXT, 'maxLength': 120}, 'provider': {**TEXT, 'maxLength': 120},
-                  'projects': {'type': 'object', 'maxProperties': 32}},
+                  'projects': {'type': 'object', 'maxProperties': 32},
+                  'website': {'type': 'boolean'},
+                  'max_total_bytes': {'type': 'integer', 'minimum': 16777216, 'maximum': 67108864},
+                  'branding': BRANDING_SELECTION,
+                  'comparisons': {'type': 'array', 'items': COMPARISON, 'maxItems': 16}},
                  ['title', 'baselines'])
 FILE_MAX = 2097152
 TOTAL_MAX = 16777216
@@ -43,7 +50,7 @@ def mid(value):
 
 def label(value):
     """Quoted Mermaid text: quotes and line breaks removed, cut at 120 characters inside the quotes."""
-    return '"' + str(value).replace('"', "'").replace('\n', ' ').replace('#', '№')[:120] + '"'
+    return '"' + prose(value).replace('"', "'").replace('\n', ' ').replace('#', '№')[:120] + '"'
 
 
 def expression_text(node):
@@ -68,16 +75,24 @@ class Graph:
     def __init__(self, exports):
         self.exports = exports
         self.by_id = {}
+        self.by_ref = {}
+        self.revision_conflicts = []
+        revisions_by_id = defaultdict(set)
         for exported in exports:
             for obj in exported['objects']:
+                self.by_ref[(obj['meta']['id'], obj['meta']['revision'])] = obj
+                revisions_by_id[obj['meta']['id']].add(obj['meta']['revision'])
                 current = self.by_id.get(obj['meta']['id'])
                 if current is None or obj['meta']['revision'] > current['meta']['revision']: self.by_id[obj['meta']['id']] = obj
+        for identity in sorted(self.by_id):
+            revisions = sorted(revisions_by_id[identity])
+            if len(revisions) > 1: self.revision_conflicts.append({'id': identity, 'revisions': revisions})
         self.by_type = defaultdict(list)
         for obj in sorted(self.by_id.values(), key=lambda o: o['meta']['id']): self.by_type[obj['meta']['type'][4:]].append(obj)
 
     def of(self, kind): return self.by_type.get(kind, [])
 
-    def get(self, ref): return self.by_id.get(ref['id']) if isinstance(ref, dict) else None
+    def get(self, ref): return self.by_ref.get((ref.get('id'), ref.get('revision'))) if isinstance(ref, dict) else None
 
     def name(self, ref):
         obj = self.get(ref)
@@ -96,7 +111,7 @@ def src(objects):
 
 
 def table(headers, rows):
-    if not rows: return ['_Aucun élément._']
+    if not rows: return ['Aucun élément déclaré.']
     return ['| ' + ' | '.join(headers) + ' |', '| ' + ' | '.join('---' for _ in headers) + ' |'] + \
            ['| ' + ' | '.join(cell(c) for c in row) + ' |' for row in rows]
 
@@ -168,23 +183,51 @@ def d_journeys(g):
             previous = node
         lines += mermaid(diagram) + ['']
         lines += table(['Étape', 'Canal', 'Point de contact', 'Opération', 'Irritants'], [[s['name'], s['channel'], s['touchpoint'],
-                        (g.name(s['operation']['contract']) + ' · ' + s['operation']['name']) if 'operation' in s else (g.name(s['function']) if 'function' in s else '—'),
-                        '; '.join(s.get('pain_points', [])) or '—'] for s in j['body']['steps']]) + ['']
-    return 'Parcours clients et points de contact', lines, journeys
+                        (g.name(s['operation']['contract']) + ' · ' + s['operation']['name']) if 'operation' in s else (g.name(s['function']) if 'function' in s else '-'),
+                        '; '.join(s.get('pain_points', [])) or '-'] for s in j['body']['steps']]) + ['']
+    from air import journey_catalog
+    inventory = journey_catalog.project(g)
+    lines += ['## Inventaire des personas et couverture des usages', '',
+              'Périmètre déclaré, pas une preuve de recherche UX ou de conformité réglementaire.', '']
+    lines += table(['Persona', 'Couverture', 'Justification', 'Parcours', 'Contextes requis', 'Contextes manquants'],
+        [[p['name'], p['coverage'], p['rationale'], str(len(p['journeys'])), ', '.join(p['required_contexts']),
+          ', '.join(p['missing_contexts']) or '-'] for p in inventory['personas']]) + ['']
+    for j in inventory['journeys']:
+        lines += ['### Carte d’expérience : ' + j['name'], '',
+                  'Customer Journey Map complétée par un service blueprint. Les inconnues ne sont ni des scores neutres ni des observations.', '']
+        lines += table(['Étape et phase', 'Action et pensées', 'Acteurs', 'Touchpoints', 'Systèmes déclarés', 'Émotion et statut', 'Service visible', 'Actions internes', 'Support', 'Opportunités'],
+            [[st['name'] + ' / ' + st.get('phase', 'À préciser'), st.get('action', st['name']) + ' / ' + '; '.join(st.get('thoughts', [])),
+              ', '.join(p['name'] for p in [j['persona'], *st['participants']]), st['touchpoint'], ', '.join(p['name'] for p in st['systems']) or 'À préciser',
+              st['emotion'].get('label', 'Inconnue') + ' / ' + st['emotion']['status'] + (' / ' + str(st['emotion']['score']) + '/5' if 'score' in st['emotion'] else ''),
+              '; '.join(st.get('frontstage', [])) or 'À préciser', '; '.join(st.get('backstage', [])) or 'À préciser',
+              '; '.join(st.get('support_processes', [])) or 'À préciser', '; '.join(st.get('opportunities', [])) or 'À préciser'] for st in j['steps']]) + ['']
+        lines += ['### Usages : ' + j['name'], ''] + table(['Étape', 'Intervenants', 'Usages et lieux', 'Liens architecture'],
+            [[st['name'], ', '.join(p['name'] for p in st['participants']),
+              '; '.join(p.get('kind', 'UNRESOLVED') + ' : ' + p['name'] + ' (' + p.get('status', 'UNRESOLVED') + ')' for p in st['usage_points']),
+              '; '.join(a['name'] + ' : ' + a['selector'] for a in st['architecture_links'])] for st in j['steps']]) + ['']
+    lines += ['## Checklist documentaire des parcours', ''] + table(['Contrôle', 'État', 'Lacunes'],
+        [[c['label'], c['status'], str(c['gap_count'])] for c in inventory['checks']])
+    return 'Parcours clients et points de contact', lines, journeys + g.of('JourneyCatalog') + g.of('Touchpoint') + g.of('UsagePoint') + g.of('Actor') + g.of('Stakeholder')
 
 
 def d_processes(g):
     workflows = g.of('Workflow');lines = ['Les processus métier du dossier. Une condition gardée est exécutable (AIR-Expr) ; une condition en texte ne l’est pas.', '']
     for w in workflows:
         lines += ['## ' + w['meta']['name'], '', w['meta']['description'], '']
-        diagram = ['flowchart TD']
-        for step in w['body']['steps']:
-            diagram.append('  ' + mid(w['meta']['id'] + step['id']) + '[' + label(step['name'] + ' · ' + g.name(step['function'])) + ']')
+        diagram = ['flowchart LR']
+        lanes = defaultdict(list)
+        for step in w['body']['steps']: lanes[tuple(g.name(r) for r in step['participants'])].append(step)
+        for index, (participants, steps) in enumerate(lanes.items()):
+            diagram.append('  subgraph lane_' + mid(w['meta']['id'] + str(index)) + '[' + label(' / '.join(participants)) + ']')
+            for step in steps:
+                diagram.append('  ' + mid(w['meta']['id'] + step['id']) + '[' + label(step['name']) + ']')
+            diagram.append('  end')
         for start in w['body']['start_steps']: diagram.append('  start_' + mid(w['meta']['id'])[2:] + '((début)) --> ' + mid(w['meta']['id'] + start))
         for flow in w['body']['flows']:
             text = expression_text(flow['guard']['ast']) if 'guard' in flow else flow['condition']
             diagram.append('  ' + mid(w['meta']['id'] + flow['source']) + ' -->|' + label(text) + '| ' + mid(w['meta']['id'] + flow['target']))
         lines += mermaid(diagram) + ['']
+        lines += ['Le site fournit la vue BPMN 2.0 descriptive en couloirs, son layout et son XML. Le Mermaid ci-dessus reste une vue documentaire secondaire.', '']
         guarded = sum(1 for f in w['body']['flows'] if 'guard' in f)
         lines += ['Conditions exécutables : ' + str(guarded) + ' sur ' + str(len(w['body']['flows'])) + '. Fin : ' + w['body']['termination_policy'], '']
     models = g.of('OperatingModel')
@@ -212,7 +255,7 @@ def _organisation(g, root_id, phase, heading):
     root = g.by_id.get(root_id) if root_id else None
     if root: walk(root)
     lines = [heading, '']
-    if not root: lines += ['_Racine d’organisation non déclarée pour cette phase : ' + str(root_id) + '._', '']
+    if not root: lines += ['Racine d’organisation non déclarée pour cette phase' + (': `' + root_id + '`.' if root_id else '.'), '']
     else:
         diagram = ['flowchart TD']
         for u in tree:
@@ -369,14 +412,14 @@ def d_traceability(g):
     rows = []
     for req in g.of('Requirement'):
         fs = functions.get(req['meta']['id'], [])
-        if not fs: rows.append([req['meta']['name'], req['body']['priority'], '—', '—', '—', '—', 'Aucune fonction'])
+        if not fs: rows.append([req['meta']['name'], req['body']['priority'], '-', '-', '-', '-', 'Aucune fonction'])
         for f in fs:
             contract_ops = exposure.get(f['meta']['id'], [])
             contract_units = [u for c in g.of('SemanticContract') for op in c['body']['operations'] if op['function']['id'] == f['meta']['id'] for u in units.get(c['meta']['id'], [])]
             realised = sorted(set(units.get(f['meta']['id'], []) + contract_units))
             fc = cases.get(f['meta']['id'], [])
             status = '; '.join(c['meta']['name'] + ' : ' + (('%s (%s)' % (last(c)['result'], last(c)['proof_level'])) if last(c) else 'non exécuté') for c in fc) or 'aucun cas'
-            rows.append([req['meta']['name'], req['body']['priority'], f['meta']['name'], ', '.join(contract_ops) or '—', ', '.join(realised) or '—',
+            rows.append([req['meta']['name'], req['body']['priority'], f['meta']['name'], ', '.join(contract_ops) or '-', ', '.join(realised) or '-',
                          str(len(fc)), status])
     lines = ['Chaque exigence jusqu’à la fonction qui la satisfait, l’opération qui l’expose, le bloc de construction qui la réalise et le',
              'cas qui la vérifie, avec le résultat de sa dernière exécution.', ''] + table(['Exigence', 'Priorité', 'Fonction', 'Opérations', 'Unités de construction', 'Cas', 'Vérification'], rows)
@@ -407,7 +450,7 @@ def d_gaps(g, gates):
     lines = ['L’écart entre ce qui est décrit et ce qu’il faut pour construire : manques déclarés, puis critères de la porte « prêt à construire » non tenus.', '']
     lines += table(['Manque', 'Nature', 'Impact', 'Responsable'], [[x['meta']['name'], x['body']['missing_element_kind'], x['body']['impact'], x['body']['resolution_owner']] for x in gaps])
     for gate in gates:
-        lines += ['', '## Porte « prêt à construire » — ' + gate['namespace'] + ' : ' + gate['result'], '']
+        lines += ['', '## Porte « prêt à construire » - ' + gate['namespace'] + ' : ' + gate['result'], '']
         lines += table(['Critère', 'État', 'Pour le fermer'], [[r[0], r[1], r[3]] for r in map(_criterion_row, gate['criteria'])])
     return 'Analyse d’écarts', lines, gaps
 
@@ -419,8 +462,8 @@ def d_risks(g):
         b = a['body'];risk = risks.get(b['risk']['id']);score = b['likelihood'] * b['impact']
         residual = (b['residual_likelihood'] * b['residual_impact']) if 'residual_likelihood' in b else None
         heat[(b['likelihood'], b['impact'])] += 1
-        rows.append([(risk or {}).get('meta', {}).get('name', b['risk']['id']), b['likelihood'], b['impact'], score, residual if residual is not None else '—',
-                     b['status'], b['owner'], ', '.join(g.name(m) for m in b.get('mitigations', [])) or '—'])
+        rows.append([(risk or {}).get('meta', {}).get('name', b['risk']['id']), b['likelihood'], b['impact'], score, residual if residual is not None else '-',
+                     b['status'], b['owner'], ', '.join(g.name(m) for m in b.get('mitigations', [])) or '-'])
     lines = ['Registre des risques : scénario, score (probabilité × impact, de 1 à 25), score résiduel après atténuation, propriétaire et mesures.', '']
     lines += table(['Risque', 'P', 'I', 'Score', 'Résiduel', 'État', 'Propriétaire', 'Atténuations'], rows)
     lines += ['', '## Carte de chaleur', '', 'Nombre de risques par probabilité (lignes) et impact (colonnes).', '']
@@ -440,27 +483,19 @@ def _months(start, end):
 
 
 def d_finance(g):
-    items = g.of('CostItem');years = defaultdict(lambda: defaultdict(Decimal));by_category = defaultdict(Decimal);horizon = {}
-    for c in items:
-        b = c['body'];amount = Decimal(b['amount']['value']);currency = b['amount']['currency']
-        if b['recurrence'] == 'ONCE': years[(int(b['start'][:4]), currency)][b['nature']] += amount;by_category[(b['nature'], b['category'], currency)] += amount;continue
-        end = b.get('end') or str(int(b['start'][:4]) + 2) + b['start'][4:]
-        horizon[c['meta']['id']] = end
-        monthly = amount if b['recurrence'] == 'MONTHLY' else amount / 12
-        for year in _months(b['start'], end):
-            years[(year, currency)][b['nature']] += monthly;by_category[(b['nature'], b['category'], currency)] += monthly
-    fmt = lambda d: '{:,.0f}'.format(d).replace(',', ' ')
-    lines = ['Plan financier CAPEX / OPEX tiré des postes de coût du dossier. Un poste récurrent sans fin est compté sur 36 mois et signalé.', '']
-    lines += table(['Année', 'Devise', 'CAPEX', 'OPEX', 'Total'], [[y, cur, fmt(v['CAPEX']), fmt(v['OPEX']), fmt(v['CAPEX'] + v['OPEX'])] for (y, cur), v in sorted(years.items())])
-    lines += ['', '## Par nature et catégorie (sur l’horizon)', ''] + table(['Nature', 'Catégorie', 'Devise', 'Montant'], [[n, c, cur, fmt(v)] for (n, c, cur), v in sorted(by_category.items())])
-    lines += ['', '## Postes', ''] + table(['Poste', 'Nature', 'Catégorie', 'Montant', 'Récurrence', 'Période', 'Confiance', 'Base'],
-                   [[c['meta']['name'], c['body']['nature'], c['body']['category'], c['body']['amount']['value'] + ' ' + c['body']['amount']['currency'], c['body']['recurrence'],
-                     c['body']['start'] + (' → ' + (c['body'].get('end') or horizon.get(c['meta']['id'], '')) if c['body']['recurrence'] != 'ONCE' else ''),
-                     c['body']['confidence'], c['body']['basis']] for c in items])
-    estimates = g.of('Estimate')
+    from air import financial_view
+    view = financial_view.project(g)
+    used = g.of('CostItem') + g.of('FinancialPlan') + g.of('Estimate')
+    for row in view['rows']:
+        used += [g.get(r) for r in row['sources'] if g.get(r)]
+    for plan in view['plans']:
+        used += [g.get(r) for r in plan['sources_exact'] if g.get(r)]
+        if 'approval_source' in plan and g.get(plan['approval_source']): used.append(g.get(plan['approval_source']))
+    lines = financial_view.lines(view)
     lines += ['', '## Charges estimées', ''] + table(['Cible', 'Mesure', 'Valeur', 'Unité', 'Classe de calibration'],
-                   [[g.name(e['body']['target']), e['body']['measure'], e['body']['value_or_distribution'].get('value', '?'), e['body']['value_or_distribution'].get('unit', ''), e['body']['calibration_class']] for e in estimates])
-    return 'Plan financier CAPEX / OPEX', lines, items + estimates
+        [[g.name(e['body']['target']), e['body']['measure'], e['body']['value_or_distribution'].get('value', '?'),
+          e['body']['value_or_distribution'].get('unit', ''), e['body']['calibration_class']] for e in g.of('Estimate')])
+    return 'Dimension financière : plan et décomposition', lines, used
 
 
 def d_ontology(g):
@@ -481,23 +516,32 @@ def d_ontology(g):
 
 def d_logical(g):
     entities = g.of('DataEntity');relations = g.of('ConceptRelation')
-    by_concept = {e['body']['concept']['id']: e for e in entities}
     lines = ['Modèle logique : les agrégats et entités, leurs attributs et leurs relations, indépendamment de tout stockage.', '']
     if entities:
         diagram = ['erDiagram']
         for e in entities:
-            name = re.sub(r'[^A-Za-z0-9_]', '_', e['meta']['name'])[:40]
-            diagram.append('  ' + name + ' {')
-            for a in e['body']['attributes']: diagram.append('    ' + a['value_type'] + ' ' + a['name'] + (' "requis"' if a['required'] else ''))
+            name = mid(e['meta']['id'])
+            diagram.append('  ' + name + '[' + label(e['meta']['name']) + '] {')
+            identity = {f['name'] for f in e['body']['identity']}
+            for a in e['body']['attributes']: diagram.append('    ' + a['value_type'] + ' ' + a['name'] + (' PK' if a['name'] in identity else '') + (' "requis"' if a['required'] else ''))
             diagram.append('  }')
-        for r in relations:
-            left, right = by_concept.get(r['body']['subject']['id']), by_concept.get(r['body']['object']['id'])
-            if left and right and r['body']['predicate'] in ('HAS', 'PART_OF', 'REFERS_TO', 'ASSOCIATED_WITH'):
-                arrow = {'HAS': '||--o{', 'PART_OF': '}o--||', 'REFERS_TO': '}o--||', 'ASSOCIATED_WITH': '}o--o{'}[r['body']['predicate']]
-                diagram.append('  ' + re.sub(r'[^A-Za-z0-9_]', '_', left['meta']['name'])[:40] + ' ' + arrow + ' ' + re.sub(r'[^A-Za-z0-9_]', '_', right['meta']['name'])[:40] + ' : ' + r['body']['predicate'])
         lines += mermaid(diagram) + ['']
     lines += table(['Entité', 'Notion', 'Autorité', 'Identité'], [[e['meta']['name'], g.name(e['body']['concept']), g.name(e['body']['ownership']), ', '.join(f['name'] for f in e['body']['identity'])] for e in entities])
-    return 'Modèle logique de données', lines, entities
+    for e in entities:
+        lines += ['', '## Attributs de ' + e['meta']['name'], ''] + table(['Attribut', 'Type logique', 'Requis', 'Identité', 'Description'],
+            [[a['name'], a['value_type'], 'oui' if a['required'] else 'non', 'oui' if a['name'] in {f['name'] for f in e['body']['identity']} else 'non', a['description']]
+             for a in e['body']['attributes']])
+    lines += ['', '## Relations sémantiques déclarées', '', 'La cardinalité est celle déclarée sur la relation. La cardinalité inverse et les contraintes d’entité ne sont pas déduites du prédicat.', '']
+    lines += table(['Sujet', 'Relation', 'Objet', 'Cardinalité déclarée'],
+        [[g.name(r['body']['subject']), r['body']['predicate'], g.name(r['body']['object']), r['body'].get('cardinality', 'non déclarée')] for r in relations])
+    if relations:
+        semantic = ['flowchart LR']
+        for r in relations:
+            b = r['body']
+            semantic.append('  ' + mid(b['subject']['id']) + '([' + label(g.name(b['subject'])) + ']) -->|' +
+                label(b['predicate'] + ' · ' + b.get('cardinality', 'cardinalité non déclarée')) + '| ' + mid(b['object']['id']) + '([' + label(g.name(b['object'])) + '])')
+        lines += ['', '## Relations entre concepts associés aux entités', ''] + mermaid(semantic)
+    return 'Modèle logique de données', lines, entities + relations
 
 
 def d_physical(g):
@@ -505,18 +549,29 @@ def d_physical(g):
     if tables:
         diagram = ['erDiagram']
         for t in tables:
-            diagram.append('  ' + t['body']['name'] + ' {')
+            diagram.append('  ' + mid(t['meta']['id']) + '[' + label(t['body']['name']) + '] {')
             for c in t['body']['columns']:
                 marks = ', '.join(x for x in ('PK' if c['primary_key'] else '', 'FK' if 'references' in c else '') if x)
                 diagram.append('    ' + re.sub(r'[^A-Za-z0-9_]', '_', c['type'])[:30] + ' ' + c['name'] + (' ' + marks if marks else ''))
             diagram.append('  }')
-        for t in tables:
-            for c in t['body']['columns']:
-                target = g.get(c['references']['table']) if 'references' in c else None
-                if target: diagram.append('  ' + target['body']['name'] + ' ||--o{ ' + t['body']['name'] + ' : ' + c['name'])
         lines += mermaid(diagram) + ['']
-    lines += table(['Table', 'Base', 'Entité logique', 'Colonnes', 'Index'], [[t['body']['name'], g.name(t['body']['store']), g.name(t['body']['implements']) if 'implements' in t['body'] else '—',
-                   len(t['body']['columns']), '; '.join(t['body'].get('indexes', [])) or '—'] for t in tables])
+    lines += table(['Table', 'Base', 'Entité logique', 'Colonnes', 'Index'], [[t['body']['name'], g.name(t['body']['store']), g.name(t['body']['implements']) if 'implements' in t['body'] else '-',
+                   len(t['body']['columns']), '; '.join(t['body'].get('indexes', [])) or '-'] for t in tables])
+    for t in tables:
+        lines += ['', '## Colonnes de ' + t['body']['name'] + ' - ' + g.name(t['body']['store']), ''] + table(
+            ['Colonne', 'Type physique déclaré', 'Nullable', 'Clé primaire', 'Référence exacte'],
+            [[c['name'], c['type'], 'oui' if c['nullable'] else 'non', 'oui' if c['primary_key'] else 'non',
+              (g.name(c['references']['table']) + '.' + c['references']['column'] + ' r' + str(c['references']['table']['revision'])) if 'references' in c else '-'] for c in t['body']['columns']])
+    links = ['flowchart LR']
+    for t in tables:
+        for c in t['body']['columns']:
+            if 'references' in c:
+                target = g.get(c['references']['table'])
+                if target:
+                    links.append('  ' + mid(t['meta']['id']) + '[' + label(t['body']['name'] + ' · ' + g.name(t['body']['store'])) + '] -->|' +
+                        label(c['name'] + ' référence ' + c['references']['column']) + '| ' + mid(target['meta']['id']) + '[' + label(target['body']['name'] + ' · ' + g.name(target['body']['store'])) + ']')
+    if len(links) > 1: lines += ['', '## Références de colonnes', ''] + mermaid(links)
+    lines += ['', 'Les types et index sont des déclarations. Aucun DDL, contrainte UNIQUE/CHECK, comportement de suppression ou migration n’est généré. Les multiplicités inverses des clés étrangères ne sont pas inventées.', '']
     return 'Modèle physique de données', lines, tables
 
 
@@ -525,10 +580,10 @@ def d_infrastructure(g):
     objs = []
     for e in g.of('Environment'):
         diagram, used = _environment_diagram(g, e['body']['stage']);objs += used
-        lines += ['## ' + e['meta']['name'] + ' (' + e['body']['stage'] + ') — ' + e['body']['hosting'], '', e['body']['purpose'], ''] + diagram + ['']
+        lines += ['## ' + e['meta']['name'] + ' (' + e['body']['stage'] + ') - ' + e['body']['hosting'], '', e['body']['purpose'], ''] + diagram + ['']
     links = g.of('Connection')
     lines += ['## Flux réseau', ''] + table(['Source', 'Cible', 'Protocole', 'Port', 'Chiffré', 'Authentification', 'Objet'],
-                   [[g.name(l['body']['source']), g.name(l['body']['target']), l['body']['protocol'], l['body'].get('port', '—'), 'oui' if l['body']['encrypted'] else 'NON', l['body']['authentication'], l['body']['purpose']] for l in links])
+                   [[g.name(l['body']['source']), g.name(l['body']['target']), l['body']['protocol'], l['body'].get('port', '-'), 'oui' if l['body']['encrypted'] else 'NON', l['body']['authentication'], l['body']['purpose']] for l in links])
     return 'Architecture d’infrastructure et de réseau', lines, objs + links
 
 
@@ -550,7 +605,7 @@ def d_security(g, gates):
             diagram.append('  ' + mid(l['body']['source']['id']) + ' -->|' + label(('🔒 ' if l['body']['encrypted'] else '⚠ clair ') + l['body']['authentication']) + '| ' + mid(l['body']['target']['id']))
             crossings.append(l)
     lines += mermaid(diagram) + [''] if zones else ['_Aucune zone de confiance déclarée._', '']
-    lines += ['## Contrôles par zone', ''] + table(['Zone', 'Niveau', 'Contrôles'], [[z['meta']['name'], z['body']['trust_level'], '; '.join(g.name(c) for c in z['body'].get('controls', [])) or '—'] for z in zones])
+    lines += ['## Contrôles par zone', ''] + table(['Zone', 'Niveau', 'Contrôles'], [[z['meta']['name'], z['body']['trust_level'], '; '.join(g.name(c) for c in z['body'].get('controls', [])) or '-'] for z in zones])
     lines += ['', '## Traversées de zones', ''] + table(['Source', 'Cible', 'Chiffré', 'Authentification'], [[g.name(l['body']['source']), g.name(l['body']['target']), 'oui' if l['body']['encrypted'] else 'NON', l['body']['authentication']] for l in crossings])
     for gate in gates:
         security = next((c for c in gate['criteria'] if c['code'] == 'SECURITY_ZONES'), None)
@@ -565,7 +620,7 @@ def d_goals(g):
     lines = ['Objectifs stratégiques reçus en entrée (importables comme socle partagé) et leurs cibles mesurables.', '']
     lines += table(['Objectif', 'Résultat attendu', 'Cibles', 'Horizon', 'Espace'], [[x['meta']['name'], x['body']['outcome'],
                    '; '.join(_target(g, t) for t in x['body'].get('targets', [])),
-                   (x['body'].get('horizon') or {}).get('end', '—')[:10], x['meta']['namespace']] for x in goals])
+                   (x['body'].get('horizon') or {}).get('end', '-')[:10], x['meta']['namespace']] for x in goals])
     lines += ['', '## Intentions', ''] + table(['Intention', 'Changement voulu', 'Commanditaire'], [[i['meta']['name'], i['body']['desired_change'], i['body']['sponsor']] for i in intents])
     return 'Objectifs stratégiques', lines, goals + intents
 
@@ -591,10 +646,22 @@ def d_adr(g):
         b = d['body']
         options = [g.name(a) if isinstance(a, dict) else str(a) for a in b.get('alternatives', [])]
         selection = b.get('selection');chosen = g.name(selection) if isinstance(selection, dict) else str(selection)
-        lines += ['## ADR-%03d — %s' % (i, d['meta']['name']), '', '**Statut :** proposée (' + d['meta']['lifecycle'] + ')  ', '**Autorité :** ' + str(b.get('authority', '—')), '',
+        lines += ['## ADR-%03d - %s' % (i, d['meta']['name']), '', '**Statut :** proposée (' + d['meta']['lifecycle'] + ')  ', '**Autorité :** ' + str(b.get('authority', '-')), '',
                   '**Question :** ' + b['question'], '', '**Options :**', ''] + ['- ' + o for o in options] + ['', '**Décision :** ' + chosen, '',
                   '**Raison :** ' + b['rationale'], '', '**Conséquences :**', ''] + ['- ' + c for c in b.get('consequences', [])] + ['', '**Réviser si :**', ''] + ['- ' + c for c in b.get('revisit_conditions', [])] + ['']
-    return 'Registre des décisions d’architecture', lines, decisions
+    strategies = g.of('SourcingStrategy')
+    lines += ['## Stratégie de consultation et choix des fournisseurs', '',
+        'La stratégie RFI/RFP est une décision d’architecture reliée au périmètre et au jalon de consultation. Les statuts sont déclarés ; le compilateur n’envoie aucune consultation.', '']
+    if not strategies: lines += ['Aucune stratégie de consultation déclarée ; documenter le choix RFI/RFP ou la décision de ne pas consulter.', '']
+    for s in strategies:
+        b = s['body']
+        lines += ['### ' + s['meta']['name'], '', '**Stratégie :** ' + b['strategy'] + '. **Statut déclaré :** ' + b['status'] + '.',
+            '**Décision :** ' + g.name(b['decision']) + '. **Jalon :** ' + g.name(b['milestone']) + '.',
+            '**Objectif :** ' + b['purpose'], '**Responsable :** ' + b['owner'], '', '**Critères de sélection :**', '']
+        lines += ['- ' + c for c in b['criteria']] + ['', '**Éléments concernés :** ' + ', '.join(g.name(r) for r in b['architecture_links']),
+            '**Preuves exactes :** ' + (', '.join(g.name(r) for r in b['evidence']) or 'Aucune preuve de lancement ou sélection reçue.'), '']
+        if 'selected_supplier' in b: lines += ['**Fournisseur déclaré sélectionné :** ' + g.name(b['selected_supplier']), '']
+    return 'Registre des décisions d’architecture', lines, decisions + strategies
 
 
 def d_technologies(g):
@@ -603,8 +670,8 @@ def d_technologies(g):
         for t in c['body'].get('technologies', []): used[t['id']].append(c['meta']['name'])
     lines = ['Registre des technologies, classé comme un radar : ADOPT, TRIAL, ASSESS, HOLD ; avec les composants qui les emploient.', '']
     for status in ('ADOPT', 'TRIAL', 'ASSESS', 'HOLD'):
-        rows = [[t['meta']['name'], t['body']['category'], t['body']['version'], t['body']['license'], t['body'].get('vendor', '—'),
-                 ', '.join(sorted(set(used.get(t['meta']['id'], [])))) or '—', g.name(t['body']['decision']) if 'decision' in t['body'] else '—'] for t in technologies if t['body']['status'] == status]
+        rows = [[t['meta']['name'], t['body']['category'], t['body']['version'], t['body']['license'], t['body'].get('vendor', '-'),
+                 ', '.join(sorted(set(used.get(t['meta']['id'], [])))) or '-', g.name(t['body']['decision']) if 'decision' in t['body'] else '-'] for t in technologies if t['body']['status'] == status]
         lines += ['## ' + status, ''] + table(['Technologie', 'Catégorie', 'Version', 'Licence', 'Éditeur', 'Employée par', 'Décision'], rows) + ['']
     return 'Registre des technologies', lines, technologies
 
@@ -616,8 +683,8 @@ def d_planning(g):
         diagram = ['gantt', '  dateFormat YYYY-MM-DD', '  title Jalons']
         for m in milestones: diagram.append('  ' + m['meta']['name'][:60].replace(':', ' ') + ' : milestone, ' + mid(m['meta']['id']) + ', ' + m['body']['target_date'] + ', 0d')
         lines += mermaid(diagram) + ['']
-    lines += table(['Jalon', 'Date', 'Dépend de', 'Livrables', 'Critères de sortie'], [[m['meta']['name'], m['body']['target_date'], ', '.join(g.name(r) for r in m['body'].get('depends_on', [])) or '—',
-                   ', '.join(g.name(r) for r in m['body'].get('deliverables', [])) or '—', '; '.join(m['body']['exit_criteria'])] for m in milestones])
+    lines += table(['Jalon', 'Date', 'Dépend de', 'Livrables', 'Critères de sortie'], [[m['meta']['name'], m['body']['target_date'], ', '.join(g.name(r) for r in m['body'].get('depends_on', [])) or '-',
+                   ', '.join(g.name(r) for r in m['body'].get('deliverables', [])) or '-', '; '.join(m['body']['exit_criteria'])] for m in milestones])
     return 'Planning et jalons', lines, milestones
 
 
@@ -625,7 +692,7 @@ def d_readiness(g, gates):
     lines = ['Synthèse opposable : pour chaque projet, la porte « prêt à construire » et le niveau de preuve atteint. Cette synthèse est',
              'calculée ; elle ne vaut ni revue humaine, ni signature, ni admission.', '']
     for gate in gates:
-        lines += ['## ' + gate['namespace'] + ' — ' + gate['result'], '', 'Baseline `' + gate['baseline']['id'] + '` révision ' + str(gate['baseline']['revision']) + ', empreinte `' + gate['baseline']['digest'] + '`.', '']
+        lines += ['## ' + gate['namespace'] + ' - ' + gate['result'], '', 'Baseline `' + gate['baseline']['id'] + '` révision ' + str(gate['baseline']['revision']) + ', empreinte `' + gate['baseline']['digest'] + '`.', '']
         lines += table(['Critère', 'État', 'Détail', 'Pour le fermer'], [_criterion_row(c) for c in gate['criteria']]) + ['']
         proof = gate['proof']
         lines += ['Preuve : ' + str(proof['verified_cases']) + ' cas vérifiés sur ' + str(proof['cases']) + ' ; '
@@ -655,7 +722,7 @@ CRITERIA_FR = {
     'PLANNING': ('Unités estimées, coûts et jalons déclarés', 'Ajouter estimations, postes de coût et jalons'),
     'RUNTIME': ('Chaque bloc a un composant de production', 'Déclarer environnement, zone et composant de production'),
     'SECURITY_ZONES': ('Traversées de zones chiffrées', 'Chiffrer la traversée ou passer par une passerelle en DMZ'),
-    'COMPLIANCE': ('Contrôles et exigences non fonctionnelles implémentés', 'Relier chaque contrôle et chaque exigence non fonctionnelle, reçus ou propres, aux blocs qui les implémentent et aux cas qui les vérifient'),
+    'COMPLIANCE': ('Couverture déclarée des contrôles et exigences de qualité', 'Relier chaque contrôle et chaque exigence non fonctionnelle aux blocs prévus et aux cas de vérification ; ces liens ne prouvent pas la conformité du système réalisé'),
     'INDEPENDENT_REVIEW': ('Revue humaine indépendante de la révision exacte', 'Un relecteur authentifié revoit cette révision (air review)'),
 }
 STATUS_FR = {'MET': 'tenu', 'NOT_MET': 'NON TENU', 'NOT_APPLICABLE': 'sans objet'}
@@ -663,7 +730,7 @@ STATUS_FR = {'MET': 'tenu', 'NOT_MET': 'NON TENU', 'NOT_APPLICABLE': 'sans objet
 
 def _criterion_row(c):
     title, fix = CRITERIA_FR.get(c['code'], (c['title'], c['to_close'] or ''))
-    return [title, STATUS_FR.get(c['status'], c['status']), _detail(c), (fix + (' — geste humain' if c.get('owner') == 'human' else '')) if c['status'] == 'NOT_MET' else '—']
+    return [title, STATUS_FR.get(c['status'], c['status']), _detail(c), (fix + (' - geste humain' if c.get('owner') == 'human' else '')) if c['status'] == 'NOT_MET' else '-']
 
 
 def _detail(criterion):
@@ -674,7 +741,10 @@ def _detail(criterion):
     for field in ('by_status', 'by_code'):
         if field in d and d[field]: return ', '.join('%s %s' % (k, v) for k, v in d[field].items())
     if 'open' in d: return '%d déclaré(s), %d ouvert(s), %d accepté(s) en attente de revue' % (d['declared'], len(d['open']), len(d.get('accepted_pending_review', [])))
-    if 'reason' in d: return 'rien à construire dans ce projet'
+    if 'reason' in d:
+        return {'No control or quality requirement applies to this project': 'Aucun contrôle ni exigence de qualité applicable n’est déclaré pour ce projet.',
+                'This project owns no architecture block and no requirement': 'Ce projet ne possède aucun bloc d’architecture ni exigence.',
+                'The baseline profile carries no construction types': 'Le profil de cette baseline ne porte pas de types de construction.'}.get(d['reason'], d['reason'])
     if 'design_cases' in d: return '%d cas de conception dont %d ouverts ; %d tests d’acceptation, %d non planifiés' % (
         d['design_cases'], len(d['design_cases_open']), d['build_acceptance_tests'], len(d['tests_not_planned_in_a_unit']))
     if 'blocks_without_runtime' in d: return str(len(d['blocks_without_runtime'])) + ' bloc(s) sans composant'
@@ -682,7 +752,7 @@ def _detail(criterion):
     if 'receipts' in d: return str(len(d['receipts'])) + ' reçu(s) de revue'
     if 'received_as_input' in d: return '%d à couvrir dont %d reçus, %d couverts' % (d['subjects'], d['received_as_input'], d['mapped'])
     if 'unestimated' in d: return '%s unité(s), %s non estimée(s), %s coût(s), %s jalon(s)' % (d['units'], len(d['unestimated']), d['cost_items'], d['milestones'])
-    return ', '.join('%s %s' % (k, v) for k, v in d.items() if isinstance(v, (int, str)))[:200] or '—'
+    return ', '.join('%s %s' % (k, v) for k, v in d.items() if isinstance(v, (int, str)))[:200] or '-'
 
 
 def d_events(g):
@@ -719,9 +789,9 @@ def d_events(g):
     rows = []
     for e in events:
         m = channels.get(e['meta']['id'])
-        rows.append([e['meta']['name'], e['body']['semantic_meaning'], ', '.join(sorted(publishers.get(e['meta']['id'], ()))) or '—',
-                     m['channel'] if m else 'sans canal', ('%s, %s, clé %s' % (m['delivery'], m['ordering'], m['key']['name'])) if m and 'key' in m else (m['delivery'] if m else '—'),
-                     ', '.join(sorted(subscribers.get(e['meta']['id'], ()))) or '—', g.name(e['body']['payload_schema'])])
+        rows.append([e['meta']['name'], e['body']['semantic_meaning'], ', '.join(sorted(publishers.get(e['meta']['id'], ()))) or '-',
+                     m['channel'] if m else 'sans canal', ('%s, %s, clé %s' % (m['delivery'], m['ordering'], m['key']['name'])) if m and 'key' in m else (m['delivery'] if m else '-'),
+                     ', '.join(sorted(subscribers.get(e['meta']['id'], ()))) or '-', g.name(e['body']['payload_schema'])])
     lines += table(['Événement', 'Sens', 'Publié par', 'Canal', 'Garantie', 'Consommé par', 'Schéma'], rows)
     silent = [e['meta']['name'] for e in events if e['meta']['id'] not in channels]
     lines += ['', '## Événements sans canal', ''] + (['- ' + s for s in silent] if silent else ['Tous les événements sont publiés sur un canal.'])
@@ -736,7 +806,7 @@ def d_navigation(g):
     for m in maps:
         app = g.get(m['body']['application']);used += [app] if app else []
         lines += ['## ' + m['meta']['name'], '', '**Application :** ' + g.name(m['body']['application']) + '  ',
-                  '**Pour :** ' + (', '.join(g.name(p) for p in m['body'].get('personas', [])) or '—'), '']
+                  '**Pour :** ' + (', '.join(g.name(p) for p in m['body'].get('personas', [])) or '-'), '']
         diagram = ['flowchart LR', '  ' + mid(m['meta']['id'] + 'start') + '((' + label('entrée') + '))']
         for s in m['body']['screens']:
             left, right = shape[s['kind']]
@@ -748,8 +818,8 @@ def d_navigation(g):
         lines += mermaid(diagram) + ['']
         with_roles = any(s.get('roles') for s in m['body']['screens'])
         lines += table(['Écran', 'Type', 'Finalité'] + (['Rôles'] if with_roles else []) + ['Opérations appelées'],
-                       [[s['name'], s['kind'], s['purpose']] + ([', '.join(g.name(r) for r in s.get('roles', [])) or '—'] if with_roles else [])
-                        + [', '.join(g.name(o['contract']) + ' · ' + o['name'] for o in s.get('operations', [])) or '—'] for s in m['body']['screens']]) + ['']
+                       [[s['name'], s['kind'], s['purpose']] + ([', '.join(g.name(r) for r in s.get('roles', [])) or '-'] if with_roles else [])
+                        + [', '.join(g.name(o['contract']) + ' · ' + o['name'] for o in s.get('operations', [])) or '-'] for s in m['body']['screens']]) + ['']
     uis = [c for c in g.of('RuntimeComponent') if c['body']['kind'] == 'USER_INTERFACE']
     mapped = {m['body']['application']['id'] for m in maps}
     missing = [c['meta']['name'] for c in uis if c['meta']['id'] not in mapped]
@@ -773,10 +843,10 @@ def d_devices(g):
             diagram.append('  end')
         lines += mermaid(diagram) + ['']
         spec = lambda s: ', '.join(x for x in (s.get('model', ''), '%d vCPU' % s['cpu_cores'] if 'cpu_cores' in s else '', '%d Gio RAM' % s['memory_gib'] if 'memory_gib' in s else '',
-                                               '%d Gio disque' % s['storage_gib'] if 'storage_gib' in s else '', s.get('operating_system', '')) if x) or '—'
+                                               '%d Gio disque' % s['storage_gib'] if 'storage_gib' in s else '', s.get('operating_system', '')) if x) or '-'
         lines += table(['Équipement', 'Nature', 'Qté', 'Capacité unitaire', 'Emplacement', 'Zone', 'Héberge', 'Responsable', 'État'],
                        [[d['meta']['name'], d['body']['kind'], d['body']['quantity'], spec(d['body'].get('specification', {})), d['body']['location'],
-                         g.name(d['body']['zone']) if 'zone' in d['body'] else '—', ', '.join(g.name(r) for r in d['body'].get('hosts', [])) or '—',
+                         g.name(d['body']['zone']) if 'zone' in d['body'] else '-', ', '.join(g.name(r) for r in d['body'].get('hosts', [])) or '-',
                          d['body']['owner'] + (' / ' + d['body']['provider'] if 'provider' in d['body'] else ''), d['body']['status']] for d in here]) + ['']
     totals = Counter()
     for d in devices: totals[d['body']['kind']] += d['body']['quantity']
@@ -787,7 +857,7 @@ def d_devices(g):
 
 
 def _fmt(value, digits=0):
-    if value is None: return '—'
+    if value is None: return '-'
     q = Decimal(1) if digits == 0 else Decimal(1).scaleb(-digits)
     return '{:,}'.format(Decimal(value).quantize(q)).replace(',', ' ')
 
@@ -804,19 +874,19 @@ def d_scenarios(g):
     rows = []
     for o in g.of('AcceptanceScenario'):
         r = scenarios.get(o['meta']['id'], {});b = o['body']
-        rows.append([o['meta']['name'], g.name(b['persona']), g.name(b['navigation']), ', '.join(b['suites']), b['priority'], r.get('verdict', '—'),
-                     g.name(b['design_case']) if 'design_case' in b else '—', g.name(b['acceptance_case']) if 'acceptance_case' in b else '—'])
+        rows.append([o['meta']['name'], g.name(b['persona']), g.name(b['navigation']), ', '.join(b['suites']), b['priority'], r.get('verdict', '-'),
+                     g.name(b['design_case']) if 'design_case' in b else '-', g.name(b['acceptance_case']) if 'acceptance_case' in b else '-'])
     lines += table(['Scénario', 'Persona', 'Interface', 'Suites', 'Priorité', 'Rejeu de conception', 'Cas de conception', 'Test d’acceptation'], rows) + ['']
     lines += ['## Couverture des graphes de navigation', '']
     lines += table(['Interface', 'Scénarios', 'Écrans couverts', 'Transitions couvertes', 'Écrans jamais visités', 'Transitions jamais prises', 'Opérations jamais appelées', 'Impasses'],
                    [[c['name'], c['scenarios'], '%d / %d' % (c['screens_covered'], c['screens']), '%d / %d' % (c['transitions_covered'], c['transitions']),
-                     ', '.join(c['screens_uncovered']) or '—', ', '.join(c['transitions_uncovered']) or '—', ', '.join(c['operations_uncovered']) or '—',
-                     ', '.join(c['dead_ends']) or '—'] for c in report['coverage']]) + ['']
+                     ', '.join(c['screens_uncovered']) or '-', ', '.join(c['transitions_uncovered']) or '-', ', '.join(c['operations_uncovered']) or '-',
+                     ', '.join(c['dead_ends']) or '-'] for c in report['coverage']]) + ['']
     lines += ['## Couverture des parcours clients', ''] + table(['Parcours', 'Opérations', 'Exercées', 'Non exercées'],
-        [[j['name'], j['operations'], j['operations_exercised'], ', '.join(j['not_exercised']) or '—'] for j in report['journeys']]) + ['']
+        [[j['name'], j['operations'], j['operations_exercised'], ', '.join(j['not_exercised']) or '-'] for j in report['journeys']]) + ['']
     for o in g.of('AcceptanceScenario'):
         r = scenarios.get(o['meta']['id'], {});b = o['body'];status = {x['step']: x for x in r.get('steps', [])}
-        lines += ['## ' + o['meta']['name'] + ' — ' + r.get('verdict', '—'), '', '**Objectif :** ' + b['goal'] + '  ', '**Persona :** ' + g.name(b['persona']), '']
+        lines += ['## ' + o['meta']['name'] + ' - ' + r.get('verdict', '-'), '', '**Objectif :** ' + b['goal'] + '  ', '**Persona :** ' + g.name(b['persona']), '']
         if b.get('preconditions'): lines += ['**Préconditions :**', ''] + ['- ' + x for x in b['preconditions']] + ['']
         diagram = ['flowchart LR']
         for i, st in enumerate(b['steps']):
@@ -825,8 +895,8 @@ def d_scenarios(g):
             if i: diagram.append('  ' + mid(o['meta']['id'] + b['steps'][i - 1]['id']) + ' --> ' + node)
         lines += mermaid(diagram) + ['']
         lines += table(['Étape', 'Écran', 'Action', 'Opération', 'Résultat attendu', 'Rejeu'],
-                       [[st['id'], st['screen'], st['action'], (g.name(st['operation']['contract']) + ' · ' + st['operation']['name']) if 'operation' in st else '—',
-                         st['expected'], status.get(st['id'], {}).get('status', '—') + ((' : ' + status[st['id']]['issue']) if status.get(st['id'], {}).get('issue') else '')]
+                       [[st['id'], st['screen'], st['action'], (g.name(st['operation']['contract']) + ' · ' + st['operation']['name']) if 'operation' in st else '-',
+                         st['expected'], status.get(st['id'], {}).get('status', '-') + ((' : ' + status[st['id']]['issue']) if status.get(st['id'], {}).get('issue') else '')]
                         for st in b['steps']]) + ['']
     return 'Scénarios d’acceptation de premier ordre', lines, g.of('AcceptanceScenario') + g.of('NavigationMap')
 
@@ -845,12 +915,12 @@ def d_regression(g):
         b = o['body']
         if 'REGRESSION' not in b['suites'] and 'SMOKE' not in b['suites']: continue
         n += 1
-        rows.append(['NR-%03d' % n, o['meta']['name'], 'Parcours utilisateur', b['priority'], '; '.join(b.get('preconditions', [])) or '—',
-                     b['steps'][-1]['expected'], verdict.get(o['meta']['id'], '—'), ', '.join(x for x in b['suites'] if x != 'ACCEPTANCE')])
+        rows.append(['NR-%03d' % n, o['meta']['name'], 'Parcours utilisateur', b['priority'], '; '.join(b.get('preconditions', [])) or '-',
+                     b['steps'][-1]['expected'], verdict.get(o['meta']['id'], '-'), ', '.join(x for x in b['suites'] if x != 'ACCEPTANCE')])
     for c in sorted(g.of('VerificationCase'), key=lambda c: c['meta']['name']):
         if c['body']['method'] != 'TEST': continue
         n += 1
-        rows.append(['NR-%03d' % n, c['meta']['name'], 'Contrat ou exigence', '—', '; '.join(c['body'].get('inputs', []) if isinstance(c['body'].get('inputs'), list) and all(isinstance(x, str) for x in c['body'].get('inputs', [])) else []) or '—',
+        rows.append(['NR-%03d' % n, c['meta']['name'], 'Contrat ou exigence', '-', '; '.join(c['body'].get('inputs', []) if isinstance(c['body'].get('inputs'), list) and all(isinstance(x, str) for x in c['body'].get('inputs', [])) else []) or '-',
                      c['body']['oracle'], 'à exécuter après construction', unit_of_case.get(c['meta']['id'], 'non planifié')])
     lines = ['Le socle de non-régression de premier ordre : les parcours critiques rejoués à chaque livraison et les tests de contrat qui',
              'protègent chaque exigence. Les parcours ont déjà été rejoués sur le modèle ; tous s’exécuteront sur le logiciel construit.', '']
@@ -869,9 +939,9 @@ def d_compliance(g):
     body = []
     for r in rows:
         impl = {name for kind, name in r['implementers'] if kind == 'ConstructionUnit'}
-        others = ', '.join(name for kind, name in r['implementers'] if kind != 'ConstructionUnit') or '—'
+        others = ', '.join(name for kind, name in r['implementers'] if kind != 'ConstructionUnit') or '-'
         body.append([r['name'], 'Contrôle' if r['kind'] == 'Control' else 'ENF', r['namespace'], r['status']] + ['●' if n in impl else '' for n in unit_names]
-                    + [others, ', '.join(r['verification']) or '—'])
+                    + [others, ', '.join(r['verification']) or '-'])
     lines += table(header, body) + ['']
     crossed = [(r, ns, to) for r in rows for ns, to in r['delegated'].items()]
     technical = [(r, ns, o) for r in rows for ns, o in r['ownership'].items() if o['scope'] == 'TECHNICAL']
@@ -879,19 +949,24 @@ def d_compliance(g):
               'Une exigence portée par un bloc ou une unité l’est comme comportement ; portée seulement par des composants, équipements,',
               'connexions ou zones, elle l’est comme infrastructure et demande un rôle responsable nommé.', '']
     lines += table(['Exigence ou contrôle', 'Projet', 'Portée', 'Responsable'],
-                   [[r['name'], ns, {'BUSINESS': 'bloc métier', 'TECHNICAL': 'composant technique', 'BOTH': 'les deux', 'NONE': '—'}[o['scope']],
-                     ', '.join(o['accountable']) or ('**aucun responsable nommé**' if o['scope'] == 'TECHNICAL' else '—')]
+                   [[r['name'], ns, {'BUSINESS': 'bloc métier', 'TECHNICAL': 'composant technique', 'BOTH': 'les deux', 'NONE': '-'}[o['scope']],
+                     ', '.join(o['accountable']) or ('**aucun responsable nommé**' if o['scope'] == 'TECHNICAL' else '-')]
                     for r in rows for ns, o in r['ownership'].items()]) + ['']
     lines += ['Portées seulement par l’infrastructure : ' + str(len(technical)) + ', dont ' + str(sum(1 for _, _, o in technical if not o['accountable']))
               + ' sans responsable nommé.', '']
     lines += ['## Responsabilités croisées', '', 'Un projet peut déclarer une exigence sans objet chez lui, par une décision : elle doit alors être implémentée par un autre projet.', '']
     lines += table(['Exigence ou contrôle', 'Sans objet dans', 'Implémentée par'],
-                   [[r['name'], ns, (', '.join(to) + ('' if r['delegation_confirmed'] else ' (déclaré, non vérifié dans ces baselines)')) if to else '**aucun projet — manque**']
+                   [[r['name'], ns, (', '.join(to) + ('' if r['delegation_confirmed'] else ' (déclaré, non vérifié dans ces baselines)')) if to else '**aucun projet - manque**']
                     for r, ns, to in crossed]) if crossed else ['Aucune.']
     lines += ['']
     missing = [r for r in rows if r['status'] == 'UNMAPPED' or any(not to for to in r['delegated'].values())]
     lines += ['## Non couverts', ''] + (['- ' + r['name'] + ' (' + r['namespace'] + ')' for r in missing] if missing else ['Chaque contrôle et chaque exigence a une implémentation déclarée.'])
-    return 'Matrice de conformité', lines, [r['subject'] for r in rows] + g.of('ComplianceMapping')
+    from air import journey_catalog
+    coverage = journey_catalog.project(g)
+    lines += ['', '## Checklist documentaire des parcours et usages', '',
+              'Ces contrôles de couverture du dossier ne certifient pas la conformité réglementaire, une recherche UX ou une réception terrain.', '']
+    lines += table(['Contrôle', 'État', 'Lacunes'], [[c['label'], c['status'], str(c['gap_count'])] for c in coverage['checks']])
+    return 'Matrice de conformité', lines, [r['subject'] for r in rows] + g.of('ComplianceMapping') + g.of('JourneyCatalog') + g.of('CustomerJourney') + g.of('Touchpoint') + g.of('UsagePoint')
 
 
 def d_nfr(g):
@@ -899,14 +974,14 @@ def d_nfr(g):
     status = {r['subject']['meta']['id']: r for r in compliance(list(g.by_id.values()), g.by_id)}
     nfrs = g.of('QualityRequirement')
     def target(b):
-        if 'target' not in b: return '—'
+        if 'target' not in b: return '-'
         tg = b['target'];v = tg['value'].get('value', tg['value'].get('state', '?'))
         return {'EQ': '=', 'LTE': '≤', 'GTE': '≥'}[tg['operator']] + ' ' + str(v) + ' ' + tg['unit']
     lines = ['Les exigences non fonctionnelles reçues en entrée et leur prise en compte : cible mesurable, méthode de vérification,',
              'blocs qui les implémentent.', '']
     lines += table(['Catégorie', 'Exigence', 'Cible', 'Priorité', 'Source', 'Vérification', 'Implémentée par', 'État'],
-                   [[q['body']['category'], q['body']['statement'], target(q['body']), q['body']['priority'], q['body'].get('source', '—'), q['body']['verification_method'],
-                     ', '.join(n for _, n in status.get(q['meta']['id'], {}).get('implementers', [])) or '—', status.get(q['meta']['id'], {}).get('status', 'UNMAPPED')]
+                   [[q['body']['category'], q['body']['statement'], target(q['body']), q['body']['priority'], q['body'].get('source', '-'), q['body']['verification_method'],
+                     ', '.join(n for _, n in status.get(q['meta']['id'], {}).get('implementers', [])) or '-', status.get(q['meta']['id'], {}).get('status', 'UNMAPPED')]
                     for q in sorted(nfrs, key=lambda q: (q['body']['category'], q['meta']['name']))])
     project = [r for r in g.of('Requirement') if r['body']['kind'] in ('QUALITY', 'CONSTRAINT')]
     lines += ['', '## Exigences qualité et contraintes des projets', ''] + table(['Exigence', 'Nature', 'Priorité', 'Énoncé'],
@@ -932,7 +1007,7 @@ def d_ai_estimate(g):
     lines += table(['Unité', 'Sans IA (j.h)', 'Avec IA (j.h)', 'Gain (j.h, %)', 'Durée sans IA (mois)', 'Durée avec IA (mois)', 'Équipe', 'Sièges IA', 'Abonnements IA', 'Confiance'], table_rows) + ['']
     names = [r['unit'].replace(' service build', '').replace(' build', '')[:18] for r in rows]
     top = int(max(float(r['without_ai_pd']) for r in rows) * 1.15) + 1
-    lines += ['## Effort par unité, sans IA puis avec IA', ''] + mermaid(['xychart-beta', '  title "Effort par unité (j.h) — sans IA puis avec IA"',
+    lines += ['## Effort par unité, sans IA puis avec IA', ''] + mermaid(['xychart-beta', '  title "Effort par unité (j.h) - sans IA puis avec IA"',
         '  x-axis [' + ', '.join('"' + n.replace('"', "'") + '"' for n in names) + ']', '  y-axis "jours-homme" 0 --> ' + str(top),
         '  bar [' + ', '.join(str(float(r['without_ai_pd'])) for r in rows) + ']', '  bar [' + ', '.join(str(float(r['with_ai_pd'])) for r in rows) + ']']) + ['']
     by_activity = defaultdict(lambda: [Decimal(0), Decimal(0), False])
@@ -943,7 +1018,7 @@ def d_ai_estimate(g):
         [[k, _fmt(v[0]), _fmt(v[1]), _fmt((v[0] - v[1]) / v[0] * 100 if v[0] else 0) + ' %', 'oui' if v[2] else 'non'] for k, v in sorted(by_activity.items())]) + ['']
     plans = g.of('AgenticToolPlan')
     lines += ['## Plans d’IDE agentique', ''] + table(['Plan', 'Éditeur', 'Prix', 'Politique de données', 'Statut'],
-        [[p['body']['product'] + ' — ' + p['body']['plan'], p['body']['vendor'], p['body']['price']['value'] + ' ' + p['body']['price']['currency'] + ' / siège / mois',
+        [[p['body']['product'] + ' - ' + p['body']['plan'], p['body']['vendor'], p['body']['price']['value'] + ' ' + p['body']['price']['currency'] + ' / siège / mois',
           p['body']['data_policy'], p['body']['status']] for p in plans]) + ['']
     lines += ['## Hypothèses', ''] + ['- ' + r['unit'] + ' : ' + r['basis'] for r in rows]
     return 'Estimation avec et sans IA', lines, [r['estimate'] for r in rows] + plans
@@ -955,13 +1030,13 @@ def d_roadmaps(g):
     lines = ['Les feuilles de route possibles de chaque projet, comparées sur le calendrier, le chemin critique, l’effort, le coût et le recours',
              'à l’IA, par rapport à la feuille de route de référence sans IA ; puis la recommandation et la décision qui la retient.', '']
     if not rows: return 'Feuilles de route et alternatives', lines + ['_Aucune feuille de route déclarée._'], []
-    chosen = chosen_by_project(rows);money = lambda v, r: (_fmt(v) + ' ' + (r['currency'] or '')) if v is not None else '—'
+    chosen = chosen_by_project(rows);money = lambda v, r: (_fmt(v) + ' ' + (r['currency'] or '')) if v is not None else '-'
     from air.delivery_calc import programme
     prog = programme(rows)
     lines += ['## Programme', '']
     lines += table(['Projet', 'Feuille de route', 'Statut', 'Début', 'Fin', 'Durée (mois)', 'Coût total'],
                    [[ns, r['name'], r['status'], r['start'], r['end'], _fmt(r['months'], 1), money(r['total_cost'], r)] for ns, r in sorted(chosen.items())]
-                   + [[ns, '_à choisir_', '—', '—', '—', '—', '—'] for ns in sorted({r['namespace'] for r in rows} - set(chosen))]) + ['']
+                   + [[ns, '_à choisir_', '-', '-', '-', '-', '-'] for ns in sorted({r['namespace'] for r in rows} - set(chosen))]) + ['']
     kind_fr = {'FINISH_TO_START': 'fin → début', 'START_TO_START': 'début → début', 'FINISH_TO_FINISH': 'fin → fin'}
     lines += ['### Dépendances entre projets', '']
     lines += table(['Projet', 'Phase', 'Attend', 'Type', 'Dates tenues', 'Feuille de route retenue'],
@@ -996,10 +1071,10 @@ def d_roadmaps(g):
             for ph in r['phases']:
                 tag = 'crit, ' if ph['id'] in r['critical_path'] else ''
                 diagram += ['  section ' + ph['name'][:40].replace(':', ' '), '  ' + ph['objective'][:50].replace(':', ' ').replace('#', '') + ' : ' + tag + mid(r['name'] + ph['id']) + ', ' + ph['start'] + ', ' + ph['end']]
-            lines += ['### ' + r['name'] + ' — ' + r['status'], '', r['strategy'], ''] + mermaid(diagram) + ['']
+            lines += ['### ' + r['name'] + ' - ' + r['status'], '', r['strategy'], ''] + mermaid(diagram) + ['']
             lines += table(['Phase', 'Objectif', 'Du', 'Au', 'Équipe', 'Unités', 'Dépend de', 'Critères de sortie'],
-                           [[ph['name'], ph['objective'], ph['start'], ph['end'], ph['team_size'], ', '.join(g.name(u) for u in ph.get('units', [])) or '—',
-                             ', '.join(ph.get('depends_on', [])) or '—', '; '.join(ph.get('exit_criteria', [])) or '—'] for ph in r['phases']]) + ['']
+                           [[ph['name'], ph['objective'], ph['start'], ph['end'], ph['team_size'], ', '.join(g.name(u) for u in ph.get('units', [])) or '-',
+                             ', '.join(ph.get('depends_on', [])) or '-', '; '.join(ph.get('exit_criteria', [])) or '-'] for ph in r['phases']]) + ['']
     return 'Feuilles de route et alternatives', lines, [r['roadmap'] for r in rows]
 
 
@@ -1019,21 +1094,8 @@ CATALOGUE = [
 ]
 
 
-def compile_deliverables(store, principal, policy, request):
-    check_schema(request, REQUEST)
-    guarded = ScopedStore(store, principal, policy)
-    exports = [snapshot(guarded, ref) for ref in request['baselines']]
-    if sum(len(e['objects']) for e in exports) > 20000: raise InvalidModel('Deliverables context exceeds 20,000 objects; pin fewer baselines')
-    from air.readiness import assess_readiness
-    gates = [assess_readiness(store, principal, policy, {'baseline': ref}) for ref in request['baselines']]
-    g = Graph(exports)
-    directory = request.get('directory', 'livrables')
-    pins = ['- `' + ref['id'] + '` révision ' + str(ref['revision']) + ' — `' + ref['digest'] + '`' for ref in request['baselines']]
-    header = lambda title: ['# ' + title, '', '_' + request['title'] + ' — compilé par ' + ENGINE + ' depuis les baselines épinglées ; ne pas modifier à la main._', '']
-    files, index_rows = [], []
-    known = {name for name, _ in CATALOGUE} | {DECK}
-    unknown = sorted(set(request.get('only', [])) - known)
-    if unknown: raise InvalidModel('Unknown deliverable: ' + ', '.join(unknown) + '. Known: ' + ', '.join(sorted(known)))
+def build_topics(g, gates, request):
+    topics = []
     for name, builder in CATALOGUE:
         if request.get('only') and name not in request['only']: continue
         if builder == 'delivery_org': title, lines, used = d_delivery_org(g, request.get('implementation_root'))
@@ -1042,13 +1104,63 @@ def compile_deliverables(store, principal, policy, request):
         elif builder == 'security': title, lines, used = d_security(g, gates)
         elif builder == 'readiness': title, lines, used = d_readiness(g, gates)
         else: title, lines, used = builder(g)
+        topics.append({'name': name, 'title': title, 'lines': lines, 'used': used})
+    return topics
+
+
+def compile_deliverables(store, principal, policy, request):
+    check_schema(request, REQUEST)
+    if request.get('comparisons') and (request.get('only') or not request.get('website', True)):
+        raise InvalidModel('Explicit comparisons require the complete static website')
+    guarded = ScopedStore(store, principal, policy)
+    exports = [snapshot(guarded, ref) for ref in request['baselines']]
+    if sum(len(e['objects']) for e in exports) > 20000: raise InvalidModel('Deliverables context exceeds 20,000 objects; pin fewer baselines')
+    from air.readiness import assess_readiness
+    gates = [assess_readiness(store, principal, policy, {'baseline': ref}) for ref in request['baselines']]
+    g = Graph(exports)
+    directory = request.get('directory', 'livrables')
+    pins = ['- `' + ref['id'] + '` révision ' + str(ref['revision']) + ' - `' + ref['digest'] + '`' for ref in request['baselines']]
+    header = lambda title: ['# ' + title, '', '_' + request['title'] + ' - compilé par ' + ENGINE + ' depuis les baselines épinglées ; ne pas modifier à la main._', '']
+    files, index_rows = [], []
+    from air import management_summary
+    known = {name for name, _ in CATALOGUE} | {DECK, management_summary.NAME}
+    unknown = sorted(set(request.get('only', [])) - known)
+    if unknown: raise InvalidModel('Unknown deliverable: ' + ', '.join(unknown) + '. Known: ' + ', '.join(sorted(known)))
+    if not request.get('only') or management_summary.NAME in request['only']:
+        summaries = [management_summary.project(e, gate) for e, gate in zip(exports, gates)]
+        files.append(product(directory + '/' + management_summary.NAME + '.md', 'text/markdown', render_text(header('Management Summary') + [line for view in summaries for line in management_summary.lines(view)]), 'GENERATED', FILE_MAX))
+        files.append(product(directory + '/' + management_summary.NAME + '.json', 'application/json', render_json({'engine': management_summary.ENGINE, 'dossiers': summaries, 'revision_policy': 'SEPARATE_EXACT_BASELINES'}), 'GENERATED', FILE_MAX))
+        index_rows.append(['[Management Summary](' + management_summary.NAME + '.md)', 'chaque baseline exacte séparément'])
+    for topic in build_topics(g, gates, request):
+        name, title, lines, used = (topic[k] for k in ('name', 'title', 'lines', 'used'))
         content = render_text(header(title) + lines + [''] + src(used))
         files.append(product(directory + '/' + name + '.md', 'text/markdown', content, 'GENERATED', FILE_MAX))
-        index_rows.append(['[' + title + '](' + name + '.md)', len({o['meta']['id'] for o in used}) or 'aucun — manque'])
-    readme = render_text(header(request['title']) + [
+        index_rows.append(['[' + title + '](' + name + '.md)', len({o['meta']['id'] for o in used}) or 'aucun - manque'])
+    website = not request.get('only') and request.get('website', True)
+    if 'branding' in request and not website:
+        raise InvalidModel('Branding requires the full static website; remove only or enable website')
+    site_manifest = None
+    if not request.get('only') or any(n[:2] in ('18', '19', '20') for n in request['only']):
+        from air.model_export import export_model
+        import json
+        model = export_model(store, principal, policy, exports)
+        files.append(product(directory + '/architecture-model.json', 'application/json', json.dumps(model, ensure_ascii=False, separators=(',', ':')) + '\n', 'GENERATED', TOTAL_MAX))
+    if website:
+        from air.architecture_site import compile_site
+        from air.branding import selection as select_branding
+        brands = select_branding(request, request['baselines'], store, principal, policy)
+        site_files, site_manifest = compile_site(exports, gates, request, lambda graph, local_gates: build_topics(graph, local_gates, request), render_json(model), brands)
+        files.extend(site_files)
+    warnings = (['## Révisions divergentes dans la synthèse', '',
+        'Les documents Markdown de synthèse regroupent les objets par identifiant et retiennent la plus haute révision. Ils ne sont pas une comparaison existant/cible.',
+        'Le site et architecture-model.json conservent séparément chaque dossier exact. Divergences :', ''] +
+        ['- `' + c['id'] + '` : révisions ' + ', '.join(map(str, c['revisions'])) for c in g.revision_conflicts] + ['']) if g.revision_conflicts else []
+    readme = render_text(header(request['title']) + ([
+        '**[Ouvrir le site des dossiers d’architecture](site/index.html)** - navigation par sujet, diagrammes et objets exacts.', '',
+    ] if website else []) + ['**[Commencer par le Management Summary](00-management-summary.md)** - décisions, financement, risques et prochaines conditions.', ''] + warnings + [
         'Dossier de livrables de l’équipe de réalisation, dérivé du graphe d’architecture AIR. Chaque document cite ses objets exacts ;',
         'un document vide signale ce qui manque au dossier. Les diagrammes sont en Mermaid.', '', '## Baselines épinglées', '', *pins, '',
-        '## Portes « prêt à construire »', '', *['- ' + gate['namespace'] + ' : **' + gate['result'] + '**' + (' — bloquants : ' + ', '.join(gate['blocking']) if gate['blocking'] else '') for gate in gates], '',
+        '## Portes « prêt à construire »', '', *['- ' + gate['namespace'] + ' : **' + gate['result'] + '**' + (' - bloquants : ' + ', '.join(gate['blocking']) if gate['blocking'] else '') for gate in gates], '',
         '## Livrables', '', *table(['Livrable', 'Objets sources'], index_rows), '',
         '## Ce que ce dossier n’est pas', '',
         '- Une preuve de comportement réel : les qualifications indépendantes portent sur la conception ou le modèle ; elles n’attestent aucun test du système exécuté.',
@@ -1065,14 +1177,25 @@ def compile_deliverables(store, principal, policy, request):
     if not request.get('only'): files.append(product(directory + '/README.md', 'text/markdown', readme, 'GENERATED', FILE_MAX))
     manifest = {'engine': ENGINE, 'title': request['title'], 'baselines': request['baselines'], 'gates': [{'namespace': x['namespace'], 'result': x['result'], 'blocking': x['blocking']} for x in gates],
                 'deliverables': [name for name, _ in CATALOGUE], 'generator_version': TOOLCHAIN['air_version'],
+                'website': site_manifest, 'projection_conflicts': g.revision_conflicts,
                 # what this generation wrote: a later run replaces these files unless they were edited by hand
                 'files': [{'path': f['path'], 'content_digest': f['content_digest']} for f in sorted(files, key=lambda f: f['path'])]}
     if not request.get('only'): files.append(product(directory + '/manifest.json', 'application/json', render_json(manifest), 'GENERATED', FILE_MAX))
-    no_secret(files)
-    ordered, total, file_set_digest = collate(files, TOTAL_MAX)
+    # This fixed third-party source cannot contain a generated identity token.
+    # Its hash is verified below; token-shaped library symbols are not credentials.
+    vendor_path = directory + '/site/assets/mermaid-12.1.0.js'
+    for f in files:
+        if f['path'] == vendor_path:
+            from importlib import resources
+            import json
+            expected = json.loads(resources.files('air').joinpath('assets/mermaid-provenance.json').read_text(encoding='utf-8'))['sha256']
+            if f['content_digest'] != 'sha256:' + expected: raise InvalidModel('Offline diagram renderer integrity differs')
+    no_secret([f for f in files if f['path'] != vendor_path])
+    ordered, total, file_set_digest = collate(files, request.get('max_total_bytes', TOTAL_MAX))
     if request.get('content') == 'DIGESTS': ordered = [{k: v for k, v in item.items() if k != 'content'} for item in ordered]
     report = {'engine': ENGINE, 'title': request['title'], 'baselines': request['baselines'], 'files': ordered, 'file_set_digest': file_set_digest,
               'total_size': total, 'gates': manifest['gates'], 'deliverables': len(CATALOGUE), 'registry_written': False, 'authorization_granted': False,
-              'generator': TOOLCHAIN, 'request_digest': artifact_digest(request)}
+              'generator': TOOLCHAIN, 'request_digest': artifact_digest(request), 'website': site_manifest,
+              'projection_conflicts': g.revision_conflicts}
     report['report_digest'] = artifact_digest(report)
     return report

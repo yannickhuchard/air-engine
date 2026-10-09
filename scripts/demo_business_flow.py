@@ -33,19 +33,19 @@ def extend(case, baseline, call, workspace, home, port):
     metric = obj('Metric', 'metric', metric_name, {'definition': metric_name, 'unit': unit, 'aggregation': 'Valeur de l’échantillon explicitement fourni ; aucune agrégation de population calculée',
         'population': 'Une opération fictive du dossier ' + case['id'], 'window': 'PT300S', 'collection_method': 'Échantillon synthétique avec Source et fenêtre exactes'})
     threshold = {'type': 'Quantity[second]', 'value': '300'} if unit == 'second' else {'type': 'Boolean', 'value': True}
-    goal = obj('Goal', 'goal', 'Objectif — ' + case['title'], {'outcome': purpose, 'measures': [exact(metric)],
+    goal = obj('Goal', 'goal', 'Objectif - ' + case['title'], {'outcome': purpose, 'measures': [exact(metric)],
         'targets': [{'id': 'sample-target', 'metric': exact(metric), 'operator': 'LTE' if unit == 'second' else 'EQ', 'value': threshold, 'unit': unit, 'context': scope}],
         'horizon': {'start': '2026-09-19T00:00:00Z', 'end': '2026-09-20T00:00:00Z'}})
-    intent = obj('Intent', 'intent', 'Intention — ' + case['title'], {'desired_change': purpose, 'sponsor': owner, 'scope': scope, 'goals': [exact(goal)]})
-    concern = obj('Concern', 'concern', 'Préoccupation — ' + case['title'], {'question': question, 'scope': scope, 'addressed_by': []})
-    stakeholder = obj('Stakeholder', 'stakeholder', 'Responsable — ' + case['title'], {'identity_or_group': owner, 'concerns': [exact(concern)], 'participation_role': 'Responsable déclaré du dossier fictif ; pas de mandat métier implicite'})
+    intent = obj('Intent', 'intent', 'Intention - ' + case['title'], {'desired_change': purpose, 'sponsor': owner, 'scope': scope, 'goals': [exact(goal)]})
+    concern = obj('Concern', 'concern', 'Préoccupation - ' + case['title'], {'question': question, 'scope': scope, 'addressed_by': []})
+    stakeholder = obj('Stakeholder', 'stakeholder', 'Responsable - ' + case['title'], {'identity_or_group': owner, 'concerns': [exact(concern)], 'participation_role': 'Responsable déclaré du dossier fictif ; pas de mandat métier implicite'})
     functions = {(r['function']['id'], r['function']['revision']): r['function'] for r in contract['body']['operations']}
-    capability = obj('Capability', 'capability', 'Capacité — ' + case['title'], {'ability': ability, 'outcomes': [exact(goal)], 'required_functions': list(functions.values()), 'context': scope, 'maturity_evidence': []})
-    service = obj('BusinessService', 'service', 'Service — ' + case['title'], {'beneficiaries': [first('Actor')], 'value_proposition': purpose, 'capabilities': [exact(capability)], 'service_commitments': [exact(contract)]})
-    product = obj('Product', 'product', 'Offre — ' + case['title'], {'offer': offer, 'market_scope': scope, 'services': [exact(service)], 'lifecycle_owner': owner})
+    capability = obj('Capability', 'capability', 'Capacité - ' + case['title'], {'ability': ability, 'outcomes': [exact(goal)], 'required_functions': list(functions.values()), 'context': scope, 'maturity_evidence': []})
+    service = obj('BusinessService', 'service', 'Service - ' + case['title'], {'beneficiaries': [first('Actor')], 'value_proposition': purpose, 'capabilities': [exact(capability)], 'service_commitments': [exact(contract)]})
+    product = obj('Product', 'product', 'Offre - ' + case['title'], {'offer': offer, 'market_scope': scope, 'services': [exact(service)], 'lifecycle_owner': owner})
     objects = [metric, goal, intent, concern, stakeholder, capability, service, product]
     call('/v1/draft-bundles', objects, architect)
-    observation = deepcopy(case['observation']);observation['meta'].update(id='urn:asteria:business:' + case['id'].lower() + ':metric-observation', name='Mesure de la cible — ' + case['title'])
+    observation = deepcopy(case['observation']);observation['meta'].update(id='urn:asteria:business:' + case['id'].lower() + ':metric-observation', name='Mesure de la cible - ' + case['title'])
     observation['meta']['provenance']['method'] = 'Explicit metric binding of the same fictitious sample; not independent additional evidence'
     observation['body']['metric_or_signal'] = exact(metric)
     ingestion = call('/v1/runtime/observations', {'idempotency_key': 'metric-' + case['id'], 'source': {**exact(case['source']), 'digest': digest(case['source'])}, 'observations': [observation]}, observer)
@@ -56,7 +56,7 @@ def extend(case, baseline, call, workspace, home, port):
     assert assessed == call('/v1/goals/assess', request, observer)
     stale = deepcopy(request);stale['max_age_seconds'] = 30
     stale_report = call('/v1/goals/assess', stale, observer);assert stale_report['result'] == 'UNKNOWN'
-    meta = deepcopy(baseline['baseline']['meta']);meta.update(id='urn:asteria:business-baseline:' + case['id'].lower(), name='Objectifs et services — ' + case['title'])
+    meta = deepcopy(baseline['baseline']['meta']);meta.update(id='urn:asteria:business-baseline:' + case['id'].lower(), name='Objectifs et services - ' + case['title'])
     final = call('/v1/baselines', {'meta': meta, 'profile': BUSINESS_PROFILE,
         'members': [{k: r[k] for k in ('id', 'revision')} for r in members] + [exact(o) for o in objects + [observation]], 'parent_baselines': [exact(baseline['baseline'])]}, architect)
     assert final['validation']['valid'] and len(final['baseline']['body']['members']) == 39

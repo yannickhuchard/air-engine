@@ -10,6 +10,14 @@ import rfc8785
 from air.parsing import MAX_BYTES, check_tree
 
 ENGINE = "air.expr/0.3"
+UNITS_ENGINE = "air.expr/0.4"
+
+
+def engine_for(expression):
+    """Select the declared language engine without changing historical 0.1 reports."""
+    return UNITS_ENGINE if isinstance(expression, dict) and expression.get('language_version') == '0.2' else ENGINE
+
+
 LIMITS = {"nodes": 2048, "depth": 24, "steps": 10000, "collection": 256}
 SCALARS = {"Boolean", "Text", "Integer", "Decimal", "Instant", "Duration", "Reference"}
 NAME = re.compile(r"^[a-zA-Z][a-zA-Z0-9_.-]{0,127}$")
@@ -142,7 +150,7 @@ def numeric(t):
 class Program:
     def __init__(self, expression):
         fields(expression, ("language", "language_version", "result_type", "ast"), ("required_inputs",))
-        require(expression["language"] == "AIR-Expr" and expression["language_version"] == "0.1",
+        require(expression["language"] == "AIR-Expr" and expression["language_version"] in ("0.1", "0.2"),
                 "Unsupported language version")
         self.expression = expression
         self.inputs = {}
@@ -158,6 +166,13 @@ class Program:
             self.inputs[name] = type_name(spec["type"])
         require(self.check(expression["ast"]) == type_name(expression["result_type"]),
                 "Declared result type does not match AST", "AIR_EXPR_TYPE")
+        if expression['language_version'] == '0.2':
+            from air.units import dimension
+            for t in [*self.inputs.values(), *self.types.values()]:
+                if t.startswith('Collection['): t = t[11:-1]
+                if t.startswith('Quantity['):
+                    try: dimension(t[9:-1])
+                    except ValueError as exc: raise ExprError('AIR_EXPR_UNIT', str(exc)) from exc
 
     def check(self, node, depth=0, item_type=None):
         self.nodes += 1
@@ -188,9 +203,19 @@ class Program:
             arity = {"not": 1, "length": 1, "and": 2, "or": 2, "eq": 2, "ne": 2,
                      "lt": 2, "lte": 2, "gt": 2, "gte": 2, "in": 2,
                      "add": 2, "sub": 2, "mul": 2, "div": 2}
+            if self.expression['language_version'] == '0.2': arity['convert'] = 2
             require(op in arity and len(args) == arity[op], "Unknown operator or incorrect arity")
             ts = [self.check(a, depth + 1, item_type) for a in args]
-            if op in ("and", "or", "not"):
+            if op == 'convert':
+                from air.units import compatible
+                require(ts[0].startswith('Quantity[') and ts[1] == 'Text' and 'literal' in args[1],
+                        'convert needs a quantity and a literal target unit', 'AIR_EXPR_TYPE')
+                target = args[1]['literal']['value']
+                try: matches = compatible(ts[0][9:-1], target)
+                except ValueError as exc: raise ExprError('AIR_EXPR_UNIT', str(exc)) from exc
+                require(matches, 'Incompatible unit dimensions', 'AIR_EXPR_UNIT')
+                t = 'Quantity[' + target + ']'
+            elif op in ("and", "or", "not"):
                 require(all(x == "Boolean" for x in ts), "Expected Boolean arguments", "AIR_EXPR_TYPE")
                 t = "Boolean"
             elif op == "length":
@@ -282,7 +307,10 @@ class Program:
                 with localcontext(Context(prec=38, rounding=ROUND_HALF_EVEN,
                                          Emin=-999999, Emax=999999, capitals=1, clamp=0, flags=[],
                                          traps=[Inexact, InvalidOperation, DivisionByZero, Overflow])):
-                    if op == "add": result = a + b
+                    if op == 'convert':
+                        from air.units import convert
+                        result = convert(a, vals[0].type[9:-1], b)
+                    elif op == "add": result = a + b
                     elif op == "sub": result = a - b
                     elif op == "mul": result = a * b
                     else: result = Decimal(a) / Decimal(b)
@@ -303,6 +331,7 @@ def evaluate(request, budget=None):
     try:
         bounded(request)
         fields(request, ("expression", "inputs"))
+        report['engine'] = engine_for(request['expression'])
         report["request_digest"] = artifact_digest(request)
         program = Program(request["expression"])
         value, diagnostics = program.execute(request["inputs"], budget)

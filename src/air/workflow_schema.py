@@ -10,7 +10,9 @@ NAMES = ['Workflow', 'OperatingModel', 'BusinessRule']
 def bodies(record, text, uri, ref, refs, nonempty):
     identifier = {'type': 'string', 'pattern': '^[A-Za-z][A-Za-z0-9_.-]{0,63}$'}
     step = record({'binding': {'const': 'air.workflow-step/0.22'}, 'id': identifier, 'name': text, 'function': ref, 'participants': {**nonempty, 'maxItems': 64}})
-    expression = record({'language': {'const': 'AIR-Expr'}, 'language_version': {'const': '0.1'},
+    synchronized_step = record({**step['properties'], 'binding': {'const': 'air.workflow-step/0.35'},
+                               'join': {'enum': ['ANY', 'ALL']}})
+    expression = record({'language': {'const': 'AIR-Expr'}, 'language_version': {'enum': ['0.1', '0.2']},
         'ast': {'type': 'object'}, 'result_type': {'const': 'Boolean'},
         'required_inputs': {'type': 'array', 'items': record({'name': text, 'type': text}), 'maxItems': 256}},
         ['language', 'language_version', 'ast', 'result_type'])
@@ -20,7 +22,7 @@ def bodies(record, text, uri, ref, refs, nonempty):
                      'guard': expression}, ['binding', 'id', 'source', 'target', 'condition'])
     flow = {'oneOf': [flow22, flow32]}
     return {
-        'air.Workflow': record({'steps': {'type': 'array', 'items': step, 'minItems': 1, 'maxItems': 256},
+        'air.Workflow': record({'steps': {'type': 'array', 'items': {'oneOf': [step, synchronized_step]}, 'minItems': 1, 'maxItems': 256},
             'flows': {'type': 'array', 'items': flow, 'maxItems': 1024},
             'start_steps': {'type': 'array', 'items': identifier, 'minItems': 1, 'maxItems': 256, 'uniqueItems': True},
             'termination_policy': text, 'compensations': {**refs, 'maxItems': 256}}),

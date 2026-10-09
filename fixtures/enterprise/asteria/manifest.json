@@ -141,7 +141,7 @@
       }
     ],
     "acceptance": "Chaque critère possède un résultat d’exécution et des artefacts de preuve ; NOT_EXECUTED ou UNKNOWN requis empêche la réception.",
-    "evidence": "docs/validation.md"
+    "evidence": "docs/traceability/verification-collaboration.json"
   },
   "portfolio": {
     "milestone": "DEMO-PORTEFEUILLE-2",

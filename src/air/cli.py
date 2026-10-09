@@ -58,9 +58,9 @@ def bootstrap(home):
 
 
 # Server commands that compile or judge whole baselines: they get a long timeout.
-LONG_RUNNING = ("deliverables", "presentation", "readiness", "scenarios-walk", "scenario-simulate", "scenario-record", "guide",
-                "drafts-validate", "drafts-rebase", "prepared-deposit", "prepared-freeze", "baseline-create", "portfolio-index",
-                "portfolio-init", "workspace-init", "ide-setup", "architecture-inspect", "construction-validate", "gate-validate",
+LONG_RUNNING = ("project-updates", "videos-refresh", "deliverables", "presentation", "readiness", "scenarios-walk", "scenario-simulate", "scenario-record", "guide",
+                "drafts-validate", "drafts-rebase", "prepared-deposit", "prepared-freeze", "question-resume", "baseline-create", "portfolio-index",
+                "portfolio-init", "workspace-init", "branding-configure", "ide-setup", "architecture-inspect", "construction-validate", "gate-validate",
                 "view", "workbench", "audience-view", "baseline-closure", "impact", "diff")
 
 
@@ -81,6 +81,21 @@ def resolve_transport(args):
 def read_document(file):
     with file.open("rb") as stream:
         return parse(stream.read(MAX_BYTES + 1), "yaml" if file.suffix in (".yml", ".yaml") else "json")
+
+
+def read_result(response, command, pack_limit=None):
+    # Full generated packs already have a bounded aggregate file budget. JSON
+    # escaping expands their wire representation; the assistant MCP keeps its
+    # smaller budget and requests DIGESTS instead of receiving all site bytes.
+    limit = 8 * MAX_BYTES
+    if command == 'deliverables':
+        from air.deliverables import TOTAL_MAX
+        if pack_limit is not None and (type(pack_limit) is not int or not TOTAL_MAX <= pack_limit <= 67108864):
+            raise ValueError('Invalid deliverables output budget')
+        limit = 8 * (pack_limit or TOTAL_MAX)
+    payload = response.read(limit + 1)
+    if len(payload) > limit: raise ValueError("AIR result exceeds adapter output budget")
+    return json.loads(payload)
 
 
 def main(argv=None):
@@ -110,6 +125,9 @@ def main(argv=None):
     reception = commands.add_parser('operations-reception-check')
     reception.add_argument('dossier',type=Path)
     commands.add_parser('client-reception-check').add_argument('dossier',type=Path)
+    client_check = commands.add_parser('client-contract-check')
+    client_check.add_argument('snapshot', type=Path, help='Observed tools/list JSON, with optional expected and observed exact baseline pins')
+    client_check.add_argument('--profile', choices=('all', 'contribute', 'read', 'guided'), default='guided')
     commands.add_parser('audit-verify').add_argument('directory',type=Path)
     server_config = commands.add_parser("server-configure")
     server_config.add_argument("file", type=Path)
@@ -133,8 +151,14 @@ def main(argv=None):
         sub.add_argument('--key-file', type=Path, required=True)
     policy = commands.add_parser("policy-set")
     policy.add_argument("file", type=Path)
-    for command in ('proof-key-register', 'proof-key-revoke'):
+    for command in ('proof-key-register', 'proof-key-revoke', 'federation-trust', 'federation-revoke'):
         commands.add_parser(command).add_argument('file', type=Path)
+    commands.add_parser('federation-keygen').add_argument('directory', type=Path)
+    signing = commands.add_parser('federation-export')
+    signing.add_argument('file', type=Path)
+    signing.add_argument('--key-file', type=Path, required=True)
+    signing.add_argument('--output-directory', type=Path, required=True)
+    signing.add_argument('--credential', default='credentials.json')
     for command in ('proof-challenge', 'proof-import'):
         sub = commands.add_parser(command)
         sub.add_argument('file', type=Path)
@@ -163,24 +187,32 @@ def main(argv=None):
     tok.add_argument("--name", required=True, help="New credential filename within AIR home")
     revoke = commands.add_parser("token-revoke")
     revoke.add_argument("token_id")
-    for name in ("put", "get", "bundle-put", "baseline-create", "baseline-export", "change-propose", "gate-validate", "construction-validate", "diff", "impact", "view", "review", "review-revoke", "plan", "simulate", "package-prepare", "package-publish", "package-read", "package-revoke", "context-create", "context-read", "reconcile", "discover", "job-submit", "job-read", "job-cancel", "capacity-publish", "capacity-get", "admission-propose", "admission-review", "admission-review-revoke", "admit", "admission-read", "admission-release", "activate", "renewal-propose", "renew", "closure-propose", "closure-review", "closure-review-revoke", "episode-close", "observation-ingest", "runtime-compare", "whoami", "collaboration-submit", "collaboration-read", "workbench", "goal-assess", "knowledge-inspect", "artifact-import", "artifact-describe", "artifact-read", "artifact-upload", "artifact-download", "audience-view", "view-capture", "view-read", "organization-inspect", "workflow-inspect", "data-validate", "state-replay", "policy-check", "architecture-inspect", "openapi-compile", "workspace-init", "ide-setup", "portfolio-init", "portfolio-index", "baseline-closure", "guide", "revisions", "baseline-browse", "type-describe", "drafts-validate", "drafts-rebase", "prepared-deposit", "prepared-freeze", "readiness", "scenario-simulate", "scenario-record", "deliverables", "scenarios-walk", "presentation"):
+    for name in ("put", "get", "bundle-put", "baseline-create", "baseline-export", "change-propose", "gate-validate", "construction-validate", "diff", "impact", "view", "review", "review-revoke", "plan", "simulate", "package-prepare", "package-publish", "package-read", "package-revoke", "context-create", "context-read", "reconcile", "discover", "job-submit", "job-read", "job-cancel", "capacity-publish", "capacity-get", "admission-propose", "admission-review", "admission-review-revoke", "admit", "admission-read", "admission-release", "activate", "renewal-propose", "renew", "closure-propose", "closure-review", "closure-review-revoke", "episode-close", "observation-ingest", "runtime-compare", "whoami", "collaboration-submit", "collaboration-read", "workbench", "goal-assess", "knowledge-inspect", "temporal-reconstruct", "currency-convert", "federation-receive", "federation-read", "connector-preview", "artifact-import", "artifact-describe", "artifact-read", "artifact-upload", "artifact-download", "audience-view", "view-capture", "view-read", "organization-inspect", "workflow-inspect", "business-paths", "transformation-query", "project-updates", "videos-refresh", "data-validate", "state-replay", "policy-check", "architecture-inspect", "openapi-compile", "workspace-init", "branding-configure", "ide-setup", "portfolio-init", "portfolio-index", "baseline-closure", "guide", "revisions", "baseline-browse", "type-describe", "drafts-validate", "drafts-rebase", "prepared-deposit", "prepared-freeze", "readiness", "scenario-simulate", "scenario-record", "deliverables", "scenarios-walk", "presentation", "question-resume"):
         sub = commands.add_parser(name)
         sub.add_argument("--port", type=int)
         sub.add_argument("--url", help="Explicit AIR origin; HTTPS required outside loopback")
         sub.add_argument("--ca-file", type=Path, help="Trusted enterprise CA PEM for HTTPS")
         sub.add_argument("--credential", default="credentials.json")
         if name == "whoami": continue
+        if name == "videos-refresh":
+            sub.add_argument("--render", action="store_true", help="Explicit optional local Hyperframes/FFmpeg render after applying exact sources")
+        if name == "branding-configure":
+            sub.add_argument("--design-md", type=Path, help="Import DESIGN.md as inert design data")
+        if name == "deliverables":
+            sub.add_argument("--branding", type=Path, help="branding/brand.json or branding selection JSON")
         if name == "artifact-upload":
             sub.add_argument("--namespace", required=True)
             sub.add_argument("--media-type", default="application/octet-stream")
             sub.add_argument("--idempotency-key", required=True)
         if name in ("view", "workbench", "artifact-download", "audience-view", "openapi-compile", "presentation"):
             sub.add_argument("--output", type=Path, required=True)
-        if name in ("workspace-init", "ide-setup", "portfolio-init", "portfolio-index", "deliverables"):
+        if name == "question-resume":
+            sub.add_argument("--output", type=Path, help="Save capsule and context receipt in a new file, without overwriting")
+        if name in ("workspace-init", "branding-configure", "ide-setup", "portfolio-init", "portfolio-index", "deliverables", "videos-refresh"):
             sub.add_argument("--workspace", type=Path, required=True, help="Repository directory receiving the generated files")
             sub.add_argument("--apply", action="store_true", help="Create missing files and refresh AIR-owned sections")
             sub.add_argument("--replace-generated", action="store_true", help="Also rewrite generated files that differ; seeded files stay untouched")
-        if name in ("put", "bundle-put", "baseline-create", "change-propose", "gate-validate", "construction-validate", "diff", "impact", "view", "review", "review-revoke", "plan", "simulate", "package-prepare", "package-publish", "package-read", "package-revoke", "context-create", "context-read", "reconcile", "discover", "job-submit", "job-read", "job-cancel", "capacity-publish", "capacity-get", "admission-propose", "admission-review", "admission-review-revoke", "admit", "admission-read", "admission-release", "activate", "renewal-propose", "renew", "closure-propose", "closure-review", "closure-review-revoke", "episode-close", "observation-ingest", "runtime-compare", "whoami", "collaboration-submit", "collaboration-read", "workbench", "goal-assess", "knowledge-inspect", "artifact-import", "artifact-describe", "artifact-read", "artifact-upload", "artifact-download", "audience-view", "view-capture", "view-read", "organization-inspect", "workflow-inspect", "data-validate", "state-replay", "policy-check", "architecture-inspect", "openapi-compile", "workspace-init", "ide-setup", "portfolio-init", "portfolio-index", "baseline-closure", "guide", "revisions", "baseline-browse", "type-describe", "drafts-validate", "drafts-rebase", "prepared-deposit", "prepared-freeze", "readiness", "scenario-simulate", "scenario-record", "deliverables", "scenarios-walk", "presentation"):
+        if name in ("put", "bundle-put", "baseline-create", "change-propose", "gate-validate", "construction-validate", "diff", "impact", "view", "review", "review-revoke", "plan", "simulate", "package-prepare", "package-publish", "package-read", "package-revoke", "context-create", "context-read", "reconcile", "discover", "job-submit", "job-read", "job-cancel", "capacity-publish", "capacity-get", "admission-propose", "admission-review", "admission-review-revoke", "admit", "admission-read", "admission-release", "activate", "renewal-propose", "renew", "closure-propose", "closure-review", "closure-review-revoke", "episode-close", "observation-ingest", "runtime-compare", "whoami", "collaboration-submit", "collaboration-read", "workbench", "goal-assess", "knowledge-inspect", "temporal-reconstruct", "currency-convert", "federation-receive", "federation-read", "connector-preview", "artifact-import", "artifact-describe", "artifact-read", "artifact-upload", "artifact-download", "audience-view", "view-capture", "view-read", "organization-inspect", "workflow-inspect", "business-paths", "transformation-query", "project-updates", "videos-refresh", "data-validate", "state-replay", "policy-check", "architecture-inspect", "openapi-compile", "workspace-init", "branding-configure", "ide-setup", "portfolio-init", "portfolio-index", "baseline-closure", "guide", "revisions", "baseline-browse", "type-describe", "drafts-validate", "drafts-rebase", "prepared-deposit", "prepared-freeze", "readiness", "scenario-simulate", "scenario-record", "deliverables", "scenarios-walk", "presentation", "question-resume"):
             sub.add_argument("file", type=Path)
         else:
             sub.add_argument("id")
@@ -211,6 +243,29 @@ def main(argv=None):
                 pending.unlink(missing_ok=True)
             result = {"status": "configured", "origin": binding.origin, "host": binding.host,
                       "tls": bool(binding.cert_file), "restart_required": True}
+        elif args.command == 'federation-keygen':
+            from air.federation_sender import keygen
+            result = keygen(args.directory)
+        elif args.command == 'federation-export':
+            from air.federation_sender import export_checkpoint, write_envelope
+            from air.access import AccessPolicy
+            settings = Settings.load(args.home);store = Store(settings.database_url)
+            if settings.auth_mode != 'local': raise ValueError('Operator publication export requires local authentication')
+            filename = Path(args.credential)
+            if filename.name != args.credential or filename.suffix != '.json':
+                raise ValueError('Credential must be a JSON filename within AIR home')
+            cred = json.loads((args.home / filename).read_text(encoding='utf-8'))
+            principal = store.authenticate(cred.get('access_token', ''), include_binding=True)
+            if not principal: raise ValueError('Publication credential is invalid or revoked')
+            principal['authorization']['instance_id'] = settings.instance_id
+            signed = export_checkpoint(store, principal, AccessPolicy.load(args.home), settings,
+                                       read_document(args.file), args.key_file)
+            result = write_envelope(signed, args.output_directory)
+        elif args.command in ('federation-trust', 'federation-revoke'):
+            from air.federation import register_peer, revoke_peer
+            settings = Settings.load(args.home);store = Store(settings.database_url)
+            request = read_document(args.file)
+            result = register_peer(store, settings, request) if args.command == 'federation-trust' else revoke_peer(store, request)
         elif args.command in ('proof-key-register', 'proof-key-revoke'):
             from air.external_proofs import register_key, revoke_key
             settings = Settings.load(args.home);store = Store(settings.database_url)
@@ -270,6 +325,9 @@ def main(argv=None):
                 result["authority_policy"] = {"committed": False, "reason": "BOOTSTRAP_REQUIRED"}
         elif args.command == "capabilities":
             result = capabilities()
+        elif args.command == 'client-contract-check':
+            from air.client_contract import compare
+            result = compare(read_document(args.snapshot), args.profile)
         elif args.command == "expr-evaluate":
             result = evaluate(read_document(args.file))
             activity.finish()
@@ -332,13 +390,13 @@ def main(argv=None):
             try: uvicorn.Server(config).run()
             finally: event_log.close()
             return 0
-        elif args.command in ("proof-challenge", "proof-import", "put", "get", "bundle-put", "baseline-create", "baseline-export", "change-propose", "gate-validate", "construction-validate", "diff", "impact", "view", "review", "review-revoke", "plan", "simulate", "package-prepare", "package-publish", "package-read", "package-revoke", "context-create", "context-read", "reconcile", "discover", "job-submit", "job-read", "job-cancel", "capacity-publish", "capacity-get", "admission-propose", "admission-review", "admission-review-revoke", "admit", "admission-read", "admission-release", "activate", "renewal-propose", "renew", "closure-propose", "closure-review", "closure-review-revoke", "episode-close", "observation-ingest", "runtime-compare", "whoami", "collaboration-submit", "collaboration-read", "workbench", "goal-assess", "knowledge-inspect", "artifact-import", "artifact-describe", "artifact-read", "artifact-upload", "artifact-download", "audience-view", "view-capture", "view-read", "organization-inspect", "workflow-inspect", "data-validate", "state-replay", "policy-check", "architecture-inspect", "openapi-compile", "workspace-init", "ide-setup", "portfolio-init", "portfolio-index", "baseline-closure", "guide", "revisions", "baseline-browse", "type-describe", "drafts-validate", "drafts-rebase", "prepared-deposit", "prepared-freeze", "readiness", "scenario-simulate", "scenario-record", "deliverables", "scenarios-walk", "presentation"):
+        elif args.command in ("proof-challenge", "proof-import", "put", "get", "bundle-put", "baseline-create", "baseline-export", "change-propose", "gate-validate", "construction-validate", "diff", "impact", "view", "review", "review-revoke", "plan", "simulate", "package-prepare", "package-publish", "package-read", "package-revoke", "context-create", "context-read", "reconcile", "discover", "job-submit", "job-read", "job-cancel", "capacity-publish", "capacity-get", "admission-propose", "admission-review", "admission-review-revoke", "admit", "admission-read", "admission-release", "activate", "renewal-propose", "renew", "closure-propose", "closure-review", "closure-review-revoke", "episode-close", "observation-ingest", "runtime-compare", "whoami", "collaboration-submit", "collaboration-read", "workbench", "goal-assess", "knowledge-inspect", "temporal-reconstruct", "currency-convert", "federation-receive", "federation-read", "connector-preview", "artifact-import", "artifact-describe", "artifact-read", "artifact-upload", "artifact-download", "audience-view", "view-capture", "view-read", "organization-inspect", "workflow-inspect", "business-paths", "transformation-query", "project-updates", "videos-refresh", "data-validate", "state-replay", "policy-check", "architecture-inspect", "openapi-compile", "workspace-init", "branding-configure", "ide-setup", "portfolio-init", "portfolio-index", "baseline-closure", "guide", "revisions", "baseline-browse", "type-describe", "drafts-validate", "drafts-rebase", "prepared-deposit", "prepared-freeze", "readiness", "scenario-simulate", "scenario-record", "deliverables", "scenarios-walk", "presentation", "question-resume"):
             filename = Path(args.credential)
             if filename.name != args.credential or filename.suffix != ".json":
                 raise ValueError("Credential must be a JSON filename within AIR home")
             cred = json.loads((args.home / filename).read_text(encoding="utf-8"))
             writes = {"put": "/v1/drafts", "bundle-put": "/v1/draft-bundles",
-                      "baseline-create": "/v1/baselines", "change-propose": "/v1/changes", "gate-validate": "/v1/validations", "construction-validate": "/v1/construction/validations", "diff": "/v1/diffs", "impact": "/v1/impacts", "view": "/v1/views", "review": "/v1/reviews", "review-revoke": "/v1/review-revocations", "plan": "/v1/plans", "simulate": "/v1/experiments", "package-prepare": "/v1/packages/prepare", "package-publish": "/v1/packages/publish", "package-read": "/v1/packages/read", "package-revoke": "/v1/packages/revoke", "context-create": "/v1/contexts", "context-read": "/v1/contexts/read", "reconcile": "/v1/reconciliations", "discover": "/v1/packages/discover", "job-submit": "/v1/jobs", "job-read": "/v1/jobs/read", "job-cancel": "/v1/jobs/cancel", "capacity-publish": "/v1/capacity/offers", "capacity-get": "/v1/capacity/read", "admission-propose": "/v1/admission/propose", "admission-review": "/v1/admission/review", "admission-review-revoke": "/v1/admission/revoke_review", "admit": "/v1/admission/admit", "admission-read": "/v1/admission/read", "admission-release": "/v1/admission/release", "activate": "/v1/admission/activate", "renewal-propose": "/v1/renewal/propose", "renew": "/v1/renewal/renew", "closure-propose": "/v1/closure/propose", "closure-review": "/v1/closure/review", "closure-review-revoke": "/v1/closure/revoke_review", "episode-close": "/v1/closure/close", "observation-ingest": "/v1/runtime/observations", "runtime-compare": "/v1/runtime/comparisons", "collaboration-submit": "/v1/collaboration/submissions", "collaboration-read": "/v1/collaboration/read", "workbench": "/v1/workbench", "goal-assess": "/v1/goals/assess", "knowledge-inspect": "/v1/knowledge/inspect", "artifact-import": "/v1/artifacts/import", "artifact-describe": "/v1/artifacts/describe", "artifact-read": "/v1/artifacts/read", "artifact-upload": "/v1/artifacts/upload", "artifact-download": "/v1/artifacts/download", "audience-view": "/v1/audience-views", "view-capture": "/v1/views/capture", "view-read": "/v1/views/read", "organization-inspect": "/v1/organization/inspect", "workflow-inspect": "/v1/workflow/inspect", "data-validate": "/v1/data/validate", "state-replay": "/v1/states/replay", "policy-check": "/v1/policies/check", "architecture-inspect": "/v1/architecture/inspect", "openapi-compile": "/v1/compilations/openapi", "workspace-init": "/v1/workspaces/compile", "ide-setup": "/v1/ide/adapters", "portfolio-init": "/v1/portfolios/compile", "portfolio-index": "/v1/portfolios/index", "baseline-closure": "/v1/baselines/closure", "guide": "/v1/agent/guide", "revisions": "/v1/agent/revisions", "baseline-browse": "/v1/agent/baselines/browse", "type-describe": "/v1/agent/types/describe", "drafts-validate": "/v1/agent/drafts/validate", "drafts-rebase": "/v1/agent/drafts/rebase", "prepared-deposit": "/v1/agent/prepared/deposit", "prepared-freeze": "/v1/agent/prepared/freeze", "readiness": "/v1/readiness/assess", "scenario-simulate": "/v1/simulations/scenario", "scenario-record": "/v1/simulations/record", "deliverables": "/v1/deliverables/compile", "scenarios-walk": "/v1/acceptance/walk", "presentation": "/v1/presentations/compile"}
+                      "baseline-create": "/v1/baselines", "change-propose": "/v1/changes", "gate-validate": "/v1/validations", "construction-validate": "/v1/construction/validations", "diff": "/v1/diffs", "impact": "/v1/impacts", "view": "/v1/views", "review": "/v1/reviews", "review-revoke": "/v1/review-revocations", "plan": "/v1/plans", "simulate": "/v1/experiments", "package-prepare": "/v1/packages/prepare", "package-publish": "/v1/packages/publish", "package-read": "/v1/packages/read", "package-revoke": "/v1/packages/revoke", "context-create": "/v1/contexts", "context-read": "/v1/contexts/read", "reconcile": "/v1/reconciliations", "discover": "/v1/packages/discover", "job-submit": "/v1/jobs", "job-read": "/v1/jobs/read", "job-cancel": "/v1/jobs/cancel", "capacity-publish": "/v1/capacity/offers", "capacity-get": "/v1/capacity/read", "admission-propose": "/v1/admission/propose", "admission-review": "/v1/admission/review", "admission-review-revoke": "/v1/admission/revoke_review", "admit": "/v1/admission/admit", "admission-read": "/v1/admission/read", "admission-release": "/v1/admission/release", "activate": "/v1/admission/activate", "renewal-propose": "/v1/renewal/propose", "renew": "/v1/renewal/renew", "closure-propose": "/v1/closure/propose", "closure-review": "/v1/closure/review", "closure-review-revoke": "/v1/closure/revoke_review", "episode-close": "/v1/closure/close", "observation-ingest": "/v1/runtime/observations", "runtime-compare": "/v1/runtime/comparisons", "collaboration-submit": "/v1/collaboration/submissions", "collaboration-read": "/v1/collaboration/read", "workbench": "/v1/workbench", "goal-assess": "/v1/goals/assess", "knowledge-inspect": "/v1/knowledge/inspect", "temporal-reconstruct": "/v1/temporal/reconstruct", "currency-convert": "/v1/currency/convert", "federation-receive": "/v1/federation/checkpoints", "federation-read": "/v1/federation/read", "connector-preview": "/v1/connectors/preview", "artifact-import": "/v1/artifacts/import", "artifact-describe": "/v1/artifacts/describe", "artifact-read": "/v1/artifacts/read", "artifact-upload": "/v1/artifacts/upload", "artifact-download": "/v1/artifacts/download", "audience-view": "/v1/audience-views", "view-capture": "/v1/views/capture", "view-read": "/v1/views/read", "organization-inspect": "/v1/organization/inspect", "workflow-inspect": "/v1/workflow/inspect", "business-paths": "/v1/business-paths/query", "data-validate": "/v1/data/validate", "state-replay": "/v1/states/replay", "policy-check": "/v1/policies/check", "architecture-inspect": "/v1/architecture/inspect", "openapi-compile": "/v1/compilations/openapi", "workspace-init": "/v1/workspaces/compile", "branding-configure": "/v1/branding/compile", "ide-setup": "/v1/ide/adapters", "portfolio-init": "/v1/portfolios/compile", "portfolio-index": "/v1/portfolios/index", "transformation-query": "/v1/transformations/query", "project-updates": "/v1/project-updates/query", "videos-refresh": "/v1/videos/refresh", "baseline-closure": "/v1/baselines/closure", "guide": "/v1/agent/guide", "revisions": "/v1/agent/revisions", "baseline-browse": "/v1/agent/baselines/browse", "type-describe": "/v1/agent/types/describe", "drafts-validate": "/v1/agent/drafts/validate", "drafts-rebase": "/v1/agent/drafts/rebase", "prepared-deposit": "/v1/agent/prepared/deposit", "prepared-freeze": "/v1/agent/prepared/freeze", "readiness": "/v1/readiness/assess", "scenario-simulate": "/v1/simulations/scenario", "scenario-record": "/v1/simulations/record", "deliverables": "/v1/deliverables/compile", "scenarios-walk": "/v1/acceptance/walk", "presentation": "/v1/presentations/compile", "question-resume": "/v1/agent/questions/resume"}
             writes.update({"proof-challenge": "/v1/proofs/challenges", "proof-import": "/v1/proofs/import"})
             if args.command in writes:
                 endpoint = writes[args.command]
@@ -347,6 +405,21 @@ def main(argv=None):
                     if not 1 <= len(body) <= artifacts.MAX_SIZE: raise ValueError("Artifact must contain 1 byte to 16 MiB")
                 else:
                     payload = read_document(args.file)
+                    if args.command == "branding-configure" and args.design_md:
+                        with args.design_md.open("rb") as stream: design_raw = stream.read(65537)
+                        if len(design_raw) > 65536: raise ValueError("DESIGN.md exceeds 64 KiB")
+                        payload = {**payload, "profile": {**payload.get("profile", {}), "design_md": design_raw.decode("utf-8")}}
+                    if args.command == "deliverables":
+                        brand_file = args.branding
+                        if not brand_file and "branding" not in payload:
+                            default_brand_file = args.workspace / "branding/brand.json"
+                            if default_brand_file.is_file(): brand_file = default_brand_file
+                        if brand_file:
+                            brand = read_document(brand_file)
+                            if brand.get("engine") == "air.branding/1":
+                                source = {"artifact": brand["source_artifact"]["artifact"]} if "source_artifact" in brand else brand["source"]
+                                brand = {"default": source}
+                            payload = {**payload, "branding": brand}
                     if args.command == "portfolio-index" and isinstance(payload, dict) and "portfolio" not in payload:
                         # The pins file stays small and never stale: the declaration comes from the central repository itself.
                         declaration = args.workspace / "air-portfolio.request.json"
@@ -356,6 +429,10 @@ def main(argv=None):
                     if args.command == "presentation" and isinstance(payload, dict):
                         # The deck is for people: the CLI always asks for the page and writes it to --output.
                         payload = {**payload, "content": "HTML"}
+                    if args.command == "videos-refresh":
+                        if args.render and not args.apply: raise ValueError("--render requires --apply")
+                        payload = {**payload, "content": "FULL"}
+                    if args.command == "question-resume": question_request = payload
                     body = json.dumps(payload).encode()
             elif args.command == "whoami":
                 endpoint, body = "/v1/identity", None
@@ -388,9 +465,8 @@ def main(argv=None):
                 # compilations over several baselines can take minutes; a plain read stays short
                 timeout = 600 if args.command in LONG_RUNNING else 30 if args.command == "artifact-upload" else 15
                 with opener.open(req, timeout=timeout) as response:
-                    payload = response.read(8 * MAX_BYTES + 1)
-                    if len(payload) > 8 * MAX_BYTES: raise ValueError("AIR result exceeds adapter output budget")
-                    result = json.loads(payload)
+                    pack_limit = json.loads(body).get('max_total_bytes') if args.command == 'deliverables' else None
+                    result = read_result(response, args.command, pack_limit)
             activity.enter(2)
         else:
             if args.command == 'worker-once':
@@ -429,6 +505,12 @@ def main(argv=None):
                 result = {"token_id": value["token_id"], "credentials_file": str(destination)}
             else:
                 result = {"revoked": store.revoke_token(args.token_id)}
+        if args.command == "question-resume" and args.output:
+            resume_file = {"capsule": question_request["capsule"], "previous_receipt": result["receipt"]}
+            if "prepared_change" in question_request: resume_file["prepared_change"] = question_request["prepared_change"]
+            with args.output.open("x", encoding="utf-8", newline="\n") as stream:
+                stream.write(json.dumps(resume_file, ensure_ascii=False, indent=2) + "\n")
+            result["output"] = str(args.output.resolve())
         if args.command == "artifact-download":
             with args.output.open("xb") as stream: stream.write(artifact_content)
             result["output"] = str(args.output.resolve())
@@ -439,10 +521,11 @@ def main(argv=None):
                 raise ValueError("Compiled output checksum or size differs")
             with args.output.open("xb") as stream: stream.write(compiled)
             result["output"] = str(args.output.resolve())
-        if args.command in ("workspace-init", "ide-setup", "portfolio-init", "portfolio-index", "deliverables"):
+        if args.command in ("workspace-init", "branding-configure", "ide-setup", "portfolio-init", "portfolio-index", "deliverables", "videos-refresh"):
             root = args.workspace
             # A plan writes nothing, not even its own directory.
             if args.apply: root.mkdir(parents=True, exist_ok=True)
+            video_source = {**result, "files": list(result["files"])} if args.command == "videos-refresh" else None
             previous = previous_generation(root, result["files"])
             steps = plan_files(root, result["files"], previous)
             blocked = [s["path"] for s in steps if s["action"] in ("CONFLICT", "SECTION_MISSING")]
@@ -456,6 +539,9 @@ def main(argv=None):
                 steps = plan_files(root, result["files"], previous_generation(root, result["files"]))
             elif blocked:
                 result["hint"] = "Files edited locally would conflict: " + ", ".join(blocked) + ". --apply --replace-generated overwrites them."
+            if video_source is not None and args.render and args.apply and not any(s["action"] in ("CONFLICT", "SECTION_MISSING") for s in steps):
+                from air.video_render import render
+                result["render"] = render(root, video_source)
             result.pop("files")
             result["workspace_directory"] = str(root.resolve());result["applied"] = bool(args.apply);result["plan"] = steps
         if args.command == "presentation":
@@ -473,11 +559,13 @@ def main(argv=None):
         if args.command == 'operations-reception-check': return 0 if result['status']=='READY_FOR_INDEPENDENT_REVIEW' else 2
         if args.command == 'workstation-check': return 0 if result['status']=='PASS' else 2
         if args.command == 'client-reception-check': return 0 if result['evidence_complete'] else 2
+        if args.command == 'client-contract-check':
+            return 0 if result['catalogue_result'] == 'MATCH' and result['baseline_context'] in ('MATCH', 'NOT_CHECKED') else 2
         if args.command in ("plan", "simulate"):
             return 0 if result["result"] == "SATISFIED" else 1
         if args.command in ("gate-validate", "construction-validate"):
             return 0 if result["gate_decision"] == "PASSED" else 1
-        if args.command in ("workspace-init", "ide-setup", "portfolio-init", "portfolio-index", "deliverables"):
+        if args.command in ("workspace-init", "branding-configure", "ide-setup", "portfolio-init", "portfolio-index", "deliverables", "videos-refresh"):
             return 1 if any(step["action"] in ("CONFLICT", "SECTION_MISSING") for step in result["plan"]) else 0
         return 0
     except HTTPError as exc:

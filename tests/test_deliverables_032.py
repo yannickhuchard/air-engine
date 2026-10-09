@@ -73,7 +73,8 @@ def compiled(store, example, delivery):
 def test_every_deliverable_is_compiled_with_its_sources(compiled):
     report, request, user = compiled
     files = {f['path']: f for f in report['files']}
-    assert len(files) == len(deliverables.CATALOGUE) + 3 and 'livrables/README.md' in files and 'livrables/00-presentation-direction.html' in files and 'livrables/manifest.json' in files
+    assert 'livrables/site/index.html' in files and 'livrables/architecture-model.json' in files
+    assert 'livrables/README.md' in files and 'livrables/00-presentation-direction.html' in files and 'livrables/manifest.json' in files
     for name, _ in deliverables.CATALOGUE:
         content = files['livrables/' + name + '.md']['content']
         assert content.startswith('# ') and '## Sources' in content, name

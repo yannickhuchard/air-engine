@@ -12,8 +12,8 @@ import tomllib
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
-DIRECTORIES = ('src', 'scripts', 'docs', 'fixtures', 'examples', 'tests', '.agents/skills/air-install')
-ROOT_FILES = ('README.md', 'SECURITY.md', 'AGENTS.md', 'CLAUDE.md', 'CHANGELOG.md', 'LICENSE', 'NOTICE', 'pyproject.toml', 'constraints.txt', '.gitignore', '.gitattributes')
+DIRECTORIES = ('src', 'scripts', 'docs', 'fixtures', 'examples', 'tests', '.agents/skills', 'plugins/air-local', '.claude-plugin', '.github/workflows')
+ROOT_FILES = ('README.md', 'CONTRIBUTING.md', 'SECURITY.md', 'AGENTS.md', 'CLAUDE.md', 'CHANGELOG.md', 'LICENSE', 'NOTICE', 'pyproject.toml', 'constraints.txt', '.gitignore', '.gitattributes')
 EXTENSIONS = {'.py', '.md', '.json', '.jsonl', '.toml', '.txt', '.yaml', '.yml', '.html', '.cmd', '.sh', '.js', '.css', '.cjs', '.png', '.jpg', '.svg', '.woff2'}
 FORBIDDEN = {'.air', '.venv', '.git', '__pycache__', '.env', 'credentials.json', 'private.json', 'server.log'}
 

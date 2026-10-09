@@ -64,10 +64,10 @@ def rehearse():
                 'start_steps': ['prepare'], 'termination_policy': 'Proposition revue et exception conservée ; toute action réelle dépend d’une autorisation distincte', 'compensations': []})
             if code != 'D01': workflow['body']['flows'].append({'binding': 'air.workflow-flow/0.22', 'id': 'rework', 'source': 'review', 'target': 'prepare', 'condition': rule_text})
             updated_unit = deepcopy(unit);updated_unit['meta']['revision'] += 1
-            operating = obj('OperatingModel', 'operating', 'Modèle opératoire — ' + case['title'], {'services': [exact(service)], 'responsibility_map': [exact(role), exact(updated_unit)],
+            operating = obj('OperatingModel', 'operating', 'Modèle opératoire - ' + case['title'], {'services': [exact(service)], 'responsibility_map': [exact(role), exact(updated_unit)],
                 'workflows': [exact(workflow)], 'resource_policies': [exact(authority)]})
             updated_unit['body']['operating_model'] = exact(operating)
-            rule = obj('BusinessRule', 'rule', 'Règle de préparation — ' + case['title'], {'statement': rule_text,
+            rule = obj('BusinessRule', 'rule', 'Règle de préparation - ' + case['title'], {'statement': rule_text,
                 'applicability': 'Avant toute décision de lancement sur ce dossier', 'authority': authority['body']['principal'], 'verification': verification})
             additions = [review, workflow, operating, rule, updated_unit]
             assert 'error' not in client('air_import_drafts', {'objects': additions})

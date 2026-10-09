@@ -8,6 +8,7 @@ from air.access import ScopedStore
 from air.collaboration import whoami
 from air.core import record, reference_slots
 from air.foundation import check_schema, exact, InvalidModel
+from air.editorial import html as editorial_html
 from air.projections import SNAPSHOT, snapshot
 
 REQUEST = record({'baseline': SNAPSHOT})
@@ -30,7 +31,7 @@ def compile_workbench(store, principal, policy, settings, request):
     def checksum(text): return base64.b64encode(hashlib.sha256(text.encode('utf-8')).digest()).decode('ascii')
     csp = "default-src 'none'; script-src 'sha256-" + checksum(script) + "'; style-src 'sha256-" + checksum(style) + "'; connect-src 'none'; base-uri 'none'; form-action 'none'"
     title = escape(exported['baseline']['meta']['name'])
-    fallback = ''.join('<li>' + escape(o['meta']['name']) + ' — ' + escape(o['meta']['type']) + ', révision ' + str(o['meta']['revision']) + '</li>' for o in objects)
+    fallback = ''.join('<li>' + escape(o['meta']['name']) + ' - ' + escape(o['meta']['type']) + ', révision ' + str(o['meta']['revision']) + '</li>' for o in objects)
     content = f'''<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="{escape(csp, quote=True)}"><meta name="referrer" content="no-referrer">
 <title>AIR · {title}</title><style>{style}</style></head><body>
@@ -57,6 +58,7 @@ def compile_workbench(store, principal, policy, settings, request):
 <p class="notice">Ce fichier conserve un contexte exporté. Ses données doivent rester dans leur périmètre autorisé ; les droits ne sont pas réévalués hors ligne. Une contribution préparée ne modifie pas le registre.</p>
 </main></div><footer>Les liens reflètent la baseline sélectionnée. Aucune approbation, admission ou action sur un système métier n’est exécutée depuis ce fichier.</footer>
 <script id="air-data" type="application/json">{raw}</script><script>{script}</script></body></html>'''
+    content = editorial_html(content)
     encoded = content.encode('utf-8')
     if len(encoded) > 4 * 1024 * 1024: raise InvalidModel('Workbench output exceeds 4 MiB')
     return {'engine': ENGINE, 'baseline': request['baseline'], 'media_type': 'text/html', 'content': content,
