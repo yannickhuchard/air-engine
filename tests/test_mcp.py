@@ -37,7 +37,10 @@ def test_lifecycle_discovery_and_schema_errors():
     instructions = lenient.handle(message("initialize", {"protocolVersion": PROTOCOL, "capabilities": {}, "clientInfo": {"name": "x"}}, 11))["result"]["instructions"]
     assert "withhold" in instructions and "tools_refused" in instructions, "an adapter that refuses tools is not a stale catalogue"
     tools = session.handle(message("tools/list"))["result"]["tools"]
-    assert len(tools) == 78
+    assert len(tools) == len({t['name'] for t in tools})
+    assert {t['name'] for t in tools} == set(TOOLS)
+    assert {'air_reconstruct_temporal', 'air_convert_currency', 'air_receive_checkpoint',
+            'air_read_checkpoint', 'air_preview_connector'} <= {t['name'] for t in tools}
     assert next(t for t in tools if t["name"] == "air_package_revoke")["annotations"]["destructiveHint"]
     for tool in tools: Draft202012Validator.check_schema(tool["inputSchema"])
     assert all(tool["inputSchema"]["type"] == "object" and "$schema" not in tool["inputSchema"] for tool in tools), "MCP requires object input schemas"

@@ -47,7 +47,7 @@ def rehearse():
             criterion, unit = find('AcceptanceCriterion'), find('ConstructionUnit')
             function = contract['body']['operations'][0]['function'];operation = contract['body']['operations'][0]['name']
             def obj(kind, suffix, body):
-                meta = deepcopy(domain['meta']);meta.update(id='urn:asteria:architecture:' + code.lower() + ':' + suffix, type='air.' + kind, revision=1, name=case['title'] + ' — ' + suffix)
+                meta = deepcopy(domain['meta']);meta.update(id='urn:asteria:architecture:' + code.lower() + ':' + suffix, type='air.' + kind, revision=1, name=case['title'] + ' - ' + suffix)
                 return {'meta': meta, 'body': body}
             provider = obj('ArchitectureBlock', 'provider', {'kind': 'MODULE', 'responsibilities': ['Recevoir les propositions', 'Conserver la traçabilité'],
                 'functions': [function], 'provided_contracts': [exact(contract)], 'required_contracts': [], 'owned_state': [exact(entity)]})

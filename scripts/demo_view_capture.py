@@ -41,7 +41,7 @@ def rehearse():
             code = case['case'];client = APIClient(home, 'architect-' + code + '.json', port);views = []
             for source_view in case['views']:
                 audience = source_view['audience'];request = {'id': 'urn:asteria:captured-view:' + code.lower() + ':' + audience,
-                    'revision': 1, 'name': ('Métier' if audience == 'business' else 'Ingénierie') + ' — ' + case['title'],
+                    'revision': 1, 'name': ('Métier' if audience == 'business' else 'Ingénierie') + ' - ' + case['title'],
                     **source_view['request'], 'idempotency_key': 'capture-' + code + '-' + audience}
                 request_file = workspace / (code + '-' + audience + '-request.json');request_file.write_text(json.dumps(request), encoding='utf-8')
                 result = cli('view-capture', request_file, code);assert result['created']

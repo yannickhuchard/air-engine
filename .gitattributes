@@ -4,3 +4,6 @@
 *.png binary
 *.zip binary
 *.db binary
+# Keep the pinned upstream renderer byte-for-byte, including its original whitespace.
+src/air/assets/mermaid-12.1.0.js -text whitespace=-blank-at-eol
+src/air/assets/bpmn-LICENSE.txt -text whitespace=cr-at-eol

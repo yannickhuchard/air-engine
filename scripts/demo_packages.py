@@ -43,7 +43,7 @@ def rehearse(with_context=False):
             dossiers.append({'case': case['id'], 'baseline': ref(baseline), 'exports': [{**exact(o), 'digest': digest(o)} for o in functions]})
             all_objects.update({o['meta']['id']: o for o in objects})
         combined = deepcopy(read(read('manifest.json')['dossiers'][0]['construction_baseline_request']))
-        combined['meta'].update(id='urn:asteria:baseline:portfolio', namespace='asteria.portfolio', name='Portefeuille Asteria — conception')
+        combined['meta'].update(id='urn:asteria:baseline:portfolio', namespace='asteria.portfolio', name='Portefeuille Asteria - conception')
         combined['members'] = [exact(o) for o in all_objects.values()]
         portfolio = ref(store.create_baseline(combined, 'enterprise-architect'))
         evolved_dossier = None

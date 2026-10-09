@@ -21,12 +21,12 @@ NOT_CHECKED = [
 ]
 # Each check belongs to one family, named after the design principle it makes structural.
 FAMILIES = {
-    'EXCLUSIVITY': {'principle': 'MECE — mutually exclusive: one exposer per function, one owner per aggregate, one provider per contract',
+    'EXCLUSIVITY': {'principle': 'MECE - mutually exclusive: one exposer per function, one owner per aggregate, one provider per contract',
                     'codes': ['AIR_ARCH_FUNCTION_EXPOSED_TWICE', 'AIR_ARCH_OPERATION_NAME_REUSED', 'AIR_ARCH_ENTITY_OWNED_TWICE', 'AIR_ARCH_CONTRACT_PROVIDED_TWICE']},
-    'EXHAUSTIVENESS': {'principle': 'MECE — collectively exhaustive: every MUST requirement satisfied, every function realised and exposed, every required contract provided',
+    'EXHAUSTIVENESS': {'principle': 'MECE - collectively exhaustive: every MUST requirement satisfied, every function realised and exposed, every required contract provided',
                        'codes': ['AIR_ARCH_REQUIREMENT_UNSATISFIED', 'AIR_ARCH_FUNCTION_UNREALISED', 'AIR_ARCH_REQUIRED_CONTRACT_UNPROVIDED',
                                  'AIR_ARCH_ENTITY_UNOWNED', 'AIR_ARCH_CONTRACT_UNPROVIDED', 'AIR_ARCH_FUNCTION_NOT_EXPOSED']},
-    'CONTEXT_COHERENCE': {'principle': 'DDD — a block stays within one data authority (bounded context) and an event is published by the owner of its aggregate',
+    'CONTEXT_COHERENCE': {'principle': 'DDD - a block stays within one data authority (bounded context) and an event is published by the owner of its aggregate',
                           'codes': ['AIR_ARCH_BLOCK_SPANS_CONTEXTS', 'AIR_ARCH_EVENT_PUBLISHER']},
     'COMPILABILITY': {'principle': 'Declared schemas stay inside the compilation subset so that a standard description can be produced',
                       'codes': ['AIR_ARCH_SCHEMA_OUTSIDE_SUBSET']},

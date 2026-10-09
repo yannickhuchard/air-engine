@@ -57,10 +57,10 @@ def rehearse():
             for audience, sections in groups.items():
                 label = 'Métier' if audience == 'business' else 'Ingénierie'
                 meta = deepcopy(concern['meta']);meta.update(id='urn:asteria:viewpoint:' + code.lower() + ':' + audience,
-                    type='air.Viewpoint', revision=1, name=label + ' — ' + case['title'])
+                    type='air.Viewpoint', revision=1, name=label + ' - ' + case['title'])
                 viewpoints.append({'meta': meta, 'body': {'audience': [exact(stakeholder if audience == 'business' else engineering)], 'concerns': [exact(concern)],
                     'selection': {'binding': 'air.selector/0.19', 'types': [t for _, _, types in sections for t in types], 'objects': []},
-                    'presentation': {'format': 'air.audience-html/0.19', 'title': label + ' — ' + case['title'],
+                    'presentation': {'format': 'air.audience-html/0.19', 'title': label + ' - ' + case['title'],
                         'sections': [{'id': identifier, 'heading': title, 'types': types} for identifier, title, types in sections]},
                     'disclosure_policy': 'Usage interne de l’équipe habilitée sur ce dossier fictif ; aucun masquage automatique de champs ni droit de transmission à un tiers.'}})
             assert 'error' not in client('air_import_drafts', {'objects': [engineering, *viewpoints]})

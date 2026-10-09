@@ -31,7 +31,7 @@ def qualify(call, case, objects, base, credential, home, port, session, output):
     source = next(o for o in objects if o['meta']['type'] == 'air.Source')
     def obj(kind, suffix, body):
         meta = deepcopy(function['meta']);meta.update(type='air.' + kind, id='urn:asteria:external:' + case['id'] + ':' + suffix,
-            name='Recette synthétique ' + case['id'] + ' — ' + suffix)
+            name='Recette synthétique ' + case['id'] + ' - ' + suffix)
         return {'meta': meta, 'body': body}
     test = obj('VerificationCase', 'case', {'target': exact(function), 'method': 'TEST', 'inputs': [],
         'oracle': 'Le test Python synthétique épinglé réussit, sans appeler ERP, atelier ou IAM réels.',

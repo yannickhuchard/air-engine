@@ -183,10 +183,13 @@ def test_the_existing_review_api_uses_the_same_qualification_service(store, cont
         assert client.post('/v1/reviews', json=forged, headers=headers).status_code == 422
 
 
-@pytest.mark.parametrize('fault', ['none', 'declared', 'altered_report', 'changed_inputs', 'unknown_engine', 'engine_changed_after_review'])
+@pytest.mark.parametrize('fault', ['none', 'declared', 'synchronized', 'altered_report', 'changed_inputs', 'unknown_engine', 'engine_changed_after_review'])
 def test_simulation_evidence_is_reproduced_on_unchanged_exact_inputs(store, context, monkeypatch, fault):
     c = context;settings, user, _, example, members, _, _, _, reviewer, policy, request = c
     extra = delivery_model(example, members)
+    if fault == 'synchronized':
+        for step in extra[0]['body']['steps']:
+            step.update(binding='air.workflow-step/0.35', join='ALL')
     observations = []
     if fault != 'declared':
         scope = exact(get(members, 'Scope'))
@@ -206,6 +209,8 @@ def test_simulation_evidence_is_reproduced_on_unchanged_exact_inputs(store, cont
     recorded = readiness.record_simulation(store, user, AccessPolicy(), settings, {'baseline': origin,
         'scenario': pin(extra[3]), 'run_id': 'urn:proof:simulation-run', 'idempotency_key': 'model-run'})
     run = recorded['verification_run']
+    assert recorded['engine'] == recorded['report']['engine']
+    assert run['meta']['provenance']['method'].endswith(recorded['engine'])
     if fault in ('altered_report', 'unknown_engine'):
         false = deepcopy(recorded['report'])
         if fault == 'altered_report': false['latency_ms']['p95'] = 0

@@ -7,7 +7,7 @@ NAMES = ['Inference', 'Conflict']
 
 
 def bodies(record, text, ref, refs, nonempty):
-    expression = record({'language': {'const': 'AIR-Expr'}, 'language_version': {'const': '0.1'},
+    expression = record({'language': {'const': 'AIR-Expr'}, 'language_version': {'enum': ['0.1', '0.2']},
         'ast': {'type': 'object'}, 'result_type': text,
         'required_inputs': {'type': 'array', 'items': record({'name': text, 'type': text}), 'maxItems': 256}},
         ['language', 'language_version', 'ast', 'result_type'])

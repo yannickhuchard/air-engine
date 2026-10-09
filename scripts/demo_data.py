@@ -68,7 +68,7 @@ def rehearse():
             bad = upload('invalid-payload', json.dumps(bad_payload).encode())
             field = lambda name: {'binding': 'air.field/0.23', 'name': name}
             def obj(kind, suffix, body):
-                meta = deepcopy(domain['meta']);meta.update(id='urn:asteria:data:' + code.lower() + ':' + suffix, type='air.' + kind, revision=1, name=title + ' — ' + suffix)
+                meta = deepcopy(domain['meta']);meta.update(id='urn:asteria:data:' + code.lower() + ':' + suffix, type='air.' + kind, revision=1, name=title + ' - ' + suffix)
                 return {'meta': meta, 'body': body}
             concept = obj('Concept', 'concept', {'definition': title, 'domain': exact(domain), 'semantic_relations': [], 'steward': authority['body']['principal']})
             owner = obj('DataAuthority', 'authority', {'data_scope': domain['body']['scope'], 'operations': ['Préparer une proposition', 'Corriger une proposition sous revue'],

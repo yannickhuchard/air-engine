@@ -44,7 +44,7 @@ def rehearse():
             objects = old['objects'];domain = next(o for o in objects if o['meta']['type'] == 'air.Domain')
             scope = domain['body']['scope'];owner = 'urn:asteria:governance-owner:' + code.lower()
             def obj(kind, suffix, body):
-                meta = deepcopy(domain['meta']);meta.update(id='urn:asteria:governance:' + code.lower() + ':' + suffix, type='air.' + kind, revision=1, name=case['title'] + ' — ' + suffix)
+                meta = deepcopy(domain['meta']);meta.update(id='urn:asteria:governance:' + code.lower() + ':' + suffix, type='air.' + kind, revision=1, name=case['title'] + ' - ' + suffix)
                 return {'meta': meta, 'body': body}
             ref = lambda suffix: {'id': 'urn:asteria:governance:' + code.lower() + ':' + suffix, 'revision': 1}
             def expr(ast, inputs=None): return {'language': 'AIR-Expr', 'language_version': '0.1', 'result_type': 'Boolean', 'ast': ast, 'required_inputs': inputs or []}

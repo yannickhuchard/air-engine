@@ -17,7 +17,7 @@ def qualify(call, case, objects, base, credential, home, port, session, output):
     evidence = next(o for o in objects if o['meta']['type'] == 'air.Evidence')
     meta = deepcopy(function['meta'])
     meta.update(id='urn:asteria:design-inspection:' + case['id'], type='air.VerificationCase',
-                name='Inspection fictive de traçabilité — ' + case['title'])
+                name='Inspection fictive de traçabilité - ' + case['title'])
     inspection = {'meta': meta, 'body': {'target': exact(function), 'method': 'INSPECTION', 'inputs': [],
         'oracle': 'La chaîne exigence, fonction, contrat et unité du dossier est présente dans la baseline.',
         'acceptance': 'Avis indépendant sur cette description de conception seulement.',

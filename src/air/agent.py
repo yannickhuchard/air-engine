@@ -481,7 +481,28 @@ def rebase_drafts(store, principal, policy, settings, request):
     while changed:
         changed = False
         for object_id, obj in sorted(drafts.items()):
-            paths = advance(obj)
+            candidate = deepcopy(obj)
+            paths = advance(candidate)
+            if paths and obj['meta']['namespace'] != home:
+                if object_id not in {c['id'] for c in conflicts}:
+                    conflicts.append({'id': object_id, 'revision': obj['meta']['revision'], 'namespace': obj['meta']['namespace'], 'references_behind': paths})
+                continue
+            if paths:
+                held = store.get(object_id, obj['meta']['revision']) if heads.get(object_id, 0) >= obj['meta']['revision'] else None
+                if held is not None and digest(held['object']) != digest(candidate):
+                    # A previously deposited draft can be outside the base
+                    # (e.g. an interrupted creation). Advancing its references
+                    # must not overwrite that immutable stored revision.
+                    previous_revision = obj['meta']['revision']
+                    candidate['meta']['revision'] = max(heads.get(object_id, 0), previous_revision) + 1
+                    candidate['meta']['recorded_at'] = stamp
+                    if author: candidate['meta']['provenance']['recorded_by'] = author
+                    replaced[object_id] = candidate['meta']['revision']
+                    changed = True
+                    rebased.append({'id': object_id, 'type': obj['meta']['type'], 'from_revision': previous_revision,
+                                    'to_revision': candidate['meta']['revision'], 'references_advanced': paths})
+                drafts[object_id] = candidate
+                obj = candidate
             if paths and object_id not in {r['id'] for r in rebased}:
                 adjusted.append({'id': object_id, 'revision': obj['meta']['revision'], 'references_advanced': paths})
         for object_id, obj in sorted(base_members.items()):
@@ -892,6 +913,10 @@ def guide(store, principal, policy, request):
         else:
             steps.append(_step('Borrowed objects are at their latest revision; trace a planned change instead', 'air_impact', {'baselines': [s], 'targets': '<objects that will change>'}))
     elif intent == 'DELIVER':
+        steps.append(_step('Read declared programmes, architecture projects and remaining design tasks at this pin; add authorized sibling pins for the global transformation',
+                           'air_query_transformation', {'baselines': [s], 'limit': 50}))
+        steps.append(_step('Read the current Management Summary before the detailed dossier; regenerate it after each frozen change',
+                           'air_compile_deliverables', {'title': baseline['meta']['name'], 'baselines': [s], 'only': ['00-management-summary']}))
         steps += [_step('OpenAPI description of ' + b['name'], 'air_compile_openapi', {'baseline': s, 'binding': b['reference'],
                                                                                       'info': {'title': b['name'], 'version': str(s['revision'])}})
                   for b in bindings if b.get('transport') == 'HTTP'][:12]

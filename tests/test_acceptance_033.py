@@ -190,7 +190,8 @@ def test_portable_skills_follow_the_open_standard_and_export_everywhere(tmp_path
     import zipfile
     from air import skills
     shipped = {s['name']: s for s in skills.bundled()}
-    assert set(shipped) == {'air-architecte', 'air-presentation'}
+    assert set(shipped) == {'air-architecte', 'air-presentation', 'air-branding', 'architecture-story'}
+    assert 'JourneyCatalog' in dict(shipped['air-architecte']['files'])['SKILL.md']
     assert all(len(s['description']) <= 1024 for s in shipped.values())
     plan = skills.export(tmp_path / 'repo', 'agents', apply=True)
     assert (tmp_path / 'repo/.agents/skills/air-presentation/references/storyline.md').is_file() and {p['action'] for p in plan['plan']} == {'CREATE'}

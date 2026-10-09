@@ -17,6 +17,15 @@ class TooLarge(InvalidModel):
     """A bounded output or generated file would exceed its budget; the request is valid, the answer is too big."""
 
 
+def check_budget(document):
+    """Expose the standard service error when a calculation exceeds JSON budgets."""
+    from air.expr import bounded, ExprError
+    try:
+        bounded(document)
+    except ExprError as exc:
+        raise TooLarge('Calculation document exceeds its structural or byte budget') from exc
+
+
 def key(ref):
     return ref["id"], ref["revision"]
 

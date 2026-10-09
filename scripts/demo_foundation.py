@@ -51,7 +51,7 @@ def rehearse():
                 assumption["body"]["validation_plan"] += " Conserver le compte rendu et les écarts identifiés."
                 store.put(assumption, "synthetic-architect")
                 meta = deepcopy(request["meta"])
-                meta.update(id="urn:asteria:change:" + case["id"].lower(), type="air.ChangeSet", name="Préciser la vérification — " + case["id"])
+                meta.update(id="urn:asteria:change:" + case["id"].lower(), type="air.ChangeSet", name="Préciser la vérification - " + case["id"])
                 change = {"meta": meta, "body": {"base": exact(base["baseline"]),
                     "operations": [{"op": "REPLACE", "before": before, "after": resolved(assumption)}],
                     "rationale": "Rendre la vérification de l’hypothèse plus traçable, sans la déclarer confirmée.",

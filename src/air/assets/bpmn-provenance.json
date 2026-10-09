@@ -1,0 +1,13 @@
+{
+  "package": "bpmn-js",
+  "version": "18.16.0",
+  "source": "https://registry.npmjs.org/bpmn-js/-/bpmn-js-18.16.0.tgz",
+  "archive_sha256": "c58a34badb05380f0dcf02ed64770511c9bc60b7eef3e3f40d1dd03d95d24cee",
+  "license": "SEE LICENSE IN LICENSE",
+  "upstream": "https://github.com/bpmn-io/bpmn-js",
+  "files": {
+    "bpmn-js-18.16.0.js": "81b17b23378d6b80c50a058b8fbae63c10e18183610c13533c1b133d463d8441",
+    "bpmn-diagram.css": "08ead062d4284cb1214787098506c97a01c6a871c8096943b7b3d2cc2e6bc238",
+    "bpmn-LICENSE.txt": "04551f3ac59831ce1c607994c2f1aaedc917d7e702296f2d37ac28980af9fef1"
+  }
+}

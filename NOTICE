@@ -1,7 +1,7 @@
 AIR — Architecture Intermediate Representation
 Copyright 2026 Yannick Huchard
 
-Official project: https://github.com/yannickhuchard/air-engine
+Official public project: https://github.com/yannickhuchard/air-engine
 Official developer: Yannick Huchard
 
 The AIR implementation and its first-party software documentation are licensed
@@ -15,3 +15,17 @@ models, source documents, credentials and data are not licensed by this notice.
 The AIR Local skills plugin is part of this implementation. Its name and the
 identification of the official developer do not imply certification by any
 agent-platform vendor. This notice does not modify the Apache License.
+The offline architecture site includes Mermaid Tiny 12.1.0 (@mermaid-js/tiny),
+distributed under its MIT license. Copyright and license are preserved in
+src/air/assets/mermaid-LICENSE.txt; origin and integrity are recorded in
+src/air/assets/mermaid-provenance.json and copied into generated sites.
+Bundled third-party notices remain in the JavaScript source. DOMPurify's
+Apache-2.0 license option is accompanied by the full Apache-2.0 text in
+src/air/assets/mermaid-thirdparty-APACHE-2.0.txt, also copied into sites.
+
+BPMN process diagrams use the unmodified bpmn-js 18.16.0 navigated viewer,
+copyright Camunda Services GmbH. Its license, including the visible bpmn.io
+watermark requirement, is preserved in src/air/assets/bpmn-LICENSE.txt and
+copied into generated sites. Origin and file hashes are recorded in
+src/air/assets/bpmn-provenance.json. AIR's descriptive BPMN exports do not
+provide an executable BPMN engine or certify equivalence with one.

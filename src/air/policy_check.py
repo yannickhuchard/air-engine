@@ -2,7 +2,7 @@
 from datetime import datetime
 from air.access import ScopedStore
 from air.core import INSTANT, TEXT, record, digest
-from air.expr import Program, Budget, evaluate, typed, wire, artifact_digest, bounded, ExprError
+from air.expr import Program, Budget, evaluate, typed, wire, artifact_digest, bounded, ExprError, engine_for, UNITS_ENGINE
 from air.foundation import check_schema, exact, key, InvalidModel
 from air.projections import SNAPSHOT, snapshot
 from air.storage import Conflict
@@ -26,6 +26,9 @@ def check_policy(store, principal, access_policy, request):
     if not policy or policy['meta']['type'] != 'air.Policy': raise InvalidModel('Policy must be an exact member of the baseline')
     if digest(policy) != request['policy']['digest']: raise Conflict('Policy digest differs')
     constraints = {key(r): index[key(r)] for r in policy['body']['constraints']}
+    expressions = [policy['body']['applicability']] + [c['body']['condition'] for c in constraints.values()]
+    expression_engines = sorted({engine_for(expr) for expr in expressions if isinstance(expr, dict)})
+    uses_units = UNITS_ENGINE in expression_engines
     as_of = datetime.fromisoformat(request['as_of']);budget = Budget(limit=50000)
     def pin(obj): return {**exact(obj), 'digest': digest(obj)}
     def validity(obj):
@@ -62,7 +65,8 @@ def check_policy(store, principal, access_policy, request):
         result = evaluate({'expression': condition, 'inputs': inputs}, budget=budget)
         return {'execution': result['execution'], 'result': result['result'],
             'diagnostics': [{k: str(v)[:256] for k, v in d.items()} for d in result['diagnostics'][:4]],
-            'diagnostics_total': len(result['diagnostics']), 'cost': result['cost']}
+            'diagnostics_total': len(result['diagnostics']), 'cost': result['cost'],
+            **({'expression_engine': result['engine']} if uses_units else {})}
     temporal = validity(policy)
     applicability = run(policy['body']['applicability'], applicability_inputs, temporal)
     applicable = applicability['execution'] == 'EXECUTED' and applicability['result'] == 'SATISFIED'
@@ -94,6 +98,9 @@ def check_policy(store, principal, access_policy, request):
         'blocking_constraints': sum(c['blocking'] for c in checks), 'all_constraints_satisfied': applicable and all(r['execution'] == 'EXECUTED' and r['result'] == 'SATISFIED' for r in results),
         'authorization_granted': False, 'waiver_applied': False, 'business_verification_granted': False, 'model_updated': False,
         'cost': {'steps': budget.used, 'limit': budget.limit}, 'request_digest': artifact_digest(request)}
+    if uses_units:
+        report['engine'] = 'air.policy-check/0.35'
+        report['expression_engines'] = expression_engines
     report['report_digest'] = artifact_digest(report)
     try: bounded(report)
     except ExprError as exc: raise InvalidModel('Policy report exceeds its budget') from exc

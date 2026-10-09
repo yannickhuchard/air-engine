@@ -5,12 +5,14 @@ Every type here is a declaration or a recorded execution; none of them deploys, 
 import re
 from air.expr import Program, bounded, typed, wire, ExprError
 from air.knowledge_schema import literal_values
+from air import transformation_schema
 
 PROFILE = 'air.delivery/0.32'
 NAMES = ['VerificationRun', 'PerformanceModel', 'SimulationScenario', 'Milestone', 'Environment', 'NetworkZone',
          'RuntimeComponent', 'Connection', 'Technology', 'PhysicalTable', 'CostItem', 'ValueStream', 'CustomerJourney',
          'ArchitecturePrinciple', 'RaciAssignment', 'RiskAssessment', 'ConceptRelation', 'ContextRelation', 'NavigationMap', 'Device',
-         'AcceptanceScenario', 'QualityRequirement', 'ComplianceMapping', 'AgenticToolPlan', 'DeliveryEstimate', 'Roadmap']
+         'AcceptanceScenario', 'QualityRequirement', 'ComplianceMapping', 'AgenticToolPlan', 'DeliveryEstimate', 'Roadmap', 'FinancialPlan',
+         'JourneyCatalog', 'Touchpoint', 'UsagePoint'] + transformation_schema.NAMES
 IDENTIFIER = {'type': 'string', 'pattern': '^[A-Za-z][A-Za-z0-9_.-]{0,63}$'}
 MS = {'type': 'integer', 'minimum': 0, 'maximum': 86400000}
 MONTH = {'type': 'string', 'pattern': r'^20[0-9]{2}-(0[1-9]|1[0-2])$'}
@@ -36,12 +38,17 @@ def bodies(record, text, uri, ref, refs, nonempty, instant, artifact_ref):
     short = {**text, 'maxLength': 256}
     texts = {'type': 'array', 'items': text, 'maxItems': 64}
     typed_value = {'type': 'object', 'required': ['type'], 'properties': {'type': {'type': 'string', 'maxLength': 64}}}
-    expression = record({'language': {'const': 'AIR-Expr'}, 'language_version': {'const': '0.1'}, 'ast': {'type': 'object'},
+    expression = record({'language': {'const': 'AIR-Expr'}, 'language_version': {'enum': ['0.1', '0.2']}, 'ast': {'type': 'object'},
         'result_type': {'const': 'Boolean'}, 'required_inputs': {'type': 'array', 'items': record({'name': text, 'type': text}), 'maxItems': 256}},
         ['language', 'language_version', 'ast', 'result_type'])
     distribution = record({'kind': {'enum': sorted(DISTRIBUTION_FIELDS)}, 'value': MS, 'min': MS, 'mode': MS, 'max': MS,
                            'median': MS, 'p95': MS}, ['kind'])
+    money = record({'value': DECIMAL, 'currency': {'type': 'string', 'pattern': '^[A-Z]{3}$'}})
+    calculation = record({'parts': {'type': 'array', 'minItems': 1, 'maxItems': 64, 'items': record({
+        'label': short, 'quantity': DECIMAL, 'unit': short, 'unit_price': DECIMAL, 'explanation': text})},
+        'sources': nonempty, 'evidence_status': {'enum': ['ASSUMPTION', 'DOCUMENTED_QUOTE', 'RECORDED_COST']}})
     return {
+        **transformation_schema.bodies(record, text, uri, ref, refs, nonempty, instant, DAY),
         'air.VerificationRun': record({'case': ref, 'method': {'enum': sorted(PROOF_LEVELS)}, 'result': {'enum': ['PASS', 'FAIL', 'INCONCLUSIVE']},
             'proof_level': {'enum': sorted({v for values in PROOF_LEVELS.values() for v in values})}, 'executed_at': instant,
             'executor': uri, 'summary': text, 'evidence': optional, 'report': artifact_ref, 'environment': ref, 'scenario': ref},
@@ -85,17 +92,43 @@ def bodies(record, text, uri, ref, refs, nonempty, instant, artifact_ref):
             'category': {'enum': ['LABOUR', 'LICENCE', 'INFRASTRUCTURE', 'SERVICE', 'TRAINING', 'CONTINGENCY', 'OTHER']},
             'amount': record({'value': DECIMAL, 'currency': {'type': 'string', 'pattern': '^[A-Z]{3}$'}}),
             'recurrence': {'enum': ['ONCE', 'MONTHLY', 'YEARLY']}, 'start': MONTH, 'end': MONTH, 'basis': text,
-            'confidence': {'enum': ['LOW', 'MEDIUM', 'HIGH']}, 'related': optional, 'estimate': ref},
+            'confidence': {'enum': ['LOW', 'MEDIUM', 'HIGH']}, 'related': optional, 'estimate': ref,
+            'allocation': {'enum': ['ENGINEERING', 'HARDWARE', 'STARTUP', 'OPERATIONS', 'CONTINGENCY', 'OTHER']},
+            'calculation': calculation},
             ['nature', 'category', 'amount', 'recurrence', 'start', 'basis', 'confidence']),
+        'air.FinancialPlan': record({'start': MONTH, 'end': MONTH, 'cost_items': nonempty,
+            'programme_envelope': money, 'vat_bridge': money, 'basis': text, 'sources': nonempty,
+            'reference_status': {'enum': ['PROPOSED', 'APPROVED_REFERENCE']}, 'approval_source': ref,
+            'funding_status': {'enum': ['UNCONFIRMED', 'COMMITTED_DECLARED']},
+            'monthly_revenue_assumption': money, 'revenue_basis': text},
+            ['start', 'end', 'cost_items', 'programme_envelope', 'vat_bridge', 'basis', 'sources', 'reference_status', 'funding_status']),
         'air.ValueStream': record({'trigger': text, 'value': text, 'stakeholder': ref,
             'stages': {'type': 'array', 'minItems': 1, 'maxItems': 64, 'items': record({'id': IDENTIFIER, 'name': short,
                 'capabilities': optional, 'functions': optional, 'metrics': optional, 'lead_time': short}, ['id', 'name'])}},
             ['trigger', 'value', 'stakeholder', 'stages']),
         'air.CustomerJourney': record({'persona': ref, 'goal': text,
+            'view_state': {'enum': ['AS_IS', 'TO_BE']}, 'scenario': text,
+            'category': {'enum': ['NOMINAL', 'EXCEPTION', 'SUPPORT', 'OPERATIONS', 'GOVERNANCE']}, 'trigger': text, 'outcome': text,
             'steps': {'type': 'array', 'minItems': 1, 'maxItems': 128, 'items': record({'id': IDENTIFIER, 'name': short,
                 'channel': {'enum': ['WEB', 'MOBILE', 'PHONE', 'EMAIL', 'AGENT_MCP', 'BACK_OFFICE', 'PARTNER_API', 'PAPER', 'IN_PERSON']},
                 'touchpoint': text, 'function': ref, 'operation': record({'contract': ref, 'name': {**text, 'maxLength': 128}}),
-                'pain_points': texts}, ['id', 'name', 'channel', 'touchpoint'])}}, ['persona', 'goal', 'steps']),
+                'pain_points': texts, 'touchpoint_ref': ref, 'participants': optional, 'architecture_links': optional,
+                'outcome': text, 'phase': short, 'action': text, 'thoughts': texts, 'opportunities': texts,
+                'frontstage': texts, 'backstage': texts, 'support_processes': texts, 'systems': optional, 'duration': short,
+                'emotion': record({'status': {'enum': ['UNKNOWN', 'HYPOTHESIS', 'OBSERVED']}, 'label': short,
+                    'score': {'type': 'integer', 'minimum': 1, 'maximum': 5}, 'rationale': text, 'evidence': optional}, ['status'])},
+                ['id', 'name', 'channel', 'touchpoint'])}}, ['persona', 'goal', 'steps']),
+        'air.JourneyCatalog': record({'scope': ref, 'purpose': text, 'journeys': optional,
+            'personas': {'type': 'array', 'minItems': 1, 'maxItems': 256, 'items': record({
+                'persona': ref, 'coverage': {'enum': ['REQUIRED', 'EXCLUDED']}, 'rationale': text,
+                'required_contexts': {'type': 'array', 'items': {'enum': ['DIGITAL', 'PHYSICAL', 'GEOGRAPHIC']},
+                                      'maxItems': 3, 'uniqueItems': True}}, ['persona', 'coverage', 'rationale', 'required_contexts'])}},
+            ['scope', 'purpose', 'journeys', 'personas']),
+        'air.Touchpoint': record({'purpose': text, 'usage_points': nonempty, 'participants': optional,
+            'architecture_links': optional, 'accessibility': text}, ['purpose', 'usage_points']),
+        'air.UsagePoint': record({'kind': {'enum': ['DIGITAL', 'PHYSICAL', 'GEOGRAPHIC']}, 'purpose': text,
+            'status': {'enum': ['PROPOSED', 'CONFIRMED_DECLARED']}, 'parent': ref, 'country': short, 'city': short,
+            'location_description': text, 'architecture_links': optional}, ['kind', 'purpose', 'status']),
         'air.ArchitecturePrinciple': record({'statement': text, 'rationale': text, 'implications': {**texts, 'minItems': 1},
             'applies_to': optional}, ['statement', 'rationale', 'implications']),
         'air.RaciAssignment': record({'activity': short, 'phase': {'enum': ['DELIVERY', 'OPERATIONS']}, 'role': ref,
@@ -188,6 +221,9 @@ REFERENCE_FIELDS = {
     'air.CostItem': {'estimate': ['air.Estimate']},
     'air.ValueStream': {'stakeholder': ['air.Stakeholder', 'air.Actor']},
     'air.CustomerJourney': {'persona': ['air.Actor', 'air.Stakeholder']},
+    'air.JourneyCatalog': {'scope': ['air.Scope'], 'journeys': ['air.CustomerJourney']},
+    'air.Touchpoint': {'usage_points': ['air.UsagePoint'], 'participants': ['air.Actor', 'air.Stakeholder']},
+    'air.UsagePoint': {'parent': ['air.UsagePoint']},
     'air.RaciAssignment': {'role': ['air.Role']},
     'air.RiskAssessment': {'risk': ['air.Risk'], 'mitigations': ['air.Control']},
     'air.ConceptRelation': {'subject': ['air.Concept'], 'object': ['air.Concept']},
@@ -207,12 +243,23 @@ REFERENCE_FIELDS = {
 
 
 def slots(obj, data_types):
+    yield from transformation_schema.slots(obj, data_types)
     body, kind = obj['body'], obj['meta']['type']
+    if kind == 'air.CostItem' and 'calculation' in body:
+        for i, reference in enumerate(body['calculation']['sources']):
+            yield 'body/calculation/sources/' + str(i), reference, ['air.Source', 'air.Assertion']
+    if kind == 'air.FinancialPlan':
+        for i, reference in enumerate(body['cost_items']):
+            yield 'body/cost_items/' + str(i), reference, ['air.CostItem']
+        for i, reference in enumerate(body['sources']):
+            yield 'body/sources/' + str(i), reference, ['air.Source', 'air.Assertion']
+        if 'approval_source' in body: yield 'body/approval_source', body['approval_source'], ['air.Source']
     for field, targets in REFERENCE_FIELDS.get(kind, {}).items():
         if field not in body: continue
         for reference in body[field] if isinstance(body[field], list) else [body[field]]:
             yield 'body/' + field, reference, targets
-    free = {'air.Milestone': [], 'air.CostItem': ['related'], 'air.ArchitecturePrinciple': ['applies_to'], 'air.RaciAssignment': ['subject']}
+    free = {'air.Milestone': [], 'air.CostItem': ['related'], 'air.ArchitecturePrinciple': ['applies_to'], 'air.RaciAssignment': ['subject'],
+            'air.Touchpoint': ['architecture_links'], 'air.UsagePoint': ['architecture_links']}
     for field in free.get(kind, []):
         if field in body:
             for reference in body[field] if isinstance(body[field], list) else [body[field]]:
@@ -227,8 +274,16 @@ def slots(obj, data_types):
                 for reference in stage.get(field, []): yield 'body/stages/' + stage['id'] + '/' + field, reference, targets
     elif kind == 'air.CustomerJourney':
         for step in body['steps']:
+            for reference in step.get('systems', []): yield 'body/steps/' + step['id'] + '/systems', reference, ['air.RuntimeComponent', 'air.ArchitectureBlock', 'air.Device']
+            for reference in step.get('emotion', {}).get('evidence', []): yield 'body/steps/' + step['id'] + '/emotion/evidence', reference, ['air.Source', 'air.Assertion']
             if 'function' in step: yield 'body/steps/' + step['id'] + '/function', step['function'], ['air.Function']
             if 'operation' in step: yield 'body/steps/' + step['id'] + '/operation/contract', step['operation']['contract'], ['air.SemanticContract']
+            if 'touchpoint_ref' in step: yield 'body/steps/' + step['id'] + '/touchpoint_ref', step['touchpoint_ref'], ['air.Touchpoint']
+            for reference in step.get('participants', []): yield 'body/steps/' + step['id'] + '/participants', reference, ['air.Actor', 'air.Stakeholder']
+            for reference in step.get('architecture_links', []): yield 'body/steps/' + step['id'] + '/architecture_links', reference, data_types
+    elif kind == 'air.JourneyCatalog':
+        for i, entry in enumerate(body['personas']):
+            yield 'body/personas/' + str(i) + '/persona', entry['persona'], ['air.Actor', 'air.Stakeholder']
     elif kind == 'air.NavigationMap':
         for screen in body['screens']:
             for reference in screen.get('roles', []): yield 'body/screens/' + screen['id'] + '/roles', reference, ['air.Role']
@@ -250,8 +305,17 @@ def slots(obj, data_types):
 
 
 def local_issues(obj):
+    yield from transformation_schema.local_issues(obj)
     body, kind = obj['body'], obj['meta']['type']
-    if kind == 'air.VerificationRun':
+    if kind == 'air.JourneyCatalog':
+        refs = [(e['persona']['id'], e['persona']['revision']) for e in body['personas']]
+        if len(set(refs)) != len(refs): yield 'AIR_JOURNEY_PERSONA_DUPLICATE', 'Each persona has one coverage declaration per catalog'
+    elif kind == 'air.UsagePoint':
+        if body.get('parent') == {'id': obj['meta']['id'], 'revision': obj['meta']['revision']}:
+            yield 'AIR_USAGE_POINT_SELF', 'A usage point cannot contain itself'
+        if body['kind'] == 'GEOGRAPHIC' and not body.get('location_description'):
+            yield 'AIR_USAGE_GEOGRAPHY', 'A geographic usage point declares its location or unresolved geographic scope'
+    elif kind == 'air.VerificationRun':
         if body['proof_level'] not in PROOF_LEVELS[body['method']]:
             yield 'AIR_RUN_PROOF_LEVEL', 'The proof level must match the method: ' + ', '.join(PROOF_LEVELS[body['method']])
         if body['method'] in ('TEST', 'SIMULATION') and 'report' not in body:
@@ -278,9 +342,38 @@ def local_issues(obj):
     elif kind == 'air.CostItem':
         if 'end' in body and body['end'] < body['start']: yield 'AIR_COST_PERIOD', 'A cost ends after it starts'
         if body['recurrence'] == 'ONCE' and 'end' in body: yield 'AIR_COST_PERIOD', 'A one-off cost has no end month'
+        if body.get('allocation') == 'CONTINGENCY' and body['category'] != 'CONTINGENCY':
+            yield 'AIR_COST_CONTINGENCY', 'A contingency allocation uses the explicit contingency category'
+        if 'calculation' in body:
+            from decimal import Decimal, localcontext
+            with localcontext() as ctx:
+                ctx.prec = 64
+                total = sum((Decimal(p['quantity']) * Decimal(p['unit_price']) for p in body['calculation']['parts']), Decimal(0))
+                if total != Decimal(body['amount']['value']):
+                    yield 'AIR_COST_CALCULATION', 'Sum of quantity times unit price must equal the declared amount, before presentation rounding'
+    elif kind == 'air.FinancialPlan':
+        if body['end'] < body['start']: yield 'AIR_FINANCE_PERIOD', 'Plan ends after it starts'
+        if body['reference_status'] == 'APPROVED_REFERENCE' and 'approval_source' not in body:
+            yield 'AIR_FINANCE_APPROVAL', 'Reference approval requires its exact source; it is not a funding or purchasing authorization'
+        if body['programme_envelope']['currency'] != body['vat_bridge']['currency']:
+            yield 'AIR_FINANCE_CURRENCY', 'Programme envelope and VAT bridge use one currency'
+        if ('monthly_revenue_assumption' in body) != ('revenue_basis' in body):
+            yield 'AIR_FINANCE_REVENUE', 'Revenue assumption and basis must be declared together'
+        if 'monthly_revenue_assumption' in body and body['monthly_revenue_assumption']['currency'] != body['programme_envelope']['currency']:
+            yield 'AIR_FINANCE_CURRENCY', 'Revenue assumption uses the plan currency'
     elif kind == 'air.ValueStream' or kind == 'air.CustomerJourney':
         ids = [s['id'] for s in body['stages' if kind == 'air.ValueStream' else 'steps']]
         if len(set(ids)) != len(ids): yield 'AIR_STEP_ID', 'Stage and step identifiers are unique'
+        if kind == 'air.CustomerJourney':
+            for step in body['steps']:
+                emotion = step.get('emotion')
+                if not emotion: continue
+                if emotion['status'] == 'UNKNOWN' and any(k in emotion for k in ('label', 'score', 'evidence')):
+                    yield 'AIR_JOURNEY_EMOTION_UNKNOWN', 'Unknown emotion has no invented label, score or evidence'
+                if emotion['status'] != 'UNKNOWN' and (not emotion.get('label') or not emotion.get('rationale')):
+                    yield 'AIR_JOURNEY_EMOTION_BASIS', 'A declared emotion has a label and rationale'
+                if emotion['status'] == 'OBSERVED' and not emotion.get('evidence'):
+                    yield 'AIR_JOURNEY_EMOTION_EVIDENCE', 'Observed emotion keeps its exact research evidence'
     elif kind == 'air.Connection':
         if body['source'] == body['target']: yield 'AIR_CONNECTION_SELF', 'A connection links two distinct components'
     elif kind == 'air.ContextRelation':
@@ -341,10 +434,22 @@ def local_issues(obj):
 
 
 def graph_issues(objects, by_ref):
+    yield from transformation_schema.graph_issues(objects, by_ref)
     key = lambda r: (r['id'], r['revision'])
     accountable = {}
     for obj in objects:
         body, kind, location = obj['body'], obj['meta']['type'], obj['meta']['id']
+        if kind == 'air.FinancialPlan':
+            for r in body['cost_items']:
+                cost = by_ref.get(key(r))
+                if not cost or cost['meta']['type'] != 'air.CostItem': continue
+                b = cost['body']
+                if b['amount']['currency'] != body['programme_envelope']['currency']:
+                    yield 'AIR_FINANCE_CURRENCY', location, 'Cost items use the plan currency; convert explicitly before planning'
+                if b['start'] < body['start'] or b['start'] > body['end'] or b.get('end', b['start']) > body['end']:
+                    yield 'AIR_FINANCE_PERIOD', location, 'Cost items fall within the explicit plan horizon'
+                if b['recurrence'] != 'ONCE' and 'end' not in b:
+                    yield 'AIR_FINANCE_PERIOD', location, 'Recurring plan costs require an explicit end month'
         if kind == 'air.VerificationRun':
             case = by_ref.get(key(body['case']))
             if case and case['meta']['type'] == 'air.VerificationCase' and case['body']['method'] != body['method']:
@@ -427,8 +532,18 @@ def graph_issues(objects, by_ref):
 
 
 def canonicalize(obj):
+    transformation_schema.canonicalize(obj)
     body, kind = obj['body'], obj['meta']['type'];key = lambda r: (r['id'], r['revision'])
     if kind[4:] not in NAMES: return
+    if kind == 'air.CostItem' and 'calculation' in body: body['calculation']['sources'].sort(key=key)
+    if kind == 'air.JourneyCatalog':
+        body['personas'].sort(key=lambda e: key(e['persona']))
+        for entry in body['personas']: entry['required_contexts'].sort()
+    if kind == 'air.CustomerJourney':
+        for step in body['steps']:
+            for field in ('participants', 'architecture_links', 'systems'):
+                if field in step: step[field].sort(key=key)
+            if 'evidence' in step.get('emotion', {}): step['emotion']['evidence'].sort(key=key)
     for field, value in list(body.items()):
         if isinstance(value, list) and value and all(isinstance(v, dict) and set(v) == {'id', 'revision'} for v in value):
             value.sort(key=key)
