@@ -77,11 +77,17 @@ comme remplacées. Les réceptions expirées, retirées ou sans mandat ne compte
 ## Périmètre et limites
 
 Au plus 1000 objets, 64 unités par paquet, 32 MiB de snapshot, 48 MiB d'export,
+4 MiB de manifeste,
 2000 enregistrements par famille et namespace. Aucun résultat de réception
 n'est calculé sur un catalogue tronqué. Cette livraison fournit les suites
 HTTP/JSON d'AIR ; elle ne revendique aucun compilateur universel de protocoles.
 Les artefacts externes restent dans le registre autorisé ; le modèle JSON est
 fermé, mais l'archive n'est pas une migration complète de ces artefacts.
+
+Le MCP conserve son budget de réponse de 8 MiB : demander `content: DIGESTS`
+d'abord, puis FULL pour un petit périmètre ou utiliser le CLI pour l'export
+complet. Le CLI possède un budget de transport adapté aux fichiers et à
+l'échappement JSON ; ces limites n'augmentent pas le budget du modèle sélectionné.
 
 Le site exporte aussi les identités et rationales des réceptions lisibles par
 son auteur. Choisir le destinataire et protéger les fichiers avant diffusion.

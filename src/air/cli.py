@@ -88,6 +88,9 @@ def read_result(response, command, pack_limit=None):
     # escaping expands their wire representation; the assistant MCP keeps its
     # smaller budget and requests DIGESTS instead of receiving all site bytes.
     limit = 8 * MAX_BYTES
+    if command == 'handoff-compile':
+        # File contents have a 48 MiB aggregate budget; JSON escaping expands it.
+        limit = 8 * 48 * 1024 * 1024
     if command == 'deliverables':
         from air.deliverables import TOTAL_MAX
         if pack_limit is not None and (type(pack_limit) is not int or not TOTAL_MAX <= pack_limit <= 67108864):

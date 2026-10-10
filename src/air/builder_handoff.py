@@ -118,6 +118,8 @@ def compile_package(store, principal, policy, request):
         'gaps': gaps, 'state': 'DRAFT_WITH_GAPS' if gaps else 'AWAITING_RECEIPTS',
         'authorization_granted': False, 'limits': LIMITS}
     manifest['manifest_digest'] = artifact_digest(manifest)
+    if len(json.dumps(manifest, ensure_ascii=False).encode('utf-8')) > 4 * 1024 * 1024:
+        raise TooLarge('Handoff manifest exceeds 4 MiB; select fewer units')
     payloads = [('handoff-manifest.json', 'application/json', json.dumps(manifest, ensure_ascii=False, indent=2) + '\n'),
         ('architecture-snapshot.json', 'application/json', json.dumps(exported, ensure_ascii=False, indent=2) + '\n'),
         ('README.md', 'text/markdown', '# Paquet de construction\n\n'

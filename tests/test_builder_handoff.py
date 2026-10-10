@@ -221,3 +221,14 @@ def test_withdrawal_remains_available_when_record_quota_is_full(context, store, 
     monkeypatch.setenv('AIR_QUOTA_RECORDS', '1')
     withdrawn = handoff.revoke(store, user, policy, {'receipt': result['receipt'], 'rationale': 'Withdraw despite full quota.'}, settings)
     assert withdrawn['created']
+
+
+def test_cli_transport_accepts_large_bounded_handoff_files_but_keeps_small_mcp_budget():
+    import io
+    from air.cli import read_result
+    # A JSON source snapshot just over the legacy adapter cap remains a valid
+    # file export. Unrelated commands retain the smaller response budget.
+    value = {'files': [{'content': 'x' * (8 * 1024 * 1024)}]}
+    raw = json.dumps(value).encode('utf-8')
+    assert read_result(io.BytesIO(raw), 'handoff-compile') == value
+    with pytest.raises(ValueError, match='output budget'): read_result(io.BytesIO(raw), 'handoff-read')

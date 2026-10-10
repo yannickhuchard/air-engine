@@ -217,3 +217,5 @@ paquet ; une nouvelle version ne reprend aucune ancienne réception. Réévaluer
 les réceptions puis régénérer le site. Une réception concerne la préparation de
 la réalisation, pas un avis indépendant, un test exécuté ou une autorisation de
 lancement. Les outils engageants restent exclus des adaptateurs IDE standards.
+Demander les empreintes avant FULL dans le MCP ; utiliser le CLI pour les grands
+exports de paquets. Le manifeste est limité à 4 MiB et la réponse MCP à 8 MiB.

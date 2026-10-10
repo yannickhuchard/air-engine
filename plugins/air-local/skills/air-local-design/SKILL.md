@@ -192,3 +192,5 @@ Les changements demandés restent ouverts jusqu'au retrait explicite de leur
 réception par son auteur. Une version ou baseline nouvelle exige des réceptions
 nouvelles. Actualiser les livrables après chaque réception. Distinguer périmètre
 reçu pour préparation, ready-to-build, lancement, tests et réalisation effective.
+Demander `content: DIGESTS` avant FULL dans le MCP ; exporter les grands paquets
+par CLI `handoff-compile --workspace ... --apply`, qui possède un budget adapté.
