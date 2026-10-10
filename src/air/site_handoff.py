@@ -125,6 +125,9 @@ def project(export, gate):
                     # functions do not become this consumer's construction scope.
                     if not any(key(r) == k for block in blocks for r in block['body'].get('required_contracts', [])):
                         operation_function(contract, operation, i)
+        contract_keys = {k for k in groups['contracts'] if index[k]['meta']['type'] == 'air.SemanticContract'}
+        specs = inverse('InterfaceSpecification', 'contract', contract_keys, 'contracts')
+        for spec in specs: follow(spec, 'binding', 'contracts')
         for runtime in {key(o['meta']): o for o in runtimes}.values():
             for field in ('environment', 'zone'): follow(runtime, field, 'context')
             follow(runtime, 'technologies', 'context', True); follow(runtime, 'stores', 'data', True)
@@ -135,6 +138,9 @@ def project(export, gate):
                 follow(connection, 'source', 'dependencies'); follow(connection, 'target', 'dependencies')
         tables = inverse('PhysicalTable', 'store', runtime_keys, 'data')
         for table in tables: follow(table, 'implements', 'data')
+        lifecycles = inverse('DataLifecycleSpecification', 'table', {key(t['meta']) for t in tables}, 'data')
+        for lifecycle in lifecycles:
+            follow(lifecycle, 'owner', 'responsibilities')
         for ref in list(groups['design'].values()):
             obj = index[key(ref)]
             if obj['meta']['type'] == 'air.Function':

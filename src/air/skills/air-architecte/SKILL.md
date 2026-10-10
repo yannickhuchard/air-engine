@@ -200,3 +200,20 @@ Une ancienne vidéo n’est pas courante par simple changement de son étiquette
 contrôler la baseline, le source_digest, le branding et le reçu du rendu réel.
 Aucune publication externe implicite. Les fonctions nécessitent le moteur courant
 qui les expose ; ne pas les supposer disponibles dans la distribution rc9.
+
+## Transmettre aux constructeurs
+
+Consulter `air_assess_builder_handoffs` sur la baseline exacte. Préparer avec
+`air_compile_builder_handoff` les unités explicitement sélectionnées : manifeste,
+modèle fermé, contrats, critères, cas, RACI et questions. Enregistrer la version
+avec `air_create_builder_handoff` si la contribution est autorisée. Ne jamais
+transformer la propriété d'un objet ou un rôle déclaré en réception réelle.
+La réception exige `receive` et `builder_roles` exacts dans la politique serveur.
+`air_receive_builder_handoff` engage l'identité connectée : ne jamais inventer une
+personne ni accepter à la place d'une équipe sans mandat et demande explicite.
+Une demande de changements reste ouverte jusqu'à son retrait explicite par son
+auteur avec `air_revoke_builder_receipt`. Chaque rôle R et A doit recevoir le
+paquet ; une nouvelle version ne reprend aucune ancienne réception. Réévaluer
+les réceptions puis régénérer le site. Une réception concerne la préparation de
+la réalisation, pas un avis indépendant, un test exécuté ou une autorisation de
+lancement. Les outils engageants restent exclus des adaptateurs IDE standards.

@@ -178,3 +178,17 @@ Une ancienne vidéo n’est pas courante par simple changement de son étiquette
 contrôler la baseline, le source_digest, le branding et le reçu du rendu réel.
 Aucune publication externe implicite. Les fonctions nécessitent le moteur courant
 qui les expose ; ne pas les supposer disponibles dans la distribution rc9.
+
+## Recevoir un paquet de construction
+
+Lire `air_assess_builder_handoffs` et préparer `air_compile_builder_handoff` depuis
+la baseline exacte et ses unités. `air_create_builder_handoff` enregistre une
+version immuable, sans l'accepter. Montrer les RACI R et A, interfaces, critères,
+questions et dépendances aux équipes. La politique du serveur lie l'identité
+authentifiée à `receive` et aux `builder_roles` exacts ; un nom dans le dossier
+n'est jamais un mandat. N'appeler `air_receive_builder_handoff` qu'à la demande
+explicite d'un représentant mandaté ; ne pas produire d'avis humain fictif.
+Les changements demandés restent ouverts jusqu'au retrait explicite de leur
+réception par son auteur. Une version ou baseline nouvelle exige des réceptions
+nouvelles. Actualiser les livrables après chaque réception. Distinguer périmètre
+reçu pour préparation, ready-to-build, lancement, tests et réalisation effective.

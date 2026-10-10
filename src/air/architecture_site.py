@@ -386,7 +386,7 @@ def temporal_page(data, dossiers, exports):
     return body, links
 
 
-def compile_site(exports, gates, request, build_topics, model_content, brands=None, interface_suites=None, contextual_models=None):
+def compile_site(exports, gates, request, build_topics, model_content, brands=None, interface_suites=None, contextual_models=None, builder_receipts=None):
     """Each pinned dossier is rendered separately: conflicting revisions never merge."""
     directory = request.get('directory', 'livrables') + '/site'
     files, dossiers, diagram_count = [], [], 0
@@ -482,7 +482,9 @@ def compile_site(exports, gates, request, build_topics, model_content, brands=No
         focus_nodes = [{'node': anchor(o), 'name': o['meta']['name'], 'type': o['meta']['type'][4:], 'href': 'objects.html#' + anchor(o)} for o in g.by_ref.values()]
         handoff = site_handoff.project(e, gate)
         add(prefix + 'handoff.json', 'application/json', render_json(handoff))
-        for page_path, page_title, page_body in site_handoff_html.pages(handoff, g, diagram):
+        receipts = (builder_receipts or {}).get(e['digest'])
+        if receipts is not None: add(prefix + 'builder-receipts.json', 'application/json', render_json(receipts))
+        for page_path, page_title, page_body in site_handoff_html.pages(handoff, g, diagram, receipts):
             add(prefix + page_path, 'text/html', dossier_shell(page_title, page_body, request['title'], navigation(topics, page_path[:-5]), '../../', focus_nodes))
             if page_path.startswith('diagram-'): diagram_count += 1
         title = meta['name'];nav = navigation(topics)

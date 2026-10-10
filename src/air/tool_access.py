@@ -1,5 +1,6 @@
 """One action map for MCP discovery and dispatch; namespace checks remain in each service."""
 OVERRIDES = {
+    'air_receive_builder_handoff': 'receive', 'air_revoke_builder_receipt': 'receive',
     'air_package_publish': 'publish', 'air_package_revoke': 'publish',
     'air_capacity_publish': 'capacity', 'air_admission_review': 'review',
     'air_admission_revoke_review': 'review', 'air_closure_review': 'review',
@@ -14,7 +15,8 @@ OVERRIDES = {
 def actions(principal, policy):
     from air.access import ACTIONS
     candidates = {'*'} if policy.document is None else {
-        namespace for grants in policy.document['subjects'].get(principal['subject'], {}).values() for namespace in grants}
+        namespace for action, grants in policy.document['subjects'].get(principal['subject'], {}).items()
+        if action in ACTIONS for namespace in grants}
     return [action for action in ACTIONS if any(policy.allows(principal, action, namespace) for namespace in candidates)]
 
 

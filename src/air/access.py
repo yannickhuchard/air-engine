@@ -5,12 +5,16 @@ from air.expr import artifact_digest
 from air.foundation import InvalidModel, check_schema, key
 from air.parsing import parse
 
-ACTIONS = ("read", "write", "review", "publish", "admit", "activate", "capacity", "attest", "operate")
+ACTIONS = ("read", "write", "review", "publish", "admit", "activate", "capacity", "attest", "operate", "receive")
 NAMESPACES = {"type": "array", "items": {"type": "string", "pattern": "^(?:\\*|[a-z][a-z0-9_.-]{0,127})$"},
               "maxItems": 256, "uniqueItems": True}
 POLICY = record({"version": {"type": "string", "minLength": 1, "maxLength": 128},
                  "subjects": {"type": "object", "maxProperties": 1000,
-                              "additionalProperties": record({action: NAMESPACES for action in ACTIONS}, [])}})
+                              "additionalProperties": record({**{action: NAMESPACES for action in ACTIONS},
+                                  'builder_roles': {'type': 'array', 'maxItems': 128, 'uniqueItems': True,
+                                      'items': record({'id': {'type': 'string', 'format': 'uri'},
+                                          'revision': {'type': 'integer', 'minimum': 1},
+                                          'digest': {'type': 'string', 'pattern': '^sha256:[a-f0-9]{64}$'}})}}, [])}})
 
 
 class Forbidden(ValueError):
