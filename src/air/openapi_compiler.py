@@ -91,8 +91,8 @@ def compile_openapi(store, principal, policy, request):
     try: bounded(request)
     except ExprError as exc: raise InvalidModel('Compilation request exceeds its budget') from exc
     exported = snapshot(ScopedStore(store, principal, policy), request['baseline'])
-    try: bounded(exported)
-    except ExprError as exc: raise InvalidModel('Compilation context exceeds its budget') from exc
+    from air.completeness import snapshot_budget
+    snapshot_budget(exported)
     index = {key(exact(o)): o for o in exported['objects']};binding = index.get(key(request['binding']))
     if not binding or binding['meta']['type'] != 'air.TechnicalBinding': raise InvalidModel('Binding must be an exact member of the baseline')
     if digest(binding) != request['binding']['digest']: raise Conflict('Binding digest differs')

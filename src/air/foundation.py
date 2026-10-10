@@ -3,7 +3,7 @@ from copy import deepcopy
 import hashlib
 from jsonschema import Draft202012Validator, FormatChecker
 import rfc8785
-from air.core import (DATA_TYPES, FOUNDATION_TYPES, CONSTRUCTION_PROFILE, FOUNDATION_PROFILE, RUNTIME_PROFILE, COLLABORATION_PROFILE, BUSINESS_PROFILE, KNOWLEDGE_PROFILE, AUDIENCE_PROFILE, ORGANIZATION_PROFILE, WORKFLOW_PROFILE, DATA_PROFILE, STATE_PROFILE, GOVERNANCE_PROFILE, ARCHITECTURE_PROFILE, DELIVERY_PROFILE, PROFILE_TYPES, infer_profile, META, NONEMPTY_REFS, REFS,
+from air.core import (DATA_TYPES, FOUNDATION_TYPES, CONSTRUCTION_PROFILE, FOUNDATION_PROFILE, RUNTIME_PROFILE, COLLABORATION_PROFILE, BUSINESS_PROFILE, KNOWLEDGE_PROFILE, AUDIENCE_PROFILE, ORGANIZATION_PROFILE, WORKFLOW_PROFILE, DATA_PROFILE, STATE_PROFILE, GOVERNANCE_PROFILE, ARCHITECTURE_PROFILE, DELIVERY_PROFILE, BUILD_PROFILE, PROFILE_TYPES, infer_profile, META, NONEMPTY_REFS, REFS,
                       canonical, digest, record, reference_slots, validate)
 
 
@@ -45,7 +45,7 @@ def metadata_schema(kind):
 
 
 BASELINE_REQUEST = record({"meta": metadata_schema("air.Baseline"),
-    "profile": {"enum": [FOUNDATION_PROFILE, CONSTRUCTION_PROFILE, RUNTIME_PROFILE, COLLABORATION_PROFILE, BUSINESS_PROFILE, KNOWLEDGE_PROFILE, AUDIENCE_PROFILE, ORGANIZATION_PROFILE, WORKFLOW_PROFILE, DATA_PROFILE, STATE_PROFILE, GOVERNANCE_PROFILE, ARCHITECTURE_PROFILE, DELIVERY_PROFILE]}, "members": NONEMPTY_REFS, "parent_baselines": REFS})
+    "profile": {"enum": [FOUNDATION_PROFILE, CONSTRUCTION_PROFILE, RUNTIME_PROFILE, COLLABORATION_PROFILE, BUSINESS_PROFILE, KNOWLEDGE_PROFILE, AUDIENCE_PROFILE, ORGANIZATION_PROFILE, WORKFLOW_PROFILE, DATA_PROFILE, STATE_PROFILE, GOVERNANCE_PROFILE, ARCHITECTURE_PROFILE, DELIVERY_PROFILE, BUILD_PROFILE]}, "members": NONEMPTY_REFS, "parent_baselines": REFS})
 
 
 def check_schema(value, definition):
@@ -120,6 +120,8 @@ def validate_graph(objects, profile=None):
             if directions == {"SUPPORTS", "REFUTES"} and body["epistemic_status"] != "CONTESTED":
                 issue("AIR_KNOWLEDGE_CONFLICT", meta["id"], "Conflicting evidence must remain explicitly CONTESTED")
     from air.knowledge_schema import graph_issues as knowledge_graph_issues
+    from air.build_schema import graph_issues as build_graph_issues
+    for code, location, message in build_graph_issues(objects, by_ref): issue(code, location, message)
     for code, location, message in knowledge_graph_issues(objects, by_ref): issue(code, location, message)
     from air.audience_schema import graph_issues as audience_graph_issues
     for code, location, message in audience_graph_issues(objects, by_ref): issue(code, location, message)

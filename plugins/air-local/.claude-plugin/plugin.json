@@ -1,6 +1,6 @@
 {
   "name": "air-local",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "AIR - Architecture Workspace : concevoir, vérifier et livrer des projets d’architecture avec un moteur AIR local.",
   "author": {
     "name": "Yannick Huchard",

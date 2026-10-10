@@ -40,14 +40,17 @@ python scripts/install.py --start
 | Distribution | Pour qui ? | État |
 | --- | --- | --- |
 | [Release rc9](https://github.com/yannickhuchard/air-engine/releases/tag/v0.34.0rc9) | Installer la distribution de référence | 0.34.0rc9 ; périmètre et validations propres à cette release |
-| Branche principale de ce dépôt public | Explorer et contribuer aux capacités courantes | 0.35.0.dev1, version de développement ; PWA, parcours interactifs, News, finances, transformation et vidéos |
+| Branche principale de ce dépôt public | Explorer et contribuer aux capacités courantes | 0.35.0.dev2, version de développement ; PWA, parcours interactifs, News, finances, transformation et vidéos |
 | [Plugin public air-plugin](https://github.com/yannickhuchard/air-plugin) | Guider l’installation et le travail avec un agent | Distribution de skills séparée du moteur ; disponibilité dans un annuaire à vérifier séparément |
+
+[Distributions 0.35 de développement](https://github.com/yannickhuchard/air-engine/releases) : installation et qualifications propres à chaque version.
 
 **Les sources récentes sont publiques. La branche principale est une version de développement, sans qualification globale de production.** Pour installer rc9, télécharger sa release ou sélectionner son tag ; ses archives restent inchangées. Une installation locale ne signifie pas synchronisation entre entreprises. PostgreSQL et OIDC sont des options indépendantes.
 
 ## Guides selon votre objectif
 
 - **Architecte :** [travailler avec un agent](docs/guide-architecte-agent.md), [dossier et parcours](docs/parcours-personas-et-usages.md).
+- **Constructeurs :** [profils et contrats vérifiables](docs/lot-b-profils-et-contrats.md), [deux prototypes indépendants](fixtures/build_design/README.md).
 - **Équipe projet :** [lire le site](docs/site-architecture-statique.md), [processus et cartes d’expérience](docs/diagrammes-processus-et-experience.md).
 - **Management :** [synthèse et transformation](docs/synthese-et-pilotage-transformation.md), [finances et traçabilité](docs/etat-implementation.md).
 - **Communication :** [branding](docs/branding-dossiers.md), [récit et vidéos](docs/architecture-story.md), [actualiser les News et vidéos](docs/actualiser-news-videos.md).

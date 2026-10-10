@@ -20,6 +20,7 @@ from air import state_schema as state_machine
 from air import governance_schema as governance
 from air import architecture_schema as architecture_model
 from air import delivery_schema as delivery
+from air import build_schema as build_design
 
 PROFILE = "air.bootstrap/0.1"
 FOUNDATION_PROFILE = "air.foundation/0.2"
@@ -51,9 +52,12 @@ ARCHITECTURE_PROFILE = architecture_model.PROFILE
 ARCHITECTURE_TYPES = GOVERNANCE_TYPES + ["air." + name for name in architecture_model.NAMES]
 DELIVERY_PROFILE = delivery.PROFILE
 DELIVERY_TYPES = ARCHITECTURE_TYPES + ["air." + name for name in delivery.NAMES]
-DATA_TYPES = DELIVERY_TYPES
+BUILD_PROFILE = build_design.PROFILE
+BUILD_TYPES = DELIVERY_TYPES + ['air.' + name for name in build_design.NAMES]
+DATA_TYPES = BUILD_TYPES
 PROFILE_TYPES = {FOUNDATION_PROFILE: FOUNDATION_TYPES, CONSTRUCTION_PROFILE: CONSTRUCTION_TYPES, RUNTIME_PROFILE: RUNTIME_TYPES, COLLABORATION_PROFILE: COLLABORATION_TYPES, BUSINESS_PROFILE: BUSINESS_TYPES, KNOWLEDGE_PROFILE: KNOWLEDGE_TYPES, AUDIENCE_PROFILE: AUDIENCE_TYPES, ORGANIZATION_PROFILE: ORGANIZATION_TYPES, WORKFLOW_PROFILE: WORKFLOW_TYPES, DATA_PROFILE: DATA_MODEL_TYPES, STATE_PROFILE: STATE_TYPES, GOVERNANCE_PROFILE: GOVERNANCE_TYPES, ARCHITECTURE_PROFILE: ARCHITECTURE_TYPES, DELIVERY_PROFILE: DELIVERY_TYPES}
 TYPES = DATA_TYPES + ["air.Baseline", "air.ChangeSet", "air.View"]
+PROFILE_TYPES[BUILD_PROFILE] = BUILD_TYPES
 TEXT = {"type": "string", "minLength": 1, "maxLength": 10000}
 URI = {"type": "string", "format": "uri", "maxLength": 512}
 INSTANT = {"type": "string", "format": "date-time", "pattern": "Z$"}
@@ -111,7 +115,7 @@ BODIES.update({
         "state": {"enum": ["OPEN", "INVESTIGATING", "RESOLVED"]}, "resolution": REF},
         ["question", "affected_objects", "resolution_owner", "blocking_policy", "state"]),
     "air.Baseline": record({"members": RESOLVED_REFS, "dependency_lock": ARTIFACT_REF,
-        "profiles": {"enum": [[FOUNDATION_PROFILE], [CONSTRUCTION_PROFILE], [RUNTIME_PROFILE], [COLLABORATION_PROFILE], [BUSINESS_PROFILE], [KNOWLEDGE_PROFILE], [AUDIENCE_PROFILE], [ORGANIZATION_PROFILE], [WORKFLOW_PROFILE], [DATA_PROFILE], [STATE_PROFILE], [GOVERNANCE_PROFILE], [ARCHITECTURE_PROFILE], [DELIVERY_PROFILE]]}, "parent_baselines": REFS}),
+        "profiles": {"enum": [[FOUNDATION_PROFILE], [CONSTRUCTION_PROFILE], [RUNTIME_PROFILE], [COLLABORATION_PROFILE], [BUSINESS_PROFILE], [KNOWLEDGE_PROFILE], [AUDIENCE_PROFILE], [ORGANIZATION_PROFILE], [WORKFLOW_PROFILE], [DATA_PROFILE], [STATE_PROFILE], [GOVERNANCE_PROFILE], [ARCHITECTURE_PROFILE], [DELIVERY_PROFILE], [BUILD_PROFILE]]}, "parent_baselines": REFS}),
     "air.ChangeSet": record({"base": REF,
         "operations": {"type": "array", "minItems": 1, "maxItems": 1000, "items": {"oneOf": [
             record({"op": {"const": "ADD"}, "after": RESOLVED_REF}),
@@ -136,6 +140,7 @@ BODIES.update(state_machine.bodies(record, TEXT))
 BODIES.update(governance.bodies(record, TEXT, URI, REF, REFS, NONEMPTY_REFS, INSTANT))
 BODIES.update(architecture_model.bodies(record, TEXT, URI, REF, REFS, NONEMPTY_REFS))
 BODIES.update(delivery.bodies(record, TEXT, URI, REF, REFS, NONEMPTY_REFS, INSTANT, ARTIFACT_REF))
+BODIES.update(build_design.bodies(record, TEXT, URI, REF, REFS, NONEMPTY_REFS))
 
 
 def schema(type_name):
@@ -150,8 +155,12 @@ def capabilities():
     return {"engine_version": __version__, "client_contract": contract(),
             "question_capsules": {"engine": "air.question-capsule/1", "tool": "air_resume_question", "source_pins": True,
                                   "context_receipt_signed": False, "automatic_connection": False, "authorization_granted": False},
-            "profile": ARCHITECTURE_PROFILE, "supported_profiles": [PROFILE, FOUNDATION_PROFILE, CONSTRUCTION_PROFILE, RUNTIME_PROFILE, COLLABORATION_PROFILE, BUSINESS_PROFILE, KNOWLEDGE_PROFILE, AUDIENCE_PROFILE, VIEW_PROFILE, ORGANIZATION_PROFILE, WORKFLOW_PROFILE, DATA_PROFILE, STATE_PROFILE, GOVERNANCE_PROFILE, ARCHITECTURE_PROFILE, DELIVERY_PROFILE],
+            "profile": ARCHITECTURE_PROFILE, "supported_profiles": [PROFILE, FOUNDATION_PROFILE, CONSTRUCTION_PROFILE, RUNTIME_PROFILE, COLLABORATION_PROFILE, BUSINESS_PROFILE, KNOWLEDGE_PROFILE, AUDIENCE_PROFILE, VIEW_PROFILE, ORGANIZATION_PROFILE, WORKFLOW_PROFILE, DATA_PROFILE, STATE_PROFILE, GOVERNANCE_PROFILE, ARCHITECTURE_PROFILE, DELIVERY_PROFILE, BUILD_PROFILE],
             "types": TYPES, "lifecycle": ["DRAFT"],
+            "build_design": {"profile": BUILD_PROFILE, "completeness_catalogue": build_design.CATALOGUE,
+                "contexts": build_design.CONTEXTS, "tools": ['air_assess_completeness', 'air_compile_interface_suite', 'air_verify_interface_exchange'],
+                "scope": 'CONTEXTUAL_DOCUMENTARY_CHECKS_AND_JSON_HTTP_DESIGN_PREDICATES',
+                "runtime_execution": False, "exclusions": 'DECLARED_UNLESS_EFFECTIVE_EXACT_BASELINE_ACCEPTANCE'},
             "transformation": {"engine": "air.transformation-view/1", "tool": "air_query_transformation", "exact_baselines": True,
                 "declared_status_only": True, "closed_projects_have_no_active_tasks": True, "federation_implemented": False},
             "management_summary": {"engine": "air.management-summary/1", "regenerated_from_exact_baseline": True, "live_sync": False},
@@ -266,6 +275,7 @@ def reference_slots(obj):
     slots.extend(governance.slots(obj, DATA_TYPES))
     slots.extend(architecture_model.slots(obj))
     slots.extend(delivery.slots(obj, DATA_TYPES))
+    slots.extend(build_design.slots(obj))
     return slots
 
 
@@ -277,6 +287,7 @@ def infer_profile(objects):
     types = {o['meta']['type'] for o in objects if isinstance(o, dict) and isinstance(o.get('meta'), dict) and isinstance(o['meta'].get('type'), str)}
     declared = {p for o in objects if isinstance(o, dict) and isinstance(o.get('body'), dict) and isinstance(o['body'].get('profiles'), list) for p in o['body']['profiles'] if isinstance(p, str)}
     if 'air.View' in types: return VIEW_PROFILE
+    if types & {'air.' + name for name in build_design.NAMES} or BUILD_PROFILE in declared: return BUILD_PROFILE
     if types & {'air.' + name for name in delivery.NAMES} or DELIVERY_PROFILE in declared: return DELIVERY_PROFILE
     if types & {'air.' + name for name in architecture_model.NAMES} or ARCHITECTURE_PROFILE in declared: return ARCHITECTURE_PROFILE
     if types & {'air.' + name for name in governance.NAMES} or GOVERNANCE_PROFILE in declared: return GOVERNANCE_PROFILE
@@ -337,7 +348,7 @@ def validate(document):
             resolved = obj["body"]["state"] == "RESOLVED"
             if resolved != ("resolution" in obj["body"]):
                 issue("AIR_UNKNOWN_RESOLUTION", str(index), "RESOLVED requires an exact resolution; open unknowns cannot declare a resolution")
-        for code, message in [*construction.local_issues(obj), *runtime.local_issues(obj), *collaboration.local_issues(obj), *business.local_issues(obj), *knowledge.local_issues(obj), *audience.local_issues(obj), *captured_view.local_issues(obj), *workflow.local_issues(obj), *data_model.local_issues(obj), *state_machine.local_issues(obj), *governance.local_issues(obj), *architecture_model.local_issues(obj), *delivery.local_issues(obj)]:
+        for code, message in [*construction.local_issues(obj), *runtime.local_issues(obj), *collaboration.local_issues(obj), *business.local_issues(obj), *knowledge.local_issues(obj), *audience.local_issues(obj), *captured_view.local_issues(obj), *workflow.local_issues(obj), *data_model.local_issues(obj), *state_machine.local_issues(obj), *governance.local_issues(obj), *architecture_model.local_issues(obj), *delivery.local_issues(obj), *build_design.local_issues(obj)]:
             issue(code, str(index), message)
         if typename == "air.Baseline":
             if any(r["type"] not in PROFILE_TYPES[obj["body"]["profiles"][0]] for r in obj["body"]["members"]):
@@ -396,6 +407,9 @@ def canonical(obj):
     governance.canonicalize(result)
     architecture_model.canonicalize(result)
     delivery.canonicalize(result)
+    if result['meta']['type'] == 'air.DossierContext':
+        result['body']['profiles'].sort()
+        result['body']['exclusions'].sort(key=lambda e: e['check_id'])
     return rfc8785.dumps(result)
 
 

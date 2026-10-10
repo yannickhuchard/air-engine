@@ -856,13 +856,23 @@ def guide(store, principal, policy, request):
             'meaning': 'READY_TO_BUILD only when no criterion is NOT_MET; tests run after construction, design-time cases before'},
     }
     delivery = _delivery(objects, home, gate)
+    from air import completeness
+    contextual = completeness.project(exported)
+    from air.interface_contracts import inspect_members
+    contextual = completeness.apply_exclusion_reviews(store, principal, policy,
+        completeness.attach_interfaces(contextual, inspect_members(store, principal, policy, exported)))
+    state['completeness'] = {'engine': contextual['engine'], 'catalogue': contextual['catalogue'],
+        'context_state': contextual['context_state'], 'profiles': contextual['profiles'], 'result': contextual['result'],
+        'counts': contextual['counts'], 'blocking_questions': [c for c in contextual['checks'] if c['status'] != 'DOCUMENTED'][:20],
+        'scope': contextual['scope'], 'ready_to_build': False}
     if delivery: state['delivery'] = delivery
     s = snapshot;steps = []
     if snapshot['revision'] != latest:
         steps.append(_step('This is not the latest revision (' + str(latest) + '): switch to it unless you review history on purpose',
                            'air_guide', {'baseline': {'id': s['id']}, 'intent': intent}))
     if intent == 'ORIENT':
-        steps += [_step('Ready to build? Twelve criteria, each with what closes it (already summarised in readiness)', 'air_assess_readiness', {'baseline': s})]
+        steps += [_step('Inspect the contextual questions and absent dimensions; preview is not a selected profile', 'air_assess_completeness', {'baseline': s})]
+        steps += [_step('Ready to build? Profile-specific criteria, each with what closes it (already summarised in readiness)', 'air_assess_readiness', {'baseline': s})]
         if delivery and delivery.get('scenarios'):
             steps.append(_step('Walk the acceptance scenarios on the navigation (already summarised in delivery.scenarios)', 'air_walk_scenarios', {'baseline': s}))
         steps += [

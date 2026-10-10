@@ -17,6 +17,12 @@ Plugin officiel AIR, créé par **Yannick Huchard**, sous Apache-2.0. Il apporte
 
 ## Comment le plugin vous guide
 
+Avec le moteur 0.35.0.dev2, le skill de conception aide aussi à choisir les
+contextes du projet, repérer les dimensions absentes et préparer les contrats
+JSON/HTTP pour les constructeurs. Les trois outils MCP de complétude, compilation
+et vérification partagent les services du CLI. Un résultat documentaire ou sur
+des exemples ne remplace ni la revue du design ni la réception du système réalisé.
+
 L’assistant lit la version réelle du dossier, identifie les écarts, prépare les objets et vous aide à décider. Le moteur vérifie le modèle. Les sources et révisions restent traçables ; une conversation seule n’est pas le référentiel.
 
 Avec un moteur disposant des fonctions récentes, vous pouvez aussi demander :
@@ -38,7 +44,7 @@ Pour Claude Code, charger le dossier en développement avec `claude --plugin-dir
 
 ## Versions, données et support
 
-Paquet source **0.1.8** ; moteur et plugin ont des versions indépendantes. Le dossier ProxiBot et les fonctionnalités récentes restent des exemples de développement. L’[annuaire ChatGPT](https://github.com/yannickhuchard/air-plugin/blob/main/submission/README.md) a sa propre revue ; distribution GitHub et approbation de plateforme sont distinctes.
+Paquet source **0.1.9** ; moteur et plugin ont des versions indépendantes. Le dossier ProxiBot et les fonctionnalités récentes restent des exemples de développement. L’[annuaire ChatGPT](https://github.com/yannickhuchard/air-plugin/blob/main/submission/README.md) a sa propre revue ; distribution GitHub et approbation de plateforme sont distinctes.
 
 Un freelance conserve une installation, une identité et un référentiel séparés par client. Les installations ne se synchronisent pas automatiquement. Les extraits envoyés à un modèle cloud suivent les règles de ce fournisseur et de votre organisation. Aucun jeton ni endpoint privé n’est inclus dans ce plugin.
 

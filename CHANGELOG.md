@@ -1,12 +1,27 @@
 # Journal des versions
 
+## 0.35.0.dev2 et plugin 0.1.9
+
+- Profils de complétude contextuels : questions même sans objets, exclusions
+  liées aux décisions et à une acceptation effective de la baseline exacte.
+- Spécifications d’interfaces HTTP/JSON avec conditions AIR-Expr, exemples,
+  politiques explicites, OpenAPI et vérificateur portable. Schémas identiques
+  aux artefacts du binding ; aucune exécution métier implicite.
+- Cycle de vie des données : clés, indexes, rétention et plans de migration
+  et retour arrière. Nouveau profil air.build-design/0.35 à treize critères ;
+  profils historiques conservés à douze.
+- CLI, MCP, guide, skills et page de complétude du Projet d’architecture.
+  Deux prototypes indépendants forment la recette technique, sans réception
+  humaine ou qualification globale de production déduite.
+
+
 ## Plugin AIR 0.1.2
 
 - Nom affiché AIR - Architecture Workspace ; identifiant `air-local` conservé.
 - Logo original inclus ; attribution Yannick Huchard et Apache-2.0.
 - Packaging reproductible des textes et du PNG, sans fichiers privés.
 
-## 0.35.0.dev1 - Développement normatif, non publié
+## 0.35.0.dev1 - Distribution de développement publique
 
 - Branding par projet et dossier exact : CLI/MCP, sous-dossier portable, SVG,
   couleurs et familles de polices locales, import DESIGN.md alpha avec mapping

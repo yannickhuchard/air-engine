@@ -2,12 +2,32 @@
 name: air-architecte
 description: "Mener une architecture de solution AIR jusqu'au prêt-à-construire, avec un agent : scénarios d'acceptation rejoués sur la conception, socle de non-régression, contrôles et exigences non fonctionnelles reçus en entrée et reliés aux blocs, estimation avec et sans IA agentique, feuilles de route alternatives. Utiliser pour compléter, vérifier ou livrer un dossier de solution, ou pour préparer son passage au comité."
 license: Apache-2.0
-compatibility: "Fonctionne avec tout agent qui lit les Agent Skills (Claude Code, Claude, ChatGPT, Codex, Cursor, Antigravity, OpenCode, Gemini CLI). Requiert le serveur MCP AIR (outils air_*) ou la CLI `air`."
 metadata:
-  engine: air 0.33
+  engine: air 0.35
+  compatibility: "Agent Skills avec MCP AIR ou CLI air. La connexion et la qualification restent propres à chaque client."
 ---
 
 # Architecture de solution prête à construire
+
+Commencer par `air_assess_completeness` sur la baseline exacte. Choisir avec
+l'architecte les contextes numérique, données, physique, organisationnel ou
+réglementé. `profiles` dans cet appel est une prévisualisation ; enregistrer
+DossierContext via la contribution habituelle pour conserver le choix.
+Utiliser le profil de modèle `air.build-design/0.35` pour les nouveaux objets.
+Ses treize critères incluent la complétude contextuelle ; les anciens profils
+conservent leurs douze critères. Les exclusions exigent une décision exacte et
+une revue effective de la baseline pour être reconnues, pas un champ ACCEPTED.
+
+Pour chaque interface JSON/HTTP, décrire InterfaceSpecification et les schémas
+actuels. Les copies doivent égaler les artefacts du binding. Prévoir conditions
+AIR-Expr, exemples valides/invalides, autorisation, idempotence, concurrence,
+délai, retry et compensation. Compiler `air_compile_interface_suite`, puis
+vérifier les échanges fournis avec `air_verify_interface_exchange`.
+Le PASS porte sur les formes JSON et les prédicats purs, pas sur l'exécution
+des politiques ou du système métier. Pour les tables, décrire
+DataLifecycleSpecification : propriété, clés uniques, index, rétention,
+migration, retour arrière et cas prévus. Le site conserve les questions
+contextuelles et les suites téléchargeables dans `completeness.html`.
 
 Pour chaque CustomerJourney, renseigner les phases, actions, pensées,
 touchpoints, acteurs, systèmes exacts, frontstage, backstage et support.

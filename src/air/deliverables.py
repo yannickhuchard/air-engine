@@ -712,6 +712,7 @@ def d_readiness(g, gates):
 
 
 CRITERIA_FR = {
+    'CONTEXTUAL_COMPLETENESS': ('Questions du contexte et contrats de construction', 'Choisir le contexte puis compléter les questions, les contrats et les exclusions déclarées'),
     'REFERENCE_CLOSURE': ('Fermeture des références', 'Ajouter ou corriger les révisions référencées'),
     'STRUCTURE': ('Structure MECE et DDD', 'Résoudre chaque violation nommée par air_inspect_architecture'),
     'CONSTRUCTION_CHAIN': ('Chaîne exigence, fonction, contrat, unité, cas', 'Fermer chaque diagnostic ; air_guide explique chaque code'),
@@ -1149,7 +1150,12 @@ def compile_deliverables(store, principal, policy, request):
         from air.architecture_site import compile_site
         from air.branding import selection as select_branding
         brands = select_branding(request, request['baselines'], store, principal, policy)
-        site_files, site_manifest = compile_site(exports, gates, request, lambda graph, local_gates: build_topics(graph, local_gates, request), render_json(model), brands)
+        from air.interface_contracts import compile_members
+        from air import completeness
+        suites = {e['digest']: compile_members(store, principal, policy, e, 'FULL') for e in exports}
+        contexts = {e['digest']: completeness.apply_exclusion_reviews(store, principal, policy,
+            completeness.attach_interfaces(completeness.project(e), suites[e['digest']])) for e in exports}
+        site_files, site_manifest = compile_site(exports, gates, request, lambda graph, local_gates: build_topics(graph, local_gates, request), render_json(model), brands, suites, contexts)
         files.extend(site_files)
     warnings = (['## Révisions divergentes dans la synthèse', '',
         'Les documents Markdown de synthèse regroupent les objets par identifiant et retiennent la plus haute révision. Ils ne sont pas une comparaison existant/cible.',
