@@ -71,6 +71,11 @@ def project(export, gate, topics, questions):
               'roles': [{'id': r, 'label': label, 'purpose': purpose, 'questions': ids}
                         for r, label, purpose, ids in ROLES],
               'questions': projected, 'audience_is_access_control': False,
+              'design_tasks': [{'reference': {'id': o['meta']['id'], 'revision': o['meta']['revision'], 'digest': digest(o)},
+                  'name': o['meta']['name'], 'status': o['body']['status'], 'owner': o['body']['owner'],
+                  'purpose': o['body']['purpose'], 'deliverables': o['body']['deliverables']}
+                  for o in sorted(export['objects'], key=lambda o: (o['meta']['id'], o['meta']['revision']))
+                  if o['meta']['type'] == 'air.ArchitectureTask' and o['meta']['namespace'] == meta['namespace']],
               'calculated_criteria': [{'code': c['code'], 'status': c['status'],
                   'label': _criterion_row(c)[0], 'detail': _criterion_row(c)[2],
                   'next_action': _criterion_row(c)[3]} for c in gate['criteria']],

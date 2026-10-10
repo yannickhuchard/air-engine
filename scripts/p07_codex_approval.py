@@ -11,6 +11,7 @@ from pathlib import Path
 import queue
 import shutil
 import subprocess
+import sys
 import threading
 import time
 
@@ -43,7 +44,16 @@ def run(root, output, job_file=None):
     write_private(output/'fixture.json', {'job': job['job']})
     executable = shutil.which('codex')
     stream = (output/'native.jsonl').open('w', encoding='utf-8')
-    process = subprocess.Popen([executable, 'app-server', '--stdio'], cwd=client['workspace'],
+    # Pin the isolated adapter at invocation time. A globally connected AIR app
+    # may address another registry; project trust alone must never select it.
+    command = [executable, 'app-server', '--stdio', '-c', 'features.apps=false',
+               '-c', 'mcp_servers.air.command='+json.dumps(sys.executable),
+               '-c', 'mcp_servers.air.args='+json.dumps(['-m', 'air.mcp', '--home', str(home),
+                   '--credential', client['credential'], '--port', str(bench['port'])]),
+               '-c', 'mcp_servers.air.enabled_tools=["air_cancel_job","air_get_job"]',
+               '-c', 'mcp_servers.air.required=true',
+               '-c', 'mcp_servers.air.tools.air_cancel_job.approval_mode="prompt"']
+    process = subprocess.Popen(command, cwd=client['workspace'],
                                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
                                text=True, encoding='utf-8', env=dict(os.environ, PYTHONUTF8='1'))
     pending = queue.Queue()
@@ -83,7 +93,7 @@ def run(root, output, job_file=None):
         send({'id': 2, 'method': 'thread/start', 'params': {'cwd': client['workspace'], 'ephemeral': True,
                                                          'sandbox': 'read-only', 'approvalPolicy': 'on-request'}})
         identity = receive(2)['thread']['id']
-        prompt = ('Native AIR acceptance on synthetic data. Discover local air MCP tools via tool search if needed. '
+        prompt = ('Native AIR acceptance on synthetic data. Use only the local air MCP server, never codex_apps or a connected app. '
                   'Call air_cancel_job with '+json.dumps({'job': job['job']})+' twice sequentially, then air_get_job with the same arguments. '
                   'The operator will answer the approval interactively. Do not use shell, other connectors or files. '
                   'No other job may be changed. Do not bypass approvals.')

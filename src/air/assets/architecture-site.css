@@ -1,4 +1,31 @@
 /* AIR project: reading surface, ontology colors, a compact navigation rail. */
+.completion-ribbon { margin:1.8rem 0 2rem; padding:1rem 0; border-block:1px solid var(--line); }
+.completion-heading { display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:.5rem 1rem; }
+.completion-heading h2 { margin:0; }
+.completion-caption { color:var(--muted); font-size:.88rem; max-width:80ch; }
+.completion-parts { display:grid; grid-template-columns:repeat(8,minmax(0,1fr)); gap:.4rem; }
+.completion-part { min-width:0; }
+.completion-part[open] { grid-column:1/-1; order:1; }
+.completion-part>summary { display:grid; grid-template-columns:1fr auto; gap:.55rem .3rem; align-content:start; min-width:0; padding:.7rem .6rem; background:var(--ground); border-radius:6px; cursor:pointer; font-size:.86rem; transition:background .15s; }
+.completion-part>summary:hover,.completion-part[open]>summary { background:color-mix(in srgb,var(--blue) 10%,var(--paper)); }
+.completion-part>summary:focus-visible { outline:3px solid var(--blue); outline-offset:3px; }
+.completion-part[open]>summary { grid-template-columns:minmax(0,1fr) auto; align-items:center; }
+.completion-part[open]>summary .completion-name { grid-column:1; min-height:0; }
+.completion-part[open]>summary strong { grid-column:2; grid-row:1; }
+.completion-name { grid-column:1/-1; font-weight:600; min-height:2.6em; overflow-wrap:anywhere; }
+.completion-part strong { grid-column:1/-1; font-size:1.12rem; font-variant-numeric:tabular-nums; }
+.completion-track { grid-column:1/-1; height:5px; background:var(--line); border-radius:3px; overflow:hidden; }
+.completion-track>span { display:block; height:100%; background:var(--blue); }
+.completion-state { grid-column:1/-1; display:block; color:var(--muted); font-size:.78rem; overflow-wrap:anywhere; }
+.completion-detail { grid-column:1/-1; order:1; background:var(--ground); padding:1rem clamp(.8rem,2vw,1.5rem); border-radius:6px; overflow-wrap:anywhere; }
+.completion-part:not([open])>.completion-detail { display:none; }
+.completion-detail h3 { margin-top:0; }
+.completion-detail ul { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.5rem 2rem; padding-left:1.2rem; }
+.completion-detail li p { margin:.3rem 0; font-size:.9rem; }
+.completion-unlinked { margin-top:.8rem; }
+@media(max-width:1100px) { .completion-parts { grid-template-columns:repeat(4,minmax(0,1fr)); } }
+@media(max-width:560px) { .completion-parts { grid-template-columns:repeat(2,minmax(0,1fr)); } .completion-detail ul { grid-template-columns:1fr; } }
+@media(prefers-reduced-motion:reduce) { .completion-part>summary { transition:none; } }
 .finance-summary,.traceability-preview { margin:2rem 0; padding:1.5rem clamp(1rem,3vw,2rem); border:1px solid var(--line); border-radius:12px; background:var(--ground); }
 .view-eyebrow { font-size:.76rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.12em; }
 .finance-summary h2,.traceability-preview h2 { margin:.5rem 0; }

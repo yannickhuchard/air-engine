@@ -17,6 +17,15 @@ Les quatre colonnes sont « À documenter », « À compléter », « À valider
 un site statique s’actualise par régénération après une nouvelle baseline.
 La lecture et le suivi ne dépendent pas de JavaScript.
 
+En tête de chaque dossier, une barre de huit parties affiche la couverture
+documentaire et ouvre les sujets renseignés, manques, contrôles restants et
+travaux déclarés. Elle figure aussi sur l’accueil d’un projet à dossier unique.
+Chaque pourcentage compte les sujets documentés ou calculés, sans pondération ;
+un sujet partiel ne compte pas comme couvert. Le pourcentage ne mesure ni
+l’effort accompli ni la validation du design. Le travail en cours provient
+d’une tâche ou inconnue explicite, rattachée par des références exactes.
+Voir [le choix UX et les règles de calcul](ux-barre-completude.md).
+
 Le pack reste borné à 16 MiB par défaut. Une requête de génération peut choisir
 explicitement `max_total_bytes` entre 16 et 64 MiB, par exemple `33554432` pour
 32 MiB. Les limites par fichier restent actives. La CLI reçoit le pack complet
@@ -26,7 +35,7 @@ Les projections JSON sont compactées sans supprimer les objets, liens ou
 octets des artefacts retenus. Les fiches de transmission donnent accès à la
 déclaration complète par son lien exact dans le catalogue d’objets.
 
-Le dossier ProxiBot (document historique ou livrable local non inclus) démontre le suivi sur
+Le dossier de référence conservé hors de cette distribution démontre le suivi sur
 une conception de livraison locale par robots, avec inconnues métier conservées.
 
 UX02 améliore [la présentation et la lecture du graphe](ux02-design-et-lecture-graphe.md)
@@ -180,7 +189,7 @@ profil choisi pour le stockage de la solution est un exemple PostgreSQL à
 
 La vérification navigateur facultative utilise Node/Playwright uniquement en
 développement. La réception locale et les empreintes figurent dans le
-reçu (document historique ou livrable local non inclus). Les trois parcours
+[reçu](traceability/lot-a-2026-10-10.json). Les trois parcours
 DEMO-METIER-1 sont rejoués séparément. Les neuf tests métier non exécutés et les
 portes bloquées restent visibles, sans nouvelle attestation de conformité AIR.
 

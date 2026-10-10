@@ -33,7 +33,7 @@ python scripts/install.py --start
 
 > « Utilise AIR pour m’aider à construire ce dossier. Montre les informations manquantes, pose les questions une par une et vérifie le modèle avant de produire les livrables. »
 
-**4. Progressez jusqu’à un dossier complet.** L’assistant lit la version exacte, prépare les modifications, conserve les décisions et régénère les vues. Checklist, kanban, News et questions ouvertes rendent le travail restant visible. Les vidéos courtes sont un atelier optionnel.
+**4. Progressez jusqu’à un dossier complet.** L’assistant lit la version exacte, prépare les modifications, conserve les décisions et régénère les vues. La barre de progression ouvre chaque partie du dossier, ses manques et le travail déclaré. Checklist, kanban, News et questions ouvertes complètent cette lecture. Les vidéos courtes sont un atelier optionnel.
 
 ## Choisir la bonne version
 

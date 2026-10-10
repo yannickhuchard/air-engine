@@ -1,5 +1,26 @@
 # Validation des sources publiques
 
+## Lot A reçu le 10 octobre 2026
+
+La [consolidation locale](lot-a-consolidation.md) et son
+[reçu](traceability/lot-a-2026-10-10.json) ajoutent la régression complète :
+1 176 tests réussis, un skip explicite du helper privé, aucun échec. Les
+retouches finales sont ensuite reçues par vingt tests ciblés publics.
+Trois dossiers Asteria, 24 vues de la barre et la PWA sont rejoués.
+
+Les builds produisent le même wheel et la même archive pour un commit donné.
+Le paquet passe installation neuve hors ligne, réinstallation, mise à niveau
+depuis rc9 et retour arrière par restauration. Les parcours natifs Codex et
+ChatGPT sont observés, avec reprise du contexte et compilation des livrables.
+Les configurations natives restent explicites ; la découverte automatique
+Codex et l’annuaire OpenAI ne sont pas déduits de ces résultats.
+
+La version reste 0.35.0.dev1, sans réception normative globale ni recette sur
+un deuxième poste physique. Les autres clients/OS et PostgreSQL/OIDC ne sont
+pas requalifiés par ce lot SQLite/local. Aucune CI lancée.
+
+## Historique de la première publication
+
 La branche principale contient 0.35.0.dev1, version de développement. Les
 résultats locaux de publication sont consignés dans
 `traceability/public-development-035.json` avec leurs empreintes et limites.
@@ -7,7 +28,7 @@ La première suite publique a donné 1147 succès, 16 échecs et 2 skips.
 Les échecs ont été traités : sources de fixture conservées, scripts optionnels
 réintégrés, helper privé explicitement exclu et provenance des vues corrigée.
 Le rejeu des cinq modules concernés donne 33 succès et 1 skip explicite.
-La suite complète n’a pas été répétée après ces corrections.
+La suite complète n’avait pas encore été répétée à cette première publication.
 
 Le wheel corrigé a passé installation neuve hors ligne, réinstallation et
 restauration avec révocation de l’ancienne identité. Trois dossiers Asteria
@@ -30,5 +51,5 @@ ProxiBot est explicitement ignoré lorsque ce helper n’est pas distribué.
 Pour contribuer : `python scripts/install.py --extras dev,proofs,backup`, puis
 `.venv/Scripts/python.exe scripts/check.py -q` sous Windows
 (`.venv/bin/python` sous Unix). Le dossier temporaire doit être local et privé.
-Aucune CI push/PR n’est activée. Les autres OS, PostgreSQL/OIDC, les nouveaux
+Aucune CI push/PR n’est activée. Les autres OS, PostgreSQL/OIDC, les autres
 clients natifs et la qualification globale de production restent à recevoir.

@@ -2,8 +2,41 @@
 from html import escape
 from air.expr import artifact_digest
 
-ENGINE = 'air.site-progress/1'
+ENGINE = 'air.site-progress/2'
 COLUMNS = [('TODO', 'À documenter'), ('PARTIAL', 'À compléter'), ('VALIDATE', 'À valider'), ('DOCUMENTED', 'Documenté ou calculé')]
+PARTS = [
+    ('intention', 'Intention et choix', ['23', '02', '14', '24', '25'], []),
+    ('experience', 'Expérience', ['03', '04', '30'], []),
+    ('architecture', 'Architecture', ['01', '09', '10', '11', '29', '26'], ['REFERENCE_CLOSURE', 'STRUCTURE', 'EXTERNAL_DEPENDENCIES', 'RUNTIME']),
+    ('data', 'Données', ['18', '19', '20'], []),
+    ('quality', 'Qualité et risques', ['12', '15', '16', '22', '34', '35'], ['KNOWLEDGE', 'GAPS', 'SECURITY_ZONES', 'COMPLIANCE']),
+    ('delivery', 'Réalisation', ['05', '06', '07', '08', '21', '31', '27', '37'], ['PLANNING']),
+    ('finance', 'Finances', ['17', '36'], []),
+    ('verification', 'Vérification', ['13', '28', '32', '33'], ['CONSTRUCTION_CHAIN', 'VERIFICATION', 'INDEPENDENT_REVIEW']),
+]
+
+
+def parts(reading):
+    """Unweighted documentary topic coverage, with separate declared work and gates."""
+    result = []; linked = set()
+    ref_key = lambda r: (r['id'], r['revision'])
+    work = reading.get('design_tasks', [])
+    for identity, label, topics, gates in PARTS:
+        questions = [q for q in reading['questions'] if q['id'] in topics]
+        sources = {ref_key(s['reference']) for q in questions for s in q['sources']}
+        declared = [t for t in work if any(ref_key(r) in sources for r in t['deliverables'])]
+        linked.update(ref_key(t['reference']) for t in declared)
+        investigating = {ref_key(s['reference']): s for q in questions for s in q['sources']
+            if s.get('type') == 'air.Unknown' and s.get('declared_state') == 'INVESTIGATING'}
+        covered = sum(q['state'] in ('SOURCES_PRESENT', 'CALCULATED') for q in questions)
+        result.append({'id': identity, 'label': label, 'covered': covered, 'total': len(questions),
+            'percent': 100 * covered // len(questions) if questions else None,
+            'questions': questions, 'remaining_controls': [c for c in reading['calculated_criteria']
+                if c['code'] in gates and c['status'] == 'NOT_MET'],
+            'declared_work': declared, 'investigating': list(investigating.values()),
+            'in_progress': sum(t['status'] == 'IN_PROGRESS' for t in declared) + len(investigating),
+            'semantic_completeness_certified': False})
+    return result, [t for t in work if ref_key(t['reference']) not in linked]
 
 
 def project(reading, journeys=None):
@@ -43,7 +76,10 @@ def project(reading, journeys=None):
                 'kind': 'JOURNEY_DOCUMENTARY_COVERAGE', 'status': c['status'],
                 'href': 'journeys.html#journey-checklist', 'sources': journeys['sources'], 'approved': False,
                 'detail': str(c['gap_count']) + ' lacune(s). Contrôle documentaire, pas une validation UX ou réglementaire.'})
+    blocks, unlinked = parts(reading)
     result = {'engine': ENGINE, 'baseline': reading['baseline'], 'gate': reading['gate'],
+              'parts': blocks, 'unlinked_design_tasks': unlinked,
+              'percentage_basis': 'FLOOR_100_COVERED_TOPICS_OVER_PRESENT_TOPICS_UNWEIGHTED',
               'tasks': tasks, 'documented_topics': sum(q['state'] in ('SOURCES_PRESENT', 'CALCULATED') for q in reading['questions']),
               'total_topics': len(reading['questions']),
               'met_criteria': sum(c['status'] == 'MET' for c in reading['calculated_criteria']),
@@ -51,6 +87,48 @@ def project(reading, journeys=None):
               'refresh_policy': 'REGENERATE_FROM_EXACT_BASELINE', 'semantic_completeness_certified': False,
               'business_execution_performed': False}
     return {**result, 'projection_digest': artifact_digest(result)}
+
+
+def ribbon(progress, prefix=''):
+    """Native disclosure keeps the complete drill-down usable without JavaScript."""
+    from air.deliverables import mid
+    from air.editorial import prose
+    h = lambda value: escape(prose(str(value)), quote=True)
+    scope = mid(progress['baseline']['id'] + ':' + str(progress['baseline']['revision']) + ':' + prefix)
+    html = '<section class="completion-ribbon" aria-label="Avancement par partie du dossier"><div class="completion-heading"><h2>Avancement du dossier</h2><a href="' + h(prefix + '28-preparation-construction.html') + '">Préparation : ' + str(progress['met_criteria']) + '/' + str(progress['total_criteria']) + '</a></div>'
+    html += '<p class="completion-caption">Couverture documentaire par partie. Cliquez pour voir les manques et le travail déclaré. Ces pourcentages ne valent pas validation du design.</p><div class="completion-parts">'
+    for block in progress['parts']:
+        identifier = 'completion-' + scope + '-' + block['id']
+        percent = block['percent']; caption = str(percent) + ' %' if percent is not None else 'Non évalué'
+        missing = block['total'] - block['covered']; controls = len(block['remaining_controls'])
+        state = str(missing) + ' à compléter' if missing else 'Sujets couverts' if block['total'] else 'Aucun sujet évalué'
+        if controls: state += ', ' + str(controls) + ' contrôle(s) restant(s)'
+        html += '<details class="completion-part" id="' + identifier + '"><summary><span class="completion-name">' + h(block['label']) + '</span><strong>' + h(caption) + '</strong><span class="completion-track" aria-hidden="true"><span style="width:' + str(percent or 0) + '%"></span></span><span class="completion-state">' + h(state) + '</span></summary><div class="completion-detail">'
+        html += '<h3>' + h(block['label']) + '</h3><p>' + str(block['covered']) + '/' + str(block['total']) + ' sujets documentés ou calculés. Couverture de la baseline r' + str(progress['baseline']['revision']) + '.</p><ul>'
+        for q in block['questions']:
+            state = {'NOT_DOCUMENTED': 'À documenter', 'PARTIAL': 'À compléter', 'SOURCES_PRESENT': 'Sources présentes', 'CALCULATED': 'Calcul disponible'}[q['state']]
+            detail = '; '.join(q['missing_dimensions']) or ('Aucune source déclarée.' if not q['sources'] and q['state'] != 'CALCULATED' else 'Lire le sujet et ses limites.')
+            html += '<li><a href="' + h(prefix + q['topic']) + '">' + h(q['question']) + '</a><span class="completion-state">' + h(state) + '</span><p>' + h(detail) + '</p></li>'
+        html += '</ul><h4>Contrôles restants</h4>'
+        html += '<ul>' + ''.join('<li>' + h(c['label']) + '<p>' + h(c['next_action']) + '</p></li>' for c in block['remaining_controls']) + '</ul>' if controls else '<p>Aucun contrôle restant rattaché à cette partie. Consulter la préparation globale.</p>'
+        html += '<h4>Travail déclaré</h4>'
+        states = {'TODO': 'À faire', 'IN_PROGRESS': 'En cours', 'BLOCKED': 'Bloqué', 'DONE': 'Terminé, déclaré', 'CANCELLED': 'Annulé'}
+        for task in block['declared_work']:
+            ref = task['reference']
+            html += '<p><a href="' + h(prefix + 'objects.html#' + mid(ref['id'] + ':' + str(ref['revision']))) + '">' + h(task['name']) + '</a> : ' + h(states[task['status']]) + '. Responsable déclaré : ' + h(task['owner']) + '.</p>'
+        for unknown in block['investigating']:
+            ref = unknown['reference']
+            html += '<p><a href="' + h(prefix + 'objects.html#' + mid(ref['id'] + ':' + str(ref['revision']))) + '">' + h(unknown['name']) + '</a> : investigation en cours, déclarée.</p>'
+        if not block['declared_work'] and not block['investigating']: html += '<p>Aucun travail en cours rattaché par une référence exacte. Un manque ne signifie pas qu’une tâche a démarré.</p>'
+        html += '<p><a href="' + h(prefix + 'cooperate.html') + '">Discuter ces manques avec un assistant</a></p></div></details>'
+    html += '</div>'
+    if progress['unlinked_design_tasks']:
+        html += '<details class="completion-unlinked"><summary>Travail du dossier sans rattachement à une partie (' + str(len(progress['unlinked_design_tasks'])) + ')</summary><ul>'
+        for task in progress['unlinked_design_tasks']:
+            ref = task['reference']
+            html += '<li><a href="' + h(prefix + 'objects.html#' + mid(ref['id'] + ':' + str(ref['revision']))) + '">' + h(task['name']) + '</a> : ' + h(task['status']) + '</li>'
+        html += '</ul></details>'
+    return html + '</section>'
 
 
 def section(progress, prefix='', heading='Complétude et progression'):

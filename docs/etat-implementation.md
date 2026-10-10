@@ -1,5 +1,24 @@
 # État de réalisation public
 
+## Lot A reçu dans le périmètre local - 10 octobre 2026
+
+La [consolidation locale](lot-a-consolidation.md) comprend la régression
+publique complète (1 176 succès, un skip privé, aucun échec), les retouches
+finales vérifiées, trois dossiers Asteria, les builds reproductibles et les
+recettes du paquet : installation neuve hors ligne, réinstallation, mise à
+niveau rc9 et restauration. Codex 0.159.2 et ChatGPT exécutent réellement les
+parcours de lecture, diagnostic, proposition, reprise et compilation.
+
+La [barre de complétude](ux-barre-completude.md) ouvre huit parties depuis
+l’accueil du dossier : pourcentage documentaire, manques, contrôles restants,
+travail déclaré et liens vers les sujets exacts. Elle fonctionne au clavier
+et sans JS. Les 24 vues Asteria et la PWA sont reçues localement.
+
+La version reste 0.35.0.dev1. Cette réception ne vaut ni conformité normative
+totale, ni compatibilité avec tous les clients, ni revue indépendante, ni
+serveur centralisé ou admission dans un annuaire. Aucune CI lancée.
+Voir le [reçu structuré](traceability/lot-a-2026-10-10.json).
+
 ## Sources publiques 0.35.0.dev1
 
 La branche principale publie les sources de développement du 9 octobre 2026

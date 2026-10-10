@@ -494,7 +494,7 @@ def compile_site(exports, gates, request, build_topics, model_content, brands=No
         add(prefix + 'questions.html', 'text/html', dossier_shell('Les questions du dossier', question_page(reading, g), request['title'], nav, '../../'))
         for role, label, _, _ in site_questions.ROLES:
             add(prefix + 'role-' + role + '.html', 'text/html', dossier_shell(label, question_page(reading, g, role), request['title'], navigation(topics, 'role-' + role), '../../'))
-        body = '<nav class="breadcrumb"><a href="../../index.html">Projet</a> / Dossier</nav><h1>' + H(title) + '</h1>' + management_summary.section(summary, compact=True) + '<p class="intro">' + H(meta['description']) + '</p>' + \
+        body = '<nav class="breadcrumb"><a href="../../index.html">Projet</a> / Dossier</nav><h1>' + H(title) + '</h1>' + management_summary.section(summary, compact=True) + site_progress.ribbon(progress) + '<p class="intro">' + H(meta['description']) + '</p>' + \
             '<p class="gate"><strong>' + H(reading['gate']['label']) + '</strong>. <a href="28-preparation-construction.html">Comprendre les critères</a></p>' + \
             '<h2>Les réponses dont vous avez besoin</h2><p>Choisissez votre parcours, puis ouvrez les sujets qui portent la réponse et ses preuves.</p>' + reading_routes() + '<p><a href="questions.html">Rechercher parmi toutes les questions du dossier</a></p>' + \
             '<p>Chaque sujet présente une facette du même modèle. Commencez par le besoin, suivez les mécanismes, puis examinez les choix et les preuves.</p>' + story(g) + \
@@ -583,6 +583,9 @@ def compile_site(exports, gates, request, build_topics, model_content, brands=No
         news_file = next(f for f in files if f['path'] == directory + '/' + d['news_data'])
         body = body.replace('<label for="dossier-search">', project_updates.section(json.loads(news_file['content']), base, compact=True) + '<label for="dossier-search">', 1)
         body = body.replace('<label for="dossier-search">', management_summary.section(json.loads(summary_file['content']), base, compact=True) + '<label for="dossier-search">', 1)
+        if len(dossiers) == 1:
+            progress_file = next(f for f in files if f['path'] == directory + '/' + d['progress'])
+            body = body.replace('<label for="dossier-search">', site_progress.ribbon(json.loads(progress_file['content']), base) + '<label for="dossier-search">', 1)
         finance_file = next(f for f in files if f['path'] == directory + '/' + d['finance_data'])
         trace_file = next(f for f in files if f['path'] == directory + '/' + d['traceability_data'])
         body += '<section class="dossier-dimensions"><h2>' + H(d['name']) + '</h2>' + site_finance_trace.finance_summary(json.loads(finance_file['content']), d['finance']) + site_finance_trace.sankey_preview(json.loads(trace_file['content']), d['traceability']) + '</section>'

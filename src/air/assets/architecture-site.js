@@ -109,3 +109,19 @@
     document.getElementById('journey-filter-status').textContent = cards.filter(card => !card.hidden).length + ' persona(s) affiché(s).';
   });
 })();
+
+// Native disclosure, enhanced locally; it never changes model status or coverage.
+document.querySelectorAll('.completion-ribbon').forEach(ribbon => {
+  const parts = [...ribbon.querySelectorAll('.completion-part')];
+  parts.forEach(part => {
+    part.addEventListener('toggle', () => {
+      if (part.open) parts.forEach(other => { if (other !== part) other.open = false; });
+    });
+    part.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && part.open) {
+        part.open = false;
+        part.querySelector('summary').focus();
+      }
+    });
+  });
+});
