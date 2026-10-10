@@ -1,0 +1,126 @@
+{
+  "schema": "air.publication-reception/1",
+  "lot": "C",
+  "date": "2026-10-11",
+  "status": "PASS_SCOPED",
+  "engine": {
+    "tagName": "v0.35.0.dev3",
+    "url": "https://github.com/yannickhuchard/air-engine/releases/tag/v0.35.0.dev3",
+    "isPrerelease": true,
+    "targetCommitish": "28a318c2f600c2fccf60e5e55049acabe1252c2a",
+    "source_commit": "28a318c2f600c2fccf60e5e55049acabe1252c2a",
+    "merge_commit": "9f3649e7aa767f45a23f66aeedc4e0509f89d63a",
+    "source_sha256": "6136fe0ca4f69eaadc8f818a0b69c2805ee17d2d1d7dbfe9895ae13259180b72",
+    "archive_sha256": "10f6a21192c7ba2c9bb57324b6af0f5d11822d4ce99a480aa659b46677213a71",
+    "wheel_sha256": "7c517b177f93d6de7236b2dd4adf68a9212b31d8db30cf9e15b72e9b3e8eab40",
+    "fresh_offline_installation": true,
+    "reinstallation_preserves_identity_and_revision": true,
+    "recovery_preserves_digest_and_revokes_old_identity": true,
+    "upgrade": {
+      "status": "PASS",
+      "from": "0.35.0.dev2",
+      "to": "0.35.0.dev3",
+      "previous_wheel_sha256": "c4a8101ffb133fea221d0fe6642908a7a03d9725f1cef93474069b44e5811169",
+      "identity_preserved": true,
+      "revision_preserved": true,
+      "rollback": "PRE_UPGRADE_SNAPSHOT_IN_NEW_HOME",
+      "rollback_digest_preserved": true
+    },
+    "installed_handoff_reception": {
+      "status": "PASS_SCOPED",
+      "engine_version": "0.35.0.dev3",
+      "mcp_matches_cli": true,
+      "required_roles": 4,
+      "questions_block_acceptance_until_withdrawn": true,
+      "new_version_requires_new_receipts": true,
+      "missing_unit_visible": true,
+      "real_teams_validated": false,
+      "authorization_granted": false
+    },
+    "installed_cli_commands": 13,
+    "installed_browser_views": 8
+  },
+  "plugin": {
+    "tagName": "v0.1.10",
+    "url": "https://github.com/yannickhuchard/air-plugin/releases/tag/v0.1.10",
+    "isPrerelease": false,
+    "targetCommitish": "425d603e54687dd33fe3ea28d19cd2e85c9188bc",
+    "source_commit": "425d603e54687dd33fe3ea28d19cd2e85c9188bc",
+    "merge_commit": "4ece60563a7d6884a2749527c90e6c2d4b71bf14",
+    "matches_public_sources": true,
+    "last_openai_observation": {
+      "date": "2026-10-01",
+      "version": "0.1.7",
+      "state": "IN_REVIEW",
+      "new_observation": false
+    },
+    "marketplace_approval_observed": false
+  },
+  "assets": [
+    {
+      "repository": "air-engine",
+      "asset": "air-0.35.0.dev3-source.zip",
+      "bytes": 3103205,
+      "sha256": "10f6a21192c7ba2c9bb57324b6af0f5d11822d4ce99a480aa659b46677213a71",
+      "anonymous_download_verified": true
+    },
+    {
+      "repository": "air-engine",
+      "asset": "air_engine-0.35.0.dev3-py3-none-any.whl",
+      "bytes": 1451925,
+      "sha256": "7c517b177f93d6de7236b2dd4adf68a9212b31d8db30cf9e15b72e9b3e8eab40",
+      "anonymous_download_verified": true
+    },
+    {
+      "repository": "air-engine",
+      "asset": "constraints.cdx.json",
+      "bytes": 7071,
+      "sha256": "bca3eb4682ddb18dbdbd0aa8cd578bd8e9b7ce8149ad6851966cd7070832cc6e",
+      "anonymous_download_verified": true
+    },
+    {
+      "repository": "air-engine",
+      "asset": "package-qualification.json",
+      "bytes": 5822,
+      "sha256": "73ad97e98f474f1093622be2d139b0dbc24c5f331d071a60c510486afeffb561",
+      "anonymous_download_verified": true
+    },
+    {
+      "repository": "air-engine",
+      "asset": "release-set.json",
+      "bytes": 980,
+      "sha256": "f31f62a00fcf698c18b91334168a35810f843b2dc6c88a8ca87fd375301cbd18",
+      "anonymous_download_verified": true
+    },
+    {
+      "repository": "air-engine",
+      "asset": "SHA256SUMS.txt",
+      "bytes": 467,
+      "sha256": "5e85fd5cdb50350b16e3c560583327e39611e0606591539a78f1c4be2d15d68e",
+      "anonymous_download_verified": true
+    },
+    {
+      "repository": "air-plugin",
+      "asset": "air-local-0.1.10.zip",
+      "bytes": 506782,
+      "sha256": "09b4ff43a259595f76e007bc6a432e8c50fb362da5ee58222400c7ee9fea6c9f",
+      "anonymous_download_verified": true
+    },
+    {
+      "repository": "air-plugin",
+      "asset": "plugin-package.json",
+      "bytes": 1341,
+      "sha256": "68206e17b96a7fc659a7c498be148846292774c28f26f6cb297ddb29ce51e8bf",
+      "anonymous_download_verified": true
+    }
+  ],
+  "final_transport_tests": {
+    "passed": 12,
+    "failed": 0,
+    "log_digest": "sha256:375815d85f5a33d9bc9c9c39598da730c3d04606bd4bb48ab7b48fe4c1552104"
+  },
+  "private_history_published": false,
+  "ci_executed": false,
+  "production_ready": false,
+  "real_teams_validated": false
+}

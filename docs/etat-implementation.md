@@ -2,6 +2,16 @@
 
 ## Lot C : paquets et réception des constructeurs - 11 octobre 2026
 
+Les distributions [moteur 0.35.0.dev3](https://github.com/yannickhuchard/air-engine/releases/tag/v0.35.0.dev3)
+et [plugin 0.1.10](https://github.com/yannickhuchard/air-plugin/releases/tag/v0.1.10)
+sont publiées après fusion. Les huit assets sont téléchargés sans authentification
+et comparés aux fichiers reçus. Le wheel final passe installation hors ligne,
+réinstallation, mise à niveau depuis dev2, restauration et retour à la sauvegarde.
+Il rejoue les 13 commandes CLI, les quatre rôles et la lecture MCP, puis huit vues
+navigateur avec et sans JavaScript. Douze tests finaux vérifient les limites
+de transport et la transmission. Voir le [reçu de publication](traceability/lot-c-publication-2026-10-11.json).
+Ces préversions ne revendiquent pas une qualification globale de production.
+
 La version 0.35.0.dev3 livre les [paquets de construction](lot-c-transmission-equipes.md).
 Une version fige la baseline, les unités, contrats, critères, cas et responsabilités.
 Les identités mandatées reçoivent chaque rôle R et A ou ouvrent des questions.
