@@ -866,6 +866,12 @@ def guide(store, principal, policy, request):
         'counts': contextual['counts'], 'blocking_questions': [c for c in contextual['checks'] if c['status'] != 'DOCUMENTED'][:20],
         'scope': contextual['scope'], 'ready_to_build': False}
     if delivery: state['delivery'] = delivery
+    from air import builder_handoff
+    handoffs = builder_handoff.assess(store, principal, policy, {'baseline': snapshot})
+    state['builder_handoffs'] = {'engine': handoffs['engine'], 'state': handoffs['state'],
+        'packages': [{'package': p['package'], 'version': p['manifest']['version'], 'state': p['state'],
+            'superseded': p['superseded']} for p in handoffs['packages']],
+        'units_without_package': handoffs['units_without_package'], 'authorization_granted': False}
     s = snapshot;steps = []
     if snapshot['revision'] != latest:
         steps.append(_step('This is not the latest revision (' + str(latest) + '): switch to it unless you review history on purpose',
@@ -923,6 +929,8 @@ def guide(store, principal, policy, request):
         else:
             steps.append(_step('Borrowed objects are at their latest revision; trace a planned change instead', 'air_impact', {'baselines': [s], 'targets': '<objects that will change>'}))
     elif intent == 'DELIVER':
+        steps.append(_step('Read exact versioned builder packages, missing units and effective role receipts; acceptance is separate from launch authority',
+                           'air_assess_builder_handoffs', {'baseline': s}))
         steps.append(_step('Read declared programmes, architecture projects and remaining design tasks at this pin; add authorized sibling pins for the global transformation',
                            'air_query_transformation', {'baselines': [s], 'limit': 50}))
         steps.append(_step('Read the current Management Summary before the detailed dossier; regenerate it after each frozen change',

@@ -10,3 +10,5 @@ sont conservés. Cette réception ne remplace pas les limites historiques.
 Le reçu `public-development-035.json` distingue les contrôles exécutés, les
 limites et la provenance du snapshot. Les réceptions historiques privées ne
 sont pas publiées par cette sélection. Les preuves rc9 restent dans sa release.
+
+- [Lot C : transmission et réception](lot-c-2026-10-11.json), équipes fictives, aucun avis humain ou lancement inféré.

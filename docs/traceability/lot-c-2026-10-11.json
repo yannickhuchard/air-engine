@@ -1,0 +1,105 @@
+{
+  "schema": "air.lot-reception/1",
+  "lot": "C",
+  "date": "2026-10-11",
+  "version": "0.35.0.dev3",
+  "status": "PASS_SCOPED",
+  "scope": "Local Windows, Python, SQLite, authenticated design-scope receipts with fictional builder teams",
+  "tests": [
+    {
+      "passed": 88,
+      "failed": 0,
+      "scope": "Handoff, plugin package, site, guide and atelier",
+      "log_digest": "sha256:71ada1436940251eb1a0bfa97518371b1831623134e772a1185421ed4874c258"
+    },
+    {
+      "passed": 22,
+      "failed": 0,
+      "scope": "Final title and MCP/site checks",
+      "log_digest": "sha256:846eb05db883d9ff2443c2187280f5444167db2184d4fedad27fa5fce11e76cb"
+    },
+    {
+      "passed": 13,
+      "failed": 0,
+      "scope": "Quota regression",
+      "log_digest": "sha256:dd9759304d04593c1df289fce76d5078888c2c945eb0c4c2c90560bc032e7be3"
+    },
+    {
+      "passed": 2,
+      "failed": 0,
+      "scope": "Consumer contract and quota-full withdrawal",
+      "log_digest": "sha256:7965c6dafd847d878a94cce2be978c1f081adc20a18bae0dc2218c15fac5dd2b"
+    },
+    {
+      "passed": 25,
+      "failed": 0,
+      "scope": "Curated public source, authenticated handoff and MCP",
+      "log_digest": "sha256:fdaa53333063b8957aa8439f793c1daea04ad6d8f3e18e296dff8eb2d307ebe5"
+    }
+  ],
+  "integration": {
+    "status": "PASS_SCOPED",
+    "engine_version": "0.35.0.dev3",
+    "baseline": {
+      "id": "urn:air:build-demo:baseline",
+      "revision": 1,
+      "digest": "sha256:f8043bd560653e274ae430e03dc7eac1a0690c7ee50e982b5c4223e924c9b17c"
+    },
+    "mcp_matches_cli": true,
+    "two_fictional_teams": true,
+    "required_roles": 4,
+    "questions_block_acceptance_until_withdrawn": true,
+    "new_version_requires_new_receipts": true,
+    "missing_unit_visible": true
+  },
+  "cli_commands_executed": 13,
+  "browser": {
+    "status": "PASS_SCOPED",
+    "views": 8,
+    "widths": [
+      320,
+      390,
+      768,
+      1440
+    ],
+    "javascript_on_and_off": true,
+    "keyboard_details": true,
+    "no_overflow": true,
+    "no_remote_requests": true,
+    "user_research": false
+  },
+  "demonstration": {
+    "milestone": "DEMO-METIER-1",
+    "status": "PASS_SCOPED",
+    "dossiers": [
+      {
+        "id": "D01",
+        "title": "Portail SAV et orchestration des interventions",
+        "status": "PASS"
+      },
+      {
+        "id": "D02",
+        "title": "Maintenance connectée d’un atelier",
+        "status": "PASS"
+      },
+      {
+        "id": "D03",
+        "title": "Arrivées, mobilités et départs",
+        "status": "PASS"
+      }
+    ],
+    "http_executed": true,
+    "mcp_executed": true,
+    "source_digest": "sha256:8464ec417c070f602f0bdf63c0bcc2e69e31a63c4f114b63fd96e08126a446ae"
+  },
+  "real_teams_validated": false,
+  "independent_review_performed": false,
+  "ci_executed": false,
+  "production_ready": false,
+  "limits": [
+    "Receipts acknowledge the exact design scope for build planning only",
+    "No inferred human opinion, execution of planned tests, launch authority or runtime delivery",
+    "External artifact bytes not bundled; static receipt state refreshed by export",
+    "Catalogue bounded, no partial acceptance"
+  ]
+}

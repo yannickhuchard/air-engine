@@ -239,7 +239,7 @@ def d_roles(g):
     roles = g.of('Role');actors = g.of('Actor')
     lines = ['Les rôles déclarés, ce qu’ils portent et l’autorité qui les fonde ; puis les acteurs qui les tiennent.', '']
     lines += table(['Rôle', 'Responsabilités', 'Compétences', 'Autorité'], [[r['meta']['name'], '; '.join(r['body']['responsibilities']),
-                   '; '.join(c.get('competency', '') for c in r['body'].get('required_competencies', [])), g.name(r['body']['authority'])] for r in roles])
+                       '; '.join(c.get('competency', '') for c in r['body'].get('required_competencies', [])), g.name(r['body'].get('authority'))] for r in roles])
     lines += ['', '## Acteurs', ''] + table(['Acteur', 'Nature', 'Rôles'], [[a['meta']['name'], a['body']['kind'], ', '.join(g.name(r) for r in a['body'].get('roles', []))] for a in actors])
     return 'Liste des rôles', lines, roles + actors
 
@@ -1155,7 +1155,10 @@ def compile_deliverables(store, principal, policy, request):
         suites = {e['digest']: compile_members(store, principal, policy, e, 'FULL') for e in exports}
         contexts = {e['digest']: completeness.apply_exclusion_reviews(store, principal, policy,
             completeness.attach_interfaces(completeness.project(e), suites[e['digest']])) for e in exports}
-        site_files, site_manifest = compile_site(exports, gates, request, lambda graph, local_gates: build_topics(graph, local_gates, request), render_json(model), brands, suites, contexts)
+        from air import builder_handoff
+        receipts = {e['digest']: builder_handoff.assess(store, principal, policy, {'baseline': ref})
+            for e, ref in zip(exports, request['baselines'])}
+        site_files, site_manifest = compile_site(exports, gates, request, lambda graph, local_gates: build_topics(graph, local_gates, request), render_json(model), brands, suites, contexts, receipts)
         files.extend(site_files)
     warnings = (['## Révisions divergentes dans la synthèse', '',
         'Les documents Markdown de synthèse regroupent les objets par identifiant et retiennent la plus haute révision. Ils ne sont pas une comparaison existant/cible.',

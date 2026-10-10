@@ -24,7 +24,7 @@ REQUEST = record({
     'access': {'enum': ['read-only', 'contribute']},
     'shared_instructions': {'type': 'string', 'pattern': r'^[A-Za-z0-9][A-Za-z0-9._/-]{0,127}\.md$'},
 }, ['client', 'workspace', 'server', 'access'])
-GUIDED = ['air_assess_completeness', 'air_compile_interface_suite', 'air_verify_interface_exchange', 'air_guide', 'air_list_revisions', 'air_browse_baseline', 'air_describe_type', 'air_validate_drafts', 'air_rebase_drafts',
+GUIDED = ['air_compile_builder_handoff', 'air_read_builder_handoff', 'air_assess_builder_handoffs', 'air_assess_completeness', 'air_compile_interface_suite', 'air_verify_interface_exchange', 'air_guide', 'air_list_revisions', 'air_browse_baseline', 'air_describe_type', 'air_validate_drafts', 'air_rebase_drafts',
           'air_assess_readiness', 'air_simulate_scenario', 'air_walk_scenarios', 'air_query_business_paths', 'air_resume_question', 'air_query_transformation', 'air_query_project_updates', 'air_refresh_videos']
 READ_ONLY = sorted(GUIDED + ['air_reconstruct_temporal', 'air_convert_currency', 'air_read_checkpoint', 'air_preview_connector',
     'air_admission_read', 'air_assess_goal_targets', 'air_capabilities', 'air_capacity_get', 'air_check_policy',
@@ -34,9 +34,9 @@ READ_ONLY = sorted(GUIDED + ['air_reconstruct_temporal', 'air_convert_currency',
     'air_inspect_knowledge', 'air_inspect_organization', 'air_inspect_workflow', 'air_package_read', 'air_plan', 'air_read_artifact',
     'air_read_captured_view', 'air_read_context', 'air_reconcile', 'air_replay_state_machine', 'air_runtime_compare', 'air_simulate',
     'air_validate_construction', 'air_validate_data', 'air_whoami'])
-CONTRIBUTE = ['air_receive_checkpoint', 'air_cancel_job', 'air_capture_view', 'air_collaboration_submit', 'air_deposit_prepared', 'air_discover', 'air_record_simulation', 'air_freeze_baseline', 'air_freeze_prepared', 'air_get_context',
+CONTRIBUTE = ['air_create_builder_handoff', 'air_receive_checkpoint', 'air_cancel_job', 'air_capture_view', 'air_collaboration_submit', 'air_deposit_prepared', 'air_discover', 'air_record_simulation', 'air_freeze_baseline', 'air_freeze_prepared', 'air_get_context',
     'air_import_artifact', 'air_import_drafts', 'air_package_prepare', 'air_propose_change', 'air_runtime_ingest', 'air_submit_job']
-COMMITTING = ['air_admission_activate', 'air_admission_admit', 'air_admission_propose', 'air_admission_release',
+COMMITTING = ['air_receive_builder_handoff', 'air_revoke_builder_receipt', 'air_admission_activate', 'air_admission_admit', 'air_admission_propose', 'air_admission_release',
     'air_admission_review', 'air_admission_revoke_review', 'air_capacity_publish', 'air_closure_close',
     'air_closure_propose', 'air_closure_review', 'air_closure_revoke_review', 'air_package_publish', 'air_package_revoke',
     'air_renewal_propose', 'air_renewal_renew']
@@ -263,6 +263,7 @@ def _start_lines(request):
                   '   et les prochains appels exacts. Les révisions existantes viennent de `air_list_revisions`, jamais d’une devinette.']
     lines += ['3. Prêt à construire se lit dans `readiness` du guide ou avec `air_assess_readiness`, jamais dans `construction_ready`',
               '   (qui dit seulement que la chaîne de construction est complète). `READY_TO_BUILD` exige qu’aucun critère ne soit `NOT_MET`.',
+              '   Pour transmettre, lire air_assess_builder_handoffs et compiler les unités explicites avec air_compile_builder_handoff. Une réception engageante exige un représentant mandaté ; aucun avis humain fictif.',
               '4. Chaque refus porte `error`, `message`, souvent `diagnostics` et toujours `hint` : lire le hint avant de réessayer.',
               '   `AIR_OUTPUT_TOO_LARGE` dit quoi demander à la place (filtres, `SUMMARY`, `DIGESTS`, `only`) : ne pas relancer à l’identique.',
               '5. Si un outil cité par `next_steps` manque à ta liste, ou si `air_capabilities` donne un `engine_version` différent de',

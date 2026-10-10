@@ -93,7 +93,7 @@ def diagram_code(packet, sources):
     return '\n'.join(code), len(ids) > 24 or len(drawn) > 48
 
 
-def pages(model, graph, render_diagram):
+def pages(model, graph, render_diagram, receipt_report=None):
     sources = {key(s['reference']): s for s in model['sources']}
     intro = '<nav class="breadcrumb"><a href="index.html">Dossier</a> / Transmission</nav>'
     body = intro + '<h1>Préparer la réalisation</h1><p class="intro">Choisissez un composant ou une équipe. Retrouvez ce qui est déclaré, ce qui sera à construire et les questions à résoudre avant de vous engager.</p>'
@@ -107,6 +107,9 @@ def pages(model, graph, render_diagram):
         body += '<article><h3><a href="' + team_path(team['target']) + '">' + H(team['name']) + '</a></h3><p>' + str(len(team['assignments'])) + ' affectation(s) RACI, dont ' + str(len(team['unscoped_assignments'])) + ' sans sujet précis.</p></article>'
     if not model['teams']: body += '<p>Aucune équipe de ce dossier n’est déclarée. Le propriétaire d’un objet n’est pas une affectation de réalisation. Convenez des rôles et sujets RACI avec les équipes concernées.</p>'
     body += '</div><h2>Questions communes à la transmission</h2><ul><li><a href="06-organisation-realisation-raci.html">Organisation de réalisation</a></li><li><a href="07-organisation-exploitation.html">Organisation d’exploitation</a></li><li><a href="role-realisation.html">Parcours des équipes de réalisation</a></li></ul>' + context(model)
+    if receipt_report is not None:
+        from air.builder_handoff_html import section
+        body += section(receipt_report)
     result = [('handoff.html', 'Préparer la réalisation', body)]
     for packet in model['packets']:
         source = sources[key(packet['target'])]; path = focus_path(packet['target']); diagram_path = 'diagram-' + path

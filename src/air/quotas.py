@@ -9,7 +9,7 @@ DEFAULTS = {'revisions':100000, 'namespace_revisions':10000, 'records':1000000,
             'namespace_artifact_bytes':268435456, 'pending_jobs':1000, 'subject_pending_jobs':100}
 CONTROL = {'job_claim', 'job_result', 'job_cancellation', 'authority_policy', 'review_revocation',
            'proof_key_revocation', 'admission_review_revocation', 'closure_review_revocation',
-           'package_revocation', 'admission_release', 'admission_release_marker'}
+           'package_revocation', 'builder_revocation', 'admission_release', 'admission_release_marker'}
 
 
 class QuotaExceeded(InvalidModel):

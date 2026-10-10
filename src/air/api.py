@@ -7,7 +7,7 @@ from starlette.concurrency import run_in_threadpool
 from air import __version__
 from air import question_capsule
 from air import transformation_view, project_updates, video_refresh
-from air import completeness, interface_contracts
+from air import completeness, interface_contracts, builder_handoff
 from air.auth import OIDCVerifier
 from air.core import capabilities, schema, TYPES, validate
 from air.parsing import parse
@@ -293,6 +293,30 @@ def create_app(settings, run_worker=True):
     @app.post("/v1/compilations/openapi")
     async def openapi_compilation(request: Request, principal=Depends(identity)):
         return await run_in_threadpool(compile_openapi, store, principal, principal["policy"], await document(request))
+
+    @app.post('/v1/handoffs/compile')
+    async def builder_compile_package(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(builder_handoff.compile_package, store, principal, principal['policy'], await document(request))
+
+    @app.post('/v1/handoffs/create')
+    async def builder_create_package(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(builder_handoff.create_package, store, principal, principal['policy'], await document(request), settings)
+
+    @app.post('/v1/handoffs/read')
+    async def builder_read_package(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(builder_handoff.read_package, store, principal, principal['policy'], await document(request))
+
+    @app.post('/v1/handoffs/assess')
+    async def builder_assess(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(builder_handoff.assess, store, principal, principal['policy'], await document(request))
+
+    @app.post('/v1/handoffs/receive')
+    async def builder_receive(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(builder_handoff.receive, store, principal, principal['policy'], await document(request), settings)
+
+    @app.post('/v1/handoffs/revoke')
+    async def builder_revoke(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(builder_handoff.revoke, store, principal, principal['policy'], await document(request), settings)
 
     @app.post('/v1/completeness/assess')
     async def contextual_completeness(request: Request, principal=Depends(identity)):

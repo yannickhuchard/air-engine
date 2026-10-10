@@ -37,7 +37,7 @@ from air.workspace import compile_workspace
 from air.ide_adapter import compile_adapter
 from air.portfolio import compile_portfolio, index_portfolio
 from air import transformation_view, project_updates, video_refresh
-from air import completeness, interface_contracts
+from air import completeness, interface_contracts, builder_handoff
 from air.baseline_closure import compute_closure
 from air import artifacts, view_capture
 from air.audience import compile_view as compile_audience_view
@@ -76,6 +76,12 @@ def invoke(store, principal, name, args, settings=None):
         if name == "air_describe_artifact": return artifacts.describe(store, principal, principal["policy"], args)
         if name == "air_read_artifact": return artifacts.read_base64(store, principal, principal["policy"], args)
         if name == "air_compile_openapi": return compile_openapi(store, principal, principal["policy"], args)
+        if name == "air_compile_builder_handoff": return builder_handoff.compile_package(store, principal, principal['policy'], args)
+        if name == "air_create_builder_handoff": return builder_handoff.create_package(store, principal, principal['policy'], args, settings)
+        if name == "air_read_builder_handoff": return builder_handoff.read_package(store, principal, principal['policy'], args)
+        if name == "air_assess_builder_handoffs": return builder_handoff.assess(store, principal, principal['policy'], args)
+        if name == "air_receive_builder_handoff": return builder_handoff.receive(store, principal, principal['policy'], args, settings)
+        if name == "air_revoke_builder_receipt": return builder_handoff.revoke(store, principal, principal['policy'], args, settings)
         if name == "air_assess_completeness": return completeness.assess(store, principal, principal['policy'], args)
         if name == "air_compile_interface_suite": return interface_contracts.compile_suite(store, principal, principal['policy'], args)
         if name == "air_verify_interface_exchange": return interface_contracts.verify(store, principal, principal['policy'], args)

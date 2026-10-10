@@ -1,5 +1,17 @@
 # Journal des versions
 
+## 0.35.0.dev3 et plugin 0.1.10
+
+- Paquets de construction immuables : unités et baseline exactes, modèle fermé,
+  contrats, responsabilités, cas de vérification et questions de transmission.
+- Réceptions authentifiées par rôle R et A, mandat `receive` et `builder_roles`,
+  objections explicites, retrait, expiration et revalidation de politique.
+- Six commandes CLI et outils MCP ; site statique accessible des réceptions,
+  unités sans paquet et versions remplacées. Aucune autorisation de lancement.
+- Recette isolée avec deux équipes fictives ; ni avis humain ni livraison métier
+  ne sont inférés. Les artefacts externes restent dans leur registre autorisé.
+
+
 ## 0.35.0.dev2 et plugin 0.1.9
 
 - Profils de complétude contextuels : questions même sans objets, exclusions

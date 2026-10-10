@@ -1,5 +1,28 @@
 # État de réalisation public
 
+## Lot C : paquets et réception des constructeurs - 11 octobre 2026
+
+La version 0.35.0.dev3 livre les [paquets de construction](lot-c-transmission-equipes.md).
+Une version fige la baseline, les unités, contrats, critères, cas et responsabilités.
+Les identités mandatées reçoivent chaque rôle R et A ou ouvrent des questions.
+Le droit receive et les builder_roles exacts sont contrôlés par le serveur ;
+expiration, retrait et politique modifiée rendent les réceptions inactives.
+Une nouvelle version exige des réceptions nouvelles, sans masquer les unités exclues.
+
+Six commandes CLI et outils MCP partagent ces services. La page « Préparer la
+réalisation » présente les versions, responsables, questions, réceptions et unités
+sans paquet. La synthèse reste datée par son export, sans autorisation de lancement.
+Les adaptateurs IDE n'activent pas automatiquement les outils engageants.
+
+Recette technique locale : 88 tests, puis 22 contrôles finaux ; deux équipes
+fictives, quatre rôles, 13 commandes CLI et lecture MCP identique. Huit vues
+navigateur passent à 320/390/768/1440 px, avec et sans JavaScript, détails au clavier
+et liens lisibles. Les trois parcours Asteria DEMO-METIER-1 passent : SAV,
+maintenance et identités. Voir le [reçu technique](traceability/lot-c-2026-10-11.json).
+Les données fictives ne prouvent ni avis humain, ni tests de réalisation exécutés,
+ni autorisation de déployer. Les artefacts externes ne sont pas copiés dans le paquet.
+Plugin source 0.1.10 ; publication GitHub et décision OpenAI restent distinctes.
+
 ## Lot B : complétude contextuelle et contrats - 10 octobre 2026
 
 La version 0.35.0.dev2 livre les [profils et contrats](lot-b-profils-et-contrats.md).

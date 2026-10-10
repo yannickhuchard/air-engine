@@ -12,7 +12,7 @@ AIR signifie *Architecture Intermediate Representation*. Créé par Yannick Huch
 | --- | --- |
 | Expliquer la solution au management | Un Management Summary, les choix, leurs conséquences et les questions encore ouvertes |
 | Concevoir avec les équipes métier | Des parcours par persona, touchpoints, usages et Customer Journey Maps interactives |
-| Transmettre aux équipes de réalisation | Processus, contrats, modèles de données, responsabilités, lots et critères de réception |
+| Transmettre aux équipes de réalisation | Paquets versionnés, contrats, responsabilités R et A, questions et réception explicite du périmètre |
 | Vérifier la cohérence | Contrôles déterministes, traçabilité et simulations sur le design déclaré |
 | Piloter plusieurs dossiers | Programmes, projets, tâches et dépendances aux versions explicitement sélectionnées |
 | Partager un dossier lisible | Un site « Projet d’architecture », responsive, personnalisable et conservable hors ligne |
@@ -40,7 +40,7 @@ python scripts/install.py --start
 | Distribution | Pour qui ? | État |
 | --- | --- | --- |
 | [Release rc9](https://github.com/yannickhuchard/air-engine/releases/tag/v0.34.0rc9) | Installer la distribution de référence | 0.34.0rc9 ; périmètre et validations propres à cette release |
-| Branche principale de ce dépôt public | Explorer et contribuer aux capacités courantes | 0.35.0.dev2, version de développement ; PWA, parcours interactifs, News, finances, transformation et vidéos |
+| Branche principale de ce dépôt public | Explorer et contribuer aux capacités courantes | 0.35.0.dev3, version de développement ; PWA, parcours interactifs, News, finances, transformation et vidéos |
 | [Plugin public air-plugin](https://github.com/yannickhuchard/air-plugin) | Guider l’installation et le travail avec un agent | Distribution de skills séparée du moteur ; disponibilité dans un annuaire à vérifier séparément |
 
 [Distributions 0.35 de développement](https://github.com/yannickhuchard/air-engine/releases) : installation et qualifications propres à chaque version.
@@ -50,7 +50,7 @@ python scripts/install.py --start
 ## Guides selon votre objectif
 
 - **Architecte :** [travailler avec un agent](docs/guide-architecte-agent.md), [dossier et parcours](docs/parcours-personas-et-usages.md).
-- **Constructeurs :** [profils et contrats vérifiables](docs/lot-b-profils-et-contrats.md), [deux prototypes indépendants](fixtures/build_design/README.md).
+- **Constructeurs :** [paquets et réception des équipes](docs/lot-c-transmission-equipes.md), [recette de deux équipes](fixtures/builder_handoff/README.md), [profils et contrats vérifiables](docs/lot-b-profils-et-contrats.md), [deux prototypes indépendants](fixtures/build_design/README.md).
 - **Équipe projet :** [lire le site](docs/site-architecture-statique.md), [processus et cartes d’expérience](docs/diagrammes-processus-et-experience.md).
 - **Management :** [synthèse et transformation](docs/synthese-et-pilotage-transformation.md), [finances et traçabilité](docs/etat-implementation.md).
 - **Communication :** [branding](docs/branding-dossiers.md), [récit et vidéos](docs/architecture-story.md), [actualiser les News et vidéos](docs/actualiser-news-videos.md).
