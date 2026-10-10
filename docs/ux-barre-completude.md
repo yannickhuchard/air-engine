@@ -68,10 +68,17 @@ Références de conception :
 [visibilité de l’état, Nielsen Norman Group](https://www.nngroup.com/articles/visibility-system-status/)
 et [disclosure, W3C WAI](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/).
 
-## Réception prévue
+## Réception locale
 
 Vérifier les manques explicites, une partie vide, 100 % documentaire avec gate
 ouverte, les tâches liées/non liées et les inconnues en investigation. Vérifier
 les trois dossiers Asteria, 320/390/768/1440 px, clavier, mouvement réduit,
 absence de JavaScript, PWA et absence de réseau externe. Conserver les preuves.
 La compréhension par des personnes réelles reste un essai distinct à organiser.
+
+Réception du 10 octobre : ces contrôles passent sur les trois dossiers Asteria
+(24 vues) et un dossier local de référence (8 vues). La première inspection
+visuelle a révélé un panneau trop étroit ; le composant ouvert occupe désormais
+toute la largeur, et un contrôle géométrique empêche cette régression. Le
+fonctionnement hors ligne et la mise à jour PWA sont également rejoués. Il
+s’agit de contrôles produit locaux, sans étude menée avec des utilisateurs.

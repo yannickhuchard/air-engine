@@ -4,8 +4,9 @@ La première cible de production est le [poste de l'architecte](production-poste
 avec SQLite et identité locale. Le serveur centralisé et sa réception sont reportés.
 
 Le périmètre local G1 reçu est celui de **0.34.0rc9**, avec P06, P07 et pilote
-technique P08 terminés dans leur portée. La branche `0.35.0.dev1` ajoute des
-fonctions qui restent à qualifier dans les clients natifs. Lire le
+technique P08 terminés dans leur portée. La branche `0.35.0.dev1` ajoute les
+fonctions consolidées par le [lot A local](lot-a-consolidation.md) le 10 octobre,
+avec recettes natives Codex et ChatGPT dans leur portée explicite. Lire le
 [périmètre local](perimetre-local-supporte.md) et le [contrat client courant](contrat-client-agent.md).
 Pour les clients natifs et leurs limites, lire le [contrat P07](lot-clients-natifs.md).
 Après installation, `python -m air --home <home> workstation-check` vérifie le profil du poste.
@@ -28,7 +29,7 @@ Pour une équipe ou un client MCP, appliquer les [règles d'identité P04](lot-i
 Prérequis : Python 3.11+ avec venv/pip, un répertoire local inscriptible et un accès
 au registre de packages Python ou au miroir de l’entreprise. Python 3.12 sur Windows
 est la plateforme testée localement. Windows/Linux et Python 3.11/3.12 sont reçus en CI
-sur les commits et artefacts indiqués dans la [traçabilité](traceability/verification-production-p06-http-limits.json).
+sur les commits et artefacts indiqués dans la [traçabilité](validation.md).
 Aucun Node, Docker, serveur SQL,
 compte cloud, fournisseur IA ou serveur d’identité n’est nécessaire.
 

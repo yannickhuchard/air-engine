@@ -1,5 +1,14 @@
 # Contexte et catalogue des clients AIR
 
+La [réception locale du 10 octobre](lot-a-consolidation.md) qualifie les
+parcours courants Codex 0.159.2 et ChatGPT sur un registre synthétique. Elle
+comprend la reprise d’une capsule et les livrables. Dans ChatGPT, rafraîchir
+les outils de la connexion existante après redémarrage de l’adaptateur ;
+`air_capabilities.engine_version` est le champ de version à lire. Dans Codex,
+la recette épingle le MCP local pour éviter de sélectionner un autre registre
+via une connexion AIR globale. Les configurations, profils et autorisations
+restent explicites ; aucun résultat de ce lot ne vaut réception d’un annuaire.
+
 État du 3 octobre 2026, branche `0.35.0.dev1`. Cette page donne la procédure
 courante. La [qualification rc9](perimetre-local-supporte.md) et les preuves P07
 restent historiques ; elles ne qualifient pas automatiquement les nouveaux outils.
