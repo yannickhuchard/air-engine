@@ -544,10 +544,20 @@ def assess_readiness(store, principal, policy, request):
     criterion('INDEPENDENT_REVIEW', 'An effective independent acceptance covers this exact revision, with no effective rejection', review_accepted,
               {'receipts': reviews[:10], 'rejections': rejected[:10], 'review_unavailable': unreadable_review},
               'An independent reviewer accepts this exact baseline under the current policy; effective rejections must be resolved explicitly', 'human')
+    from air.core import BUILD_PROFILE
+    if profile == BUILD_PROFILE:
+        from air import completeness
+        from air.interface_contracts import inspect_members
+        context = completeness.attach_interfaces(completeness.project(exported), inspect_members(store, principal, policy, exported))
+        if 'baseline' in request: context = completeness.apply_exclusion_reviews(store, principal, policy, context)
+        criterion('CONTEXTUAL_COMPLETENESS', 'Document the questions applicable to the selected context', context['result'] == 'DOCUMENTED',
+            {'catalogue': context['catalogue'], 'context_state': context['context_state'], 'profiles': context['profiles'],
+               'result': context['result'], 'counts': context['counts'], 'open_checks': [c['id'] for c in context['checks'] if c['status'] not in ('DOCUMENTED', 'EXCLUDED_APPROVED')]},
+            'Select DossierContext and resolve the contextual questions. Declared exclusions are not effective approvals.')
     blocking = [c['code'] for c in criteria if c['status'] == 'NOT_MET']
     target = request['baseline'] if 'baseline' in request else {'prepared_change': request['prepared_change'], 'would_freeze': {
         'id': baseline['meta']['id'], 'revision': baseline['meta']['revision']}, 'candidate': True}
-    report = {'engine': GATE_ENGINE, 'baseline': target, 'namespace': home, 'profile': profile,
+    report = {'engine': GATE_ENGINE + '-contextual' if profile == BUILD_PROFILE else GATE_ENGINE, 'baseline': target, 'namespace': home, 'profile': profile,
               'result': 'READY_TO_BUILD' if not blocking else 'NOT_READY', 'blocking': blocking, 'criteria': criteria,
               'proof': {'verified_cases': counts.get('VERIFIED_EXTERNAL_TEST', 0), 'cases': len(statuses), 'design_cases': len(design),
                         'build_acceptance_tests': len(tests), 'declared_model_passes': counts.get('PASS_ON_DECLARED_MODEL', 0),

@@ -7,6 +7,7 @@ from starlette.concurrency import run_in_threadpool
 from air import __version__
 from air import question_capsule
 from air import transformation_view, project_updates, video_refresh
+from air import completeness, interface_contracts
 from air.auth import OIDCVerifier
 from air.core import capabilities, schema, TYPES, validate
 from air.parsing import parse
@@ -292,6 +293,18 @@ def create_app(settings, run_worker=True):
     @app.post("/v1/compilations/openapi")
     async def openapi_compilation(request: Request, principal=Depends(identity)):
         return await run_in_threadpool(compile_openapi, store, principal, principal["policy"], await document(request))
+
+    @app.post('/v1/completeness/assess')
+    async def contextual_completeness(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(completeness.assess, store, principal, principal['policy'], await document(request))
+
+    @app.post('/v1/interfaces/compile')
+    async def interface_suite(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(interface_contracts.compile_suite, store, principal, principal['policy'], await document(request))
+
+    @app.post('/v1/interfaces/verify')
+    async def interface_exchange(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(interface_contracts.verify, store, principal, principal['policy'], await document(request))
 
     @app.post("/v1/workspaces/compile")
     async def workspace_compilation(request: Request, principal=Depends(identity)):

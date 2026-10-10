@@ -16,6 +16,7 @@ from air.expr import artifact_digest
 from functools import partial
 from air import financial_view, traceability_sankey, site_finance_trace, journey_catalog, site_journeys, management_summary, transformation_view, project_updates
 from air import journey_map, journey_visual, process_diagrams
+from air import completeness, site_completeness
 
 ENGINE = 'air.architecture-site/1'
 GROUPS = [
@@ -192,6 +193,7 @@ def navigation(topics, active=''):
              '<details' + (' open' if active.startswith('role-') else '') + '><summary>Mon parcours de lecture</summary><ul>' + ''.join(
                  '<li><a ' + ('aria-current="page" ' if active == 'role-' + role else '') + 'href="role-' + role + '.html">' + H(label) + '</a></li>'
                  for role, label, _, _ in site_questions.ROLES) + '</ul></details>']
+    parts.insert(2, '<a class="dossier-home" href="completeness.html">Complétude et contrats de construction</a>')
     by_prefix = {t['name'][:2]: t for t in topics}
     for group, prefixes in GROUPS:
         entries = [by_prefix[p] for p in prefixes if p in by_prefix]
@@ -384,7 +386,7 @@ def temporal_page(data, dossiers, exports):
     return body, links
 
 
-def compile_site(exports, gates, request, build_topics, model_content, brands=None):
+def compile_site(exports, gates, request, build_topics, model_content, brands=None, interface_suites=None, contextual_models=None):
     """Each pinned dossier is rendered separately: conflicting revisions never merge."""
     directory = request.get('directory', 'livrables') + '/site'
     files, dossiers, diagram_count = [], [], 0
@@ -430,6 +432,14 @@ def compile_site(exports, gates, request, build_topics, model_content, brands=No
         add_brand(selected_brand, prefix + 'branding/')
         dossier_shell = partial(shell, brand=selected_brand, brand_root='branding/')
         topics = build_topics(g, [gate])
+        suites = (interface_suites or {}).get(e['digest'], [])
+        contextual = (contextual_models or {}).get(e['digest']) or completeness.attach_interfaces(completeness.project(e), suites)
+        add(prefix + 'completeness.json', 'application/json', render_json(contextual))
+        for suite in suites:
+            for file in suite['files']:
+                add(prefix + 'interfaces/' + site_completeness.slug(suite['specification']) + '/' + file['path'], file['media_type'], file['content'])
+        labels = {(o['meta']['id'], o['meta']['revision']): o['meta']['name'] for o in e['objects']}
+        add(prefix + 'completeness.html', 'text/html', dossier_shell('Complétude selon le contexte', site_completeness.page(contextual, topics, suites, labels), request['title'], navigation(topics, 'completeness'), '../../'))
         work = transformation_view.project([e])
         work_links = {(o['meta']['id'], o['meta']['revision']): 'objects.html#' + anchor(o) for o in e['objects']}
         add(prefix + 'transformation.json', 'application/json', render_json(work))
@@ -499,7 +509,7 @@ def compile_site(exports, gates, request, build_topics, model_content, brands=No
             '<h2>Les réponses dont vous avez besoin</h2><p>Choisissez votre parcours, puis ouvrez les sujets qui portent la réponse et ses preuves.</p>' + reading_routes() + '<p><a href="questions.html">Rechercher parmi toutes les questions du dossier</a></p>' + \
             '<p>Chaque sujet présente une facette du même modèle. Commencez par le besoin, suivez les mécanismes, puis examinez les choix et les preuves.</p>' + story(g) + \
             '<h2>Parcours de lecture</h2><ol class="reading-path">' + ''.join('<li><a href="' + t['name'] + '.html">' + H(QUESTIONS[t['name'][:2]][0]) + '</a><p>' + H(QUESTIONS[t['name'][:2]][1]) + '</p></li>' for p in ['23', '03', '01', '18', '25', '15', '28'] for t in topics if t['name'][:2] == p) + '</ol>'
-        body = body.replace('<h2>Parcours de lecture</h2>', site_journeys.preview(journeys) + site_finance_trace.finance_summary(finance) + site_finance_trace.sankey_preview(sankey) + '<h2>Parcours de lecture</h2>')
+        body = body.replace('<h2>Parcours de lecture</h2>', site_completeness.preview(contextual) + site_journeys.preview(journeys) + site_finance_trace.finance_summary(finance) + site_finance_trace.sankey_preview(sankey) + '<h2>Parcours de lecture</h2>')
         body += project_updates.section(updates, compact=True) + transformation_view.preview(work)
         body += site_progress.section(progress)
         add(prefix + 'index.html', 'text/html', dossier_shell(title, body, request['title'], nav, '../../'))
@@ -560,6 +570,7 @@ def compile_site(exports, gates, request, build_topics, model_content, brands=No
         dossiers.append({'name': title, 'namespace': meta['namespace'], 'baseline': {'id': meta['id'], 'revision': meta['revision'], 'digest': e['digest']},
                          'news': prefix + 'news.html', 'news_data': prefix + 'news.json', 'news_digest': updates['projection_digest'],
                          'purpose': purpose,
+                         'completeness': prefix + 'completeness.html', 'completeness_data': prefix + 'completeness.json', 'completeness_digest': contextual['report_digest'],
                          'management_summary': prefix + 'management-summary.html', 'management_summary_data': prefix + 'management-summary.json', 'management_summary_digest': summary['projection_digest'],
                          'transformation': prefix + 'transformation.html', 'transformation_data': prefix + 'transformation.json', 'transformation_digest': work['projection_digest'],
                          'journeys': prefix + 'journeys.html', 'journeys_data': prefix + 'journeys.json', 'journeys_digest': journeys['projection_digest'],
@@ -587,6 +598,8 @@ def compile_site(exports, gates, request, build_topics, model_content, brands=No
             progress_file = next(f for f in files if f['path'] == directory + '/' + d['progress'])
             body = body.replace('<label for="dossier-search">', site_progress.ribbon(json.loads(progress_file['content']), base) + '<label for="dossier-search">', 1)
         finance_file = next(f for f in files if f['path'] == directory + '/' + d['finance_data'])
+        context_file = next(f for f in files if f['path'] == directory + '/' + d['completeness_data'])
+        body += site_completeness.preview(json.loads(context_file['content']), d['path'].rsplit('/', 1)[0] + '/')
         trace_file = next(f for f in files if f['path'] == directory + '/' + d['traceability_data'])
         body += '<section class="dossier-dimensions"><h2>' + H(d['name']) + '</h2>' + site_finance_trace.finance_summary(json.loads(finance_file['content']), d['finance']) + site_finance_trace.sankey_preview(json.loads(trace_file['content']), d['traceability']) + '</section>'
         journeys_file = next(f for f in files if f['path'] == directory + '/' + d['journeys_data'])

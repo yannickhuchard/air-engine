@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","properties":{"quantity":{"type":"integer","minimum":1,"maximum":100},"total_minor":{"type":"integer","minimum":125,"maximum":12500},"currency":{"type":"string","enum":["EUR"]}},"required":["quantity","total_minor","currency"],"additionalProperties":false}

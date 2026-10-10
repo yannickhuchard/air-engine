@@ -12,7 +12,7 @@ PARTS = [
     ('quality', 'Qualité et risques', ['12', '15', '16', '22', '34', '35'], ['KNOWLEDGE', 'GAPS', 'SECURITY_ZONES', 'COMPLIANCE']),
     ('delivery', 'Réalisation', ['05', '06', '07', '08', '21', '31', '27', '37'], ['PLANNING']),
     ('finance', 'Finances', ['17', '36'], []),
-    ('verification', 'Vérification', ['13', '28', '32', '33'], ['CONSTRUCTION_CHAIN', 'VERIFICATION', 'INDEPENDENT_REVIEW']),
+    ('verification', 'Vérification', ['13', '28', '32', '33'], ['CONSTRUCTION_CHAIN', 'VERIFICATION', 'INDEPENDENT_REVIEW', 'CONTEXTUAL_COMPLETENESS']),
 ]
 
 

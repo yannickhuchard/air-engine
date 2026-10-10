@@ -1,5 +1,33 @@
 # État de réalisation public
 
+## Lot B : complétude contextuelle et contrats - 10 octobre 2026
+
+La version 0.35.0.dev2 livre les [profils et contrats](lot-b-profils-et-contrats.md).
+Cinq contextes explicites posent les questions absentes du dossier. Les exclusions
+restent ouvertes sans acceptation effective de la baseline exacte et se rouvrent
+après révocation ou rejet. InterfaceSpecification couvre schémas locaux exacts,
+préconditions/postconditions/invariants purs, politiques et exemples ;
+DataLifecycleSpecification décrit clés, indexes, rétention et plans de migration.
+Le profil air.build-design/0.35 ajoute un treizième critère. Les anciens profils
+conservent leurs douze critères sans migration implicite.
+
+CLI, API, MCP, guide et skills exposent les mêmes services. L’accueil ouvre la page
+de complétude avec sources et suites téléchargeables. Deux prototypes indépendants
+réalisent 106 échanges HTTP locaux : 101 valides, quatre entrées refusées et un
+conflit de clé ; le rejeu et un prix incorrect sont vérifiés. La suite portable
+est exécutée par le CLI. La présence documentaire et les exemples de design ne
+prouvent pas la sécurité, concurrence, délais, effets métier ou compatibilité
+entre versions du système futur.
+
+Régression locale de 190 tests, puis 60 tests ciblés après correction des budgets
+des dossiers volumineux. Trois dossiers Asteria passent DEMO-METIER-1 ; les sites,
+barres et PWA sont rejoués. Codex 0.159.2 appelle les trois outils en lecture seule
+sur la fixture, avec configuration MCP propre à cette invocation. Cela ne qualifie
+pas la redécouverte automatique de tous les clients ni leur marketplace.
+
+Plugin source 0.1.9. Aucune CI ni nouvelle admission en marketplace. Voir le [reçu](traceability/lot-b-2026-10-10.json) et la [roadmap](ROADMAP_REFERENCE.md).
+
+
 ## Lot A reçu dans le périmètre local - 10 octobre 2026
 
 La [consolidation locale](lot-a-consolidation.md) comprend la régression

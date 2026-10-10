@@ -24,7 +24,7 @@ REQUEST = record({
     'access': {'enum': ['read-only', 'contribute']},
     'shared_instructions': {'type': 'string', 'pattern': r'^[A-Za-z0-9][A-Za-z0-9._/-]{0,127}\.md$'},
 }, ['client', 'workspace', 'server', 'access'])
-GUIDED = ['air_guide', 'air_list_revisions', 'air_browse_baseline', 'air_describe_type', 'air_validate_drafts', 'air_rebase_drafts',
+GUIDED = ['air_assess_completeness', 'air_compile_interface_suite', 'air_verify_interface_exchange', 'air_guide', 'air_list_revisions', 'air_browse_baseline', 'air_describe_type', 'air_validate_drafts', 'air_rebase_drafts',
           'air_assess_readiness', 'air_simulate_scenario', 'air_walk_scenarios', 'air_query_business_paths', 'air_resume_question', 'air_query_transformation', 'air_query_project_updates', 'air_refresh_videos']
 READ_ONLY = sorted(GUIDED + ['air_reconstruct_temporal', 'air_convert_currency', 'air_read_checkpoint', 'air_preview_connector',
     'air_admission_read', 'air_assess_goal_targets', 'air_capabilities', 'air_capacity_get', 'air_check_policy',
@@ -163,6 +163,8 @@ def _journeys(request):
         'Trouver les objets concernés avec `air_browse_baseline` (`text`, `types`, `fields: "FULL"`, `limit` ≤ 20). Pour un type nouveau, `air_describe_type` donne le schéma et un squelette.',
         'Écrire seulement les objets dont le contenu change, dans `domains/$1/drafts/<nom-du-changement>/` : même identifiant à la révision suivante (`air_list_revisions`), révision 1 pour un objet nouveau, namespace du domaine, références exactes. Les effets d’une fonction sont recopiés dans `state_effects` du contrat, ses exceptions dans `error_contract`.',
         'Un type de livraison (environnement, zone, composant, connexion, équipement, coût, jalon, RACI, risque coté, parcours, navigation, modèle de performance…) exige le profil `air.delivery/0.32` : passer `"profile": "air.delivery/0.32"` à la validation et au rebase.',
+        'Pour DossierContext, InterfaceSpecification ou DataLifecycleSpecification, utiliser `air.build-design/0.35`. Choisir les contextes avec l’architecte ; `air_assess_completeness` montre aussi les dimensions sans objets. Son aperçu profiles ne persiste aucun choix. Ce profil ajoute un treizième critère, les anciens en gardent douze.',
+        'Compiler `air_compile_interface_suite` puis vérifier des échanges fournis avec `air_verify_interface_exchange`. Les schémas doivent égaler les artefacts du binding. Le résultat sur les exemples ne prouve ni le service réalisé ni les politiques de concurrence, sécurité ou idempotence.',
         'Citer un objet d’un autre projet (rôle, technologie, objectif, principe partagés) est permis : le rebase emprunte sa révision exacte et sa fermeture (`borrowed_added`) sans rien écrire chez lui.',
         'Appeler `air_validate_drafts` avec `{"objects": [...], "base": <baseline>}` et corriger jusqu’à `deposit_ready: true`. Un `storage: REVISION_CONFLICT` veut dire qu’une révision de ce numéro existe déjà dans le registre (brouillon jamais figé) : prendre la révision suivante.',
         'Appeler `air_rebase_drafts` avec `{"base": <baseline>, "objects": [...]}` : il ajoute les révisions dont seules les références avancent, prépare la révision suivante de la baseline et rend un identifiant `prepared_change` ; rien n’est encore dans le registre.',

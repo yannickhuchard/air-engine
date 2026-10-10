@@ -1,0 +1,154 @@
+{
+  "schema": "air.lot-reception/1",
+  "lot": "B",
+  "date": "2026-10-10",
+  "version": "0.35.0.dev2",
+  "status": "PASS_SCOPED",
+  "scope": "Local Windows, Python 3.12, SQLite, deterministic design checks and independent fictional HTTP prototypes",
+  "profiles": [
+    "DIGITAL_SERVICE",
+    "DATA_PLATFORM",
+    "PHYSICAL_SYSTEM",
+    "ORGANIZATIONAL_CHANGE",
+    "REGULATED_ACTIVITY"
+  ],
+  "catalogue": "air.completeness-catalogue/1",
+  "model_profile": "air.build-design/0.35",
+  "readiness_criteria": 13,
+  "legacy_readiness_criteria": 12,
+  "tests": [
+    {
+      "passed": 190,
+      "failed": 0,
+      "scope": "Local regression before final budget correction",
+      "log_digest": "sha256:a634dc8b524b24605345abc62f8aebe0d58dd2187fc77c9cb5137ceb1cd1a100"
+    },
+    {
+      "passed": 60,
+      "failed": 0,
+      "scope": "Targeted verification after budget correction; final diagnostic-only retouch verified separately",
+      "log_digest": "sha256:fefec26abc6dc8d8e49a567050d2ff251429f7eed907c7a69380d09483d653c7"
+    },
+    {
+      "passed": 44,
+      "failed": 0,
+      "scope": "Curated public source with public PYTHONPATH, including final diagnostic retouch",
+      "log_digest": "sha256:ea4bae39116744c29660181b5ad87c234b6caeeb50461afbb41fb361db5de988"
+    }
+  ],
+  "prototype_integration": {
+    "baseline": {
+      "id": "urn:air:build-demo:baseline",
+      "revision": 1,
+      "digest": "sha256:97fcba54a2e71d41e605cda1a38b03c6cc0552590ce20ea963915b7160da8227"
+    },
+    "specification": {
+      "id": "urn:air:build-demo:quote-specification",
+      "revision": 1,
+      "digest": "sha256:996f2cf85bf168235eb55db59493028b22ce140221fa0429d7122226682d0ad9"
+    },
+    "contract_examples": "PASS_DESIGN_EXAMPLES",
+    "http_exchanges": 106,
+    "valid_exchanges": 101,
+    "invalid_requests_rejected": 4,
+    "duplicate_replay": true,
+    "different_payload_key_conflict": true,
+    "counterexample_detected": true,
+    "context_absent_dimensions_detected": [
+      "COMMON.BUDGET",
+      "PHYSICAL_SYSTEM.EQUIPMENT",
+      "REGULATED_ACTIVITY.OBLIGATIONS"
+    ],
+    "cli_suite_applied_and_verified": true,
+    "cli_context_matches_service": true,
+    "cli_counterexample_detected": true,
+    "source_digests": {
+      "provider.py": "sha256:dac25d1db18c132b06c595892e5a0bd27926d0dda0d30311b68aaf39ffe7f026",
+      "consumer.py": "sha256:def1e58049c11a352ab138a678ae86afdd2d95337bfd1d84f4cc513ba2d860c2",
+      "request.schema.json": "sha256:1f0080daee7c8f6a022277aa68f3e7d123a8024ad1baa527cbe08ef0c9aa88e0",
+      "response.schema.json": "sha256:821fd846563419d6ef9e4384db4c9b79777d3ab5733ae49e5ac446c8383d7815"
+    }
+  },
+  "browser": {
+    "status": "PASS_SCOPED",
+    "views": 8,
+    "remote_requests": [],
+    "page_errors": [],
+    "report_digest": "sha256:d1c20a48b3d2efa1999a7afe7044948b99a7bc99dac28ac346c45ea331940dc9"
+  },
+  "asteria_business": {
+    "status": "PASS_SCOPED",
+    "milestone": "DEMO-METIER-1",
+    "dossiers": 3,
+    "report_digest": "sha256:94e1d7185b5c01e656d0a6a46a93f2e795c734f58331d4642eecb821f183a381"
+  },
+  "native_codex": {
+    "status": "PASS_SCOPED",
+    "stage": {
+      "status": "CALLS_COMPLETED",
+      "reason": null,
+      "client_version": "codex-cli 0.159.2",
+      "exit_code": 0,
+      "transcript_sha256": "69d7cb15538bd6c1cf1495c12113934c20c34aebbc2e9f025d7d1d2a50da5b57",
+      "stderr_sha256": "20f438f34d48fa045e0613fd619af47a32deed1e927fdac9dd826343ca05a545",
+      "native_configuration_mode": "INVOCATION_SCOPED_MCP",
+      "automatic_project_discovery_tested": false
+    },
+    "checks": {
+      "completed": true,
+      "missing_questions": true,
+      "suite": true,
+      "counterexample": true
+    },
+    "scope": "Native Codex read-only fixture calls, invocation-scoped MCP; no global discovery or human acceptance"
+  },
+  "ci_executed": false,
+  "independent_human_review_performed": false,
+  "business_system_deployed": false,
+  "normative_conformance_claimed": false,
+  "production_ready": false,
+  "limits": [
+    "Catalogue covers declared questions, not every sector",
+    "HTTP and bounded scalar JSON predicates only",
+    "Auth/idempotency/concurrency/timing/retry/compensation/runtime effects and version compatibility not executed by contract checker",
+    "Prototype integration is not acceptance by two human teams",
+    "Existing profiles remain unchanged; no automatic context selection",
+    "Other native clients and marketplace approvals not received in this lot"
+  ],
+  "next_lot": "C: builder packages and explicit team acceptance",
+  "asteria_browser": {
+    "status": "PASS_SCOPED",
+    "views": 24,
+    "scope": "LOCAL_CHROMIUM_NOT_USER_RESEARCH_OR_NATIVE_CLIENT",
+    "report_digest": "sha256:e60f4bd2d5aaa4812c30227b3e5d9381ddda8210b21e392ac33a10a0a7986451"
+  },
+  "local_reference_browser": {
+    "status": "PASS_SCOPED",
+    "views": 8,
+    "scope": "LOCAL_CHROMIUM_NOT_USER_RESEARCH_OR_NATIVE_CLIENT",
+    "report_digest": "sha256:acdb7862babc4caa0a1b5dd1fb82efb54c3f859cb06ff9c5324661280580922e"
+  },
+  "completion_ribbon": {
+    "status": "PASS_SCOPED",
+    "views": 24,
+    "scope": "LOCAL_CHROMIUM_NOT_USER_RESEARCH_OR_NATIVE_CLIENT",
+    "report_digest": "sha256:acd1969f6026b7638031d8c00681a607c98f7e8d3994e20770c4dd7f7a17b633"
+  },
+  "pwa": {
+    "status": "PASS_SCOPED",
+    "offline_dossiers": 3,
+    "explicit_upgrade": true,
+    "failed_upgrade_preserves_snapshot": true,
+    "remote_requests": 0,
+    "page_errors": [],
+    "os_installation_exercised": false,
+    "scope": "Initial Lot B export; runtime cache unchanged by final presentation retouch",
+    "report_digest": "sha256:92bd56b991625dd56efd8c9744c032ee9f377613b466d70c6e1f08015f8ef525"
+  },
+  "plugin": {
+    "version": "0.1.9",
+    "package_manifest_digest": "sha256:de29a4a09e25bd0a7563e0cb304edb0fabfe3ee9fc5322dedce9c3ab8df04d0b",
+    "claude_manifest_validated": true,
+    "marketplace_approval_claimed": false
+  }
+}

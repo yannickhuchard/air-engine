@@ -8,7 +8,7 @@
       "name": "air-local",
       "source": "./plugins/air-local",
       "description": "AIR - Architecture Workspace",
-      "version": "0.1.8"
+      "version": "0.1.9"
     }
   ],
   "metadata": {

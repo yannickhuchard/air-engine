@@ -8,6 +8,25 @@ metadata:
 
 # Concevoir avec AIR
 
+Si le catalogue courant expose `air_assess_completeness`, lire les questions
+du contexte avant de compléter le dossier. Prévisualiser les profils ne les
+enregistre pas : contribuer un DossierContext au profil `air.build-design/0.35`
+après discussion avec l'architecte. Ce profil ajoute un treizième contrôle ;
+les dossiers historiques gardent leurs douze critères. Une exclusion reste
+déclarée tant qu'une revue effective de cette baseline ne la couvre pas.
+Ne pas déduire une approbation d'un nom de relecteur ou d'une prose de décision.
+
+Décrire InterfaceSpecification pour les interfaces JSON/HTTP et
+DataLifecycleSpecification pour les tables à gérer. Les schémas d'interface
+doivent égaler les artefacts du binding exact. Utiliser
+`air_compile_interface_suite` pour compiler exemples, OpenAPI et vérificateur,
+et `air_verify_interface_exchange` pour contrôler une requête/réponse fournie.
+Ce contrôle n'appelle aucun fournisseur et ne prouve ni sécurité, ni retry,
+ni idempotence réelle. `completeness.html` présente les écarts et les suites.
+La CLI `interface-suite ... --workspace <dossier-neuf> --apply` matérialise les
+fichiers localement. Un script généré n'est exécuté que dans une recette
+explicitement autorisée. Un catalogue ancien doit être rafraîchi, pas contourné.
+
 Pour les parcours, décrire CustomerJourney avec phases, actions, pensées,
 touchpoints, acteurs, systèmes exacts, frontstage, backstage, support et
 opportunités. `emotion` distingue UNKNOWN, HYPOTHESIS et OBSERVED ; une
