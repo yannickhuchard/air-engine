@@ -23,6 +23,11 @@ def test_site_progress_tracks_pinned_sources_and_calculated_gates(compiled):
     home = files['livrables/site/' + dossier['path']]
     assert 'Kanban du dossier' in root and 'Kanban du dossier' in home
     assert dossier['progress'] in root and 'progress.json' in home
+    assert 'completion-ribbon' in home
+    assert home.index('completion-ribbon') < home.index('Les réponses dont vous avez besoin')
+    assert len(progress['parts']) == 8
+    ids = [q['id'] for p in progress['parts'] for q in p['questions']]
+    assert sorted(ids) == sorted(q['id'] for q in reading['questions'])
 
 
 def test_missing_partial_and_unmet_are_never_done_and_html_is_escaped():
@@ -58,3 +63,39 @@ def test_open_questions_are_deduplicated_and_resolved_questions_leave_backlog():
     assert 'objects.html#' in pending[0]['href']
     for entry in reading['questions']: entry['sources'][0]['declared_state']='RESOLVED'
     assert not any(t['kind']=='DECLARED_OPEN_QUESTION' for t in site_progress.project(reading)['tasks'])
+
+
+def test_documentary_percentage_does_not_hide_unmet_controls_or_invent_work():
+    reading = {'baseline': {'id':'urn:baseline:test','revision':1,'digest':'sha256:'+'a'*64},
+        'gate': {'code':'NOT_READY','label':'Ouvert'},
+        'questions':[{'id':'28','question':'Préparation','state':'CALCULATED','sources':[],
+            'topic':'28-preparation-construction.html','missing_dimensions':[]}],
+        'calculated_criteria':[{'code':'VERIFICATION','label':'Vérification','status':'NOT_MET','next_action':'Qualifier la preuve'}]}
+    progress = site_progress.project(reading)
+    block = next(b for b in progress['parts'] if b['id'] == 'verification')
+    assert block['percent'] == 100 and block['remaining_controls']
+    assert block['in_progress'] == 0 and progress['gate']['code'] == 'NOT_READY'
+    assert next(b for b in progress['parts'] if b['id'] == 'data')['percent'] is None
+    html = site_progress.ribbon(progress)
+    assert '100 %' in html and 'Qualifier la preuve' in html and 'Non évalué' in html
+    assert 'ne valent pas validation' in html
+
+
+def test_work_is_linked_only_to_exact_deliverables_and_percent_is_not_effort():
+    ref = {'id':'urn:requirement:test','revision':2,'digest':'sha256:'+'b'*64}
+    q = {'id':'13','question':'Construction','state':'PARTIAL','sources':[{'reference':ref}],
+        'topic':'13-construction.html','missing_dimensions':['Contrat']}
+    task = {'reference':{'id':'urn:task:test','revision':1,'digest':'sha256:'+'c'*64},
+        'name':'<script>Travail</script>','status':'IN_PROGRESS','owner':'Architecte',
+        'purpose':'Compléter','deliverables':[{'id':ref['id'],'revision':2}]}
+    stale = deepcopy(task);stale['reference']['id']='urn:task:stale';stale['deliverables'][0]['revision']=1
+    reading = {'baseline':{'id':'urn:baseline:test','revision':1,'digest':'sha256:'+'a'*64},
+        'gate':{'code':'NOT_READY','label':'Ouvert'},'questions':[q],'calculated_criteria':[],
+        'design_tasks':[task,stale]}
+    progress = site_progress.project(reading)
+    block = next(b for b in progress['parts'] if b['id'] == 'verification')
+    assert block['percent'] == 0 and block['in_progress'] == 1
+    assert progress['unlinked_design_tasks'] == [stale]
+    html = site_progress.ribbon(progress)
+    assert '<script>Travail' not in html and '&lt;script&gt;Travail' in html
+    assert 'En cours' in html and 'Contrat' in html

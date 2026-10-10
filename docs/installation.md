@@ -27,8 +27,8 @@ Pour une équipe ou un client MCP, appliquer les [règles d'identité P04](lot-i
 
 Prérequis : Python 3.11+ avec venv/pip, un répertoire local inscriptible et un accès
 au registre de packages Python ou au miroir de l’entreprise. Python 3.12 sur Windows
-est la plateforme de cette vérification locale. Les essais historiques de CI
-ne qualifient pas ce snapshot sur Linux ou avec une autre version de Python.
+est la plateforme testée localement. Windows/Linux et Python 3.11/3.12 sont reçus en CI
+sur les commits et artefacts indiqués dans la [traçabilité](traceability/verification-production-p06-http-limits.json).
 Aucun Node, Docker, serveur SQL,
 compte cloud, fournisseur IA ou serveur d’identité n’est nécessaire.
 
@@ -41,8 +41,10 @@ python scripts/install.py --start
 Le script crée .venv, installe les dépendances contraintes par constraints.txt,
 protège .air, crée SQLite et le premier jeton administrateur, exécute doctor et
 valide l’exemple. Le serveur démarre en arrière-plan, sans fenêtre supplémentaire,
-sur http://127.0.0.1:8740. /health indique la disponibilité. Il n’y a pas encore
-de Workbench web. Un IDE peut suivre le [skill d’installation](../.agents/skills/air-install/SKILL.md).
+sur http://127.0.0.1:8740. /health indique la disponibilité de l’API. Le
+[site du dossier](site-architecture-statique.md) et le Workbench sont des
+livrables à générer depuis un modèle ; ils ne remplacent pas cette API.
+Un IDE peut suivre le [skill d’installation](../.agents/skills/air-install/SKILL.md).
 
 Si Python n’est pas dans le PATH, l’IDE utilise le chemin absolu d’un interpréteur
 3.11+ qu’il a détecté. Après installation, l’interpréteur de .venv suffit.
