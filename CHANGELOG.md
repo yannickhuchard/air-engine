@@ -1,5 +1,14 @@
 # Journal des versions
 
+## 0.35.0.dev4 / plugin 0.1.11
+
+- Recherche finie de contre-exemples : machines à états et échanges de contrat,
+  entrées reproductibles, inconnues et limites explicites, sans effet métier.
+- Impact entre baselines exactes : chemins de dépendance des cas et preuves,
+  historique conservé et aucune reconduction implicite des avis.
+- CLI, API, MCP, guide REVIEW, skills et page Vérifications et changements.
+
+
 ## 0.35.0.dev3 et plugin 0.1.10
 
 - Paquets de construction immuables : unités et baseline exactes, modèle fermé,

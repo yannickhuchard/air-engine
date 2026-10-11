@@ -1158,7 +1158,9 @@ def compile_deliverables(store, principal, policy, request):
         from air import builder_handoff
         receipts = {e['digest']: builder_handoff.assess(store, principal, policy, {'baseline': ref})
             for e, ref in zip(exports, request['baselines'])}
-        site_files, site_manifest = compile_site(exports, gates, request, lambda graph, local_gates: build_topics(graph, local_gates, request), render_json(model), brands, suites, contexts, receipts)
+        from air import evidence_impact
+        evidence_reports = {e['digest']: evidence_impact.for_site(store, principal, policy, e) for e in exports}
+        site_files, site_manifest = compile_site(exports, gates, request, lambda graph, local_gates: build_topics(graph, local_gates, request), render_json(model), brands, suites, contexts, receipts, evidence_reports)
         files.extend(site_files)
     warnings = (['## Révisions divergentes dans la synthèse', '',
         'Les documents Markdown de synthèse regroupent les objets par identifiant et retiennent la plus haute révision. Ils ne sont pas une comparaison existant/cible.',

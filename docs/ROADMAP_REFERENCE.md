@@ -9,7 +9,7 @@ normatives ni faire de l'exécution métier une condition de livraison du design
 | A | Consolidation publique et workflows locaux | [Reçu local](lot-a-consolidation.md) |
 | B | Profils contextualisés et contrats prêts à construire | [Contrôles et recette technique](lot-b-profils-et-contrats.md) : omissions même sans objet ; deux prototypes indépendants intégrés par le contrat |
 | C | Paquets de construction et réception des équipes | [Réception technique locale](lot-c-transmission-equipes.md) : périmètre versionné, RACI exact, mandats et réceptions authentifiées ; équipes de recette fictives |
-| D | Vérification comportementale et impact | Contre-exemples et invalidation ciblée des preuves |
+| D | Vérification comportementale et impact | [Reçu techniquement en local](lot-d-verification-impact.md) : contre-exemples reproductibles et dépendances de preuves à requalifier |
 | E | Économie, transition et portefeuille | Incertitude, trésorerie, migrations et capacités partagées |
 | F | Continuité avec la réalisation et interopérabilité | Traçabilité design/livraison, spécification ouverte et échanges fidèles |
 

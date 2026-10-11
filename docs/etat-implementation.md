@@ -1,5 +1,29 @@
 # État de réalisation public
 
+## Lot D : comportements et impact des changements - 11 octobre 2026
+
+La version 0.35.0.dev4 ajoute la [recherche de contre-exemples et l'impact des preuves](lot-d-verification-impact.md).
+Des séquences finies sont rejouées par longueur croissante sur une machine exacte.
+Les contrats comparent les échanges à une attente explicite. Invariants violés,
+ambiguïtés connues et erreurs de prix donnent une entrée reproductible ; refus
+attendus, inconnues, réponses absentes et budgets incomplets restent distincts.
+L'absence de contre-exemple porte uniquement sur le domaine déclaré.
+
+L'impact compare deux baselines exactes, traverse les dépendances des cas et
+preuves, et restitue les chemins et champs modifiés. Les historiques restent
+intacts, sans reconduction automatique d'un avis. La page « Vérifications et
+changements » présente les déclarations et les parents explicites ; ses détails
+s'ouvrent au clavier, avec identifiants lisibles sur mobile. CLI, API, MCP,
+guide REVIEW et skills 0.1.11 partagent ces services en lecture seule.
+
+Recette locale : 105 tests de régression, 58 contrôles complémentaires, puis
+20 contrôles finaux. Trois commandes CLI et les mêmes appels MCP passent dans
+une installation SQLite isolée. Huit vues navigateur passent avec et sans
+JavaScript à 320/390/768/1440 px, tous les panneaux ouverts, images et liens
+lisibles. Les trois parcours Asteria passent DEMO-METIER-1. Aucun avis humain,
+qualification globale de production ou exécution métier ne découle de cette
+recette. Voir le [reçu technique](traceability/lot-d-2026-10-11.json).
+
 ## Lot C : paquets et réception des constructeurs - 11 octobre 2026
 
 Les distributions [moteur 0.35.0.dev3](https://github.com/yannickhuchard/air-engine/releases/tag/v0.35.0.dev3)

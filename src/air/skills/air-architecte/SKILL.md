@@ -9,6 +9,16 @@ metadata:
 
 # Architecture de solution prête à construire
 
+Pour rechercher une erreur du design, déclarer un domaine fini sourcé et une attente
+avec `air_search_state_counterexamples` ou `air_search_interface_counterexamples`.
+Conserver les entrées et rejeux des contre-exemples, puis corriger et rejouer.
+UNKNOWN, réponse complète absente et budget incomplet restent inconclusifs ;
+aucune preuve globale ne découle d'un domaine sans erreur. Comparer les baselines
+avant/après avec `air_assess_evidence_impact` pour cibler les preuves à reprendre.
+Les chemins sont déclaratifs ; un avis historique n'est jamais reconduit implicitement.
+Le site exporte `verification.html` et `verification-impact.json` avec ses parents exacts.
+
+
 Commencer par `air_assess_completeness` sur la baseline exacte. Choisir avec
 l'architecte les contextes numérique, données, physique, organisationnel ou
 réglementé. `profiles` dans cet appel est une prévisualisation ; enregistrer

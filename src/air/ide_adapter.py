@@ -24,7 +24,7 @@ REQUEST = record({
     'access': {'enum': ['read-only', 'contribute']},
     'shared_instructions': {'type': 'string', 'pattern': r'^[A-Za-z0-9][A-Za-z0-9._/-]{0,127}\.md$'},
 }, ['client', 'workspace', 'server', 'access'])
-GUIDED = ['air_compile_builder_handoff', 'air_read_builder_handoff', 'air_assess_builder_handoffs', 'air_assess_completeness', 'air_compile_interface_suite', 'air_verify_interface_exchange', 'air_guide', 'air_list_revisions', 'air_browse_baseline', 'air_describe_type', 'air_validate_drafts', 'air_rebase_drafts',
+GUIDED = ['air_search_state_counterexamples', 'air_search_interface_counterexamples', 'air_assess_evidence_impact', 'air_compile_builder_handoff', 'air_read_builder_handoff', 'air_assess_builder_handoffs', 'air_assess_completeness', 'air_compile_interface_suite', 'air_verify_interface_exchange', 'air_guide', 'air_list_revisions', 'air_browse_baseline', 'air_describe_type', 'air_validate_drafts', 'air_rebase_drafts',
           'air_assess_readiness', 'air_simulate_scenario', 'air_walk_scenarios', 'air_query_business_paths', 'air_resume_question', 'air_query_transformation', 'air_query_project_updates', 'air_refresh_videos']
 READ_ONLY = sorted(GUIDED + ['air_reconstruct_temporal', 'air_convert_currency', 'air_read_checkpoint', 'air_preview_connector',
     'air_admission_read', 'air_assess_goal_targets', 'air_capabilities', 'air_capacity_get', 'air_check_policy',

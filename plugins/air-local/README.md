@@ -17,6 +17,12 @@ Plugin officiel AIR, créé par **Yannick Huchard**, sous Apache-2.0. Il apporte
 
 ## Comment le plugin vous guide
 
+Le moteur 0.35.0.dev4 et le skill 0.1.11 peuvent explorer un petit domaine
+d'entrées, montrer un contre-exemple reproductible et expliquer les preuves à
+reprendre après changement. La page « Vérifications et changements » relie
+ces constats aux versions exactes. Les inconnues restent visibles ; aucune
+preuve historique n'est automatiquement approuvée pour un nouveau design.
+
 Avec le moteur 0.35.0.dev2, le skill de conception aide aussi à choisir les
 contextes du projet, repérer les dimensions absentes et préparer les contrats
 JSON/HTTP pour les constructeurs. Les trois outils MCP de complétude, compilation

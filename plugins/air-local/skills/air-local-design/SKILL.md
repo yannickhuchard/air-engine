@@ -8,6 +8,18 @@ metadata:
 
 # Concevoir avec AIR
 
+Pour explorer le comportement, lire la machine ou le contrat exact avant de
+déclarer un petit domaine d'entrées sourcées. Si le catalogue les expose, utiliser
+`air_search_state_counterexamples` (alphabet, profondeur et essais bornés) ou
+`air_search_interface_counterexamples` (échanges et attentes PASS/FAIL).
+Conserver l'entrée et le rejeu du contre-exemple, corriger le design puis rejouer.
+UNKNOWN, réponse manquante et budget incomplet restent inconclusifs. Sans erreur
+trouvée, annoncer uniquement l'absence de contre-exemple dans le domaine déclaré.
+Avec `air_assess_evidence_impact`, comparer les baselines exactes avant/après et
+préparer les relectures depuis les chemins modifiés. Aucun ancien avis n'est
+reconduit automatiquement. Le site exporte `verification.html` et son JSON ;
+conserver les rapports comme artefacts si une preuve doit les citer.
+
 Si le catalogue courant expose `air_assess_completeness`, lire les questions
 du contexte avant de compléter le dossier. Prévisualiser les profils ne les
 enregistre pas : contribuer un DossierContext au profil `air.build-design/0.35`

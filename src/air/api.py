@@ -7,7 +7,7 @@ from starlette.concurrency import run_in_threadpool
 from air import __version__
 from air import question_capsule
 from air import transformation_view, project_updates, video_refresh
-from air import completeness, interface_contracts, builder_handoff
+from air import completeness, interface_contracts, builder_handoff, behavior_search, evidence_impact
 from air.auth import OIDCVerifier
 from air.core import capabilities, schema, TYPES, validate
 from air.parsing import parse
@@ -294,7 +294,19 @@ def create_app(settings, run_worker=True):
     async def openapi_compilation(request: Request, principal=Depends(identity)):
         return await run_in_threadpool(compile_openapi, store, principal, principal["policy"], await document(request))
 
-    @app.post('/v1/handoffs/compile')
+    @app.post("/v1/behavior/states")
+    async def search_state_behavior(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(behavior_search.search_states, store, principal, principal['policy'], await document(request))
+
+    @app.post("/v1/behavior/interfaces")
+    async def search_interface_behavior(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(behavior_search.search_interfaces, store, principal, principal['policy'], await document(request))
+
+    @app.post("/v1/evidence/impact")
+    async def evidence_change_impact(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(evidence_impact.compare, store, principal, principal['policy'], await document(request))
+
+    @app.post("/v1/handoffs/compile")
     async def builder_compile_package(request: Request, principal=Depends(identity)):
         return await run_in_threadpool(builder_handoff.compile_package, store, principal, principal['policy'], await document(request))
 
