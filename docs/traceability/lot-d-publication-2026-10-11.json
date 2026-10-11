@@ -1,0 +1,158 @@
+{
+  "schema": "air.lot-publication/1",
+  "lot": "D",
+  "date": "2026-10-11",
+  "status": "PASS_SCOPED",
+  "engine": {
+    "version": "0.35.0.dev4",
+    "prerelease": true,
+    "source_commit": "e1e10d1e550e0f4f18463f08e917295709c48210",
+    "merge_commit": "9540005c782ea5fed5a51739c04c54aa7372dd02",
+    "pr": "https://github.com/yannickhuchard/air-engine/pull/6",
+    "release": "https://github.com/yannickhuchard/air-engine/releases/tag/v0.35.0.dev4",
+    "source_sha256": "bd21de9b0978718e5fcadcbf1841feb94163baf433376cf8cbb889a4b8b6d707",
+    "archive_sha256": "197cab4b8b9cdc89708b241d283a950483dd96e8161282766f0f21212d21579b",
+    "wheel_sha256": "43cfcbd62f8a1b76aedfa2b3b5baf11c53103f502d717b87c211403052809e4e"
+  },
+  "plugin": {
+    "version": "0.1.11",
+    "source_commit": "402e59ca920171b1468c727114c8372af16de7df",
+    "merge_commit": "e9ab0af697c324e9a4c7acec16967fe2ba03beb1",
+    "pr": "https://github.com/yannickhuchard/air-plugin/pull/4",
+    "release": "https://github.com/yannickhuchard/air-plugin/releases/tag/v0.1.11",
+    "bytes_equal_public_source": true,
+    "openai_approval_verified": false
+  },
+  "package": {
+    "fresh_environment": true,
+    "installed_from_wheel": true,
+    "offline_installation": true,
+    "reinstallation_preserves_identity_and_revision": true,
+    "recovery_preserves_digest_and_revokes_old_identity": true,
+    "upgrade": {
+      "status": "PASS",
+      "from": "0.35.0.dev3",
+      "to": "0.35.0.dev4",
+      "previous_wheel_sha256": "7c517b177f93d6de7236b2dd4adf68a9212b31d8db30cf9e15b72e9b3e8eab40",
+      "identity_preserved": true,
+      "revision_preserved": true,
+      "rollback": "PRE_UPGRADE_SNAPSHOT_IN_NEW_HOME",
+      "rollback_digest_preserved": true
+    }
+  },
+  "installed_reception": {
+    "version": "0.35.0.dev4",
+    "status": "PASS_SCOPED",
+    "scope": "Fictional design inputs, no runtime or independent opinion",
+    "cli_commands": [
+      "behavior-states",
+      "behavior-interfaces",
+      "evidence-impact"
+    ],
+    "mcp_equal_to_cli": true,
+    "state_counterexamples": 2,
+    "state_report_digest": "sha256:2b10a0c9df26a0a7b19741e948543f82cc04eedb3545f3375ec6df03893d085c",
+    "interface_counterexamples": 1,
+    "interface_unknowns": 1,
+    "impact_summary": {
+      "IMPACTED": 1,
+      "INCONCLUSIVE_DEPENDENCIES": 0,
+      "NO_DECLARED_IMPACT": 0
+    },
+    "impact_report_digest": "sha256:25fa0eb8d824bd3b9bb6dfd94d4a0039f594092853c114d8950b0cbb8fa79983",
+    "site_files": 240,
+    "runtime_executed": false,
+    "authorization_granted": false
+  },
+  "installed_browser": {
+    "views": 8,
+    "status": "PASS_SCOPED",
+    "javascript_and_without": true,
+    "all_details_opened": true,
+    "overflow": false,
+    "errors": [],
+    "remote_requests": [],
+    "human_user_research": false
+  },
+  "additional_public_source_tests": {
+    "passed": 23,
+    "failed": 0,
+    "log_digest": "sha256:06a74551d75dd261ca0d6674582ffc89b6e41df2b9ec25bbc01752770ae2d1c2"
+  },
+  "assets": [
+    {
+      "repository": "air-engine",
+      "tag": "v0.35.0.dev4",
+      "asset": "air-0.35.0.dev4-source.zip",
+      "bytes": 3127837,
+      "sha256": "197cab4b8b9cdc89708b241d283a950483dd96e8161282766f0f21212d21579b",
+      "anonymous_download_verified": true
+    },
+    {
+      "repository": "air-engine",
+      "tag": "v0.35.0.dev4",
+      "asset": "air_engine-0.35.0.dev4-py3-none-any.whl",
+      "bytes": 1459827,
+      "sha256": "43cfcbd62f8a1b76aedfa2b3b5baf11c53103f502d717b87c211403052809e4e",
+      "anonymous_download_verified": true
+    },
+    {
+      "repository": "air-engine",
+      "tag": "v0.35.0.dev4",
+      "asset": "constraints.cdx.json",
+      "bytes": 7071,
+      "sha256": "b7e5eb69a60fcaab57b4324348bb09809ac461faeae79f46bc7c9e9663bee547",
+      "anonymous_download_verified": true
+    },
+    {
+      "repository": "air-engine",
+      "tag": "v0.35.0.dev4",
+      "asset": "package-qualification.json",
+      "bytes": 6001,
+      "sha256": "9963f38507217b28399c8791cda7a6bb61cb0e59f02ace331fc710263a205ea6",
+      "anonymous_download_verified": true
+    },
+    {
+      "repository": "air-engine",
+      "tag": "v0.35.0.dev4",
+      "asset": "release-set.json",
+      "bytes": 980,
+      "sha256": "9f98023f45fd10d0334f85e4e46bf9c74a1bc07db69348ad3fdb47ed433f8dbe",
+      "anonymous_download_verified": true
+    },
+    {
+      "repository": "air-engine",
+      "tag": "v0.35.0.dev4",
+      "asset": "SHA256SUMS.txt",
+      "bytes": 467,
+      "sha256": "0bbe30c9e27b17ea46e311bf6879e0524154e130ead715cb0480bd0c8be6a175",
+      "anonymous_download_verified": true
+    },
+    {
+      "repository": "air-plugin",
+      "tag": "v0.1.11",
+      "asset": "air-local-0.1.11.zip",
+      "bytes": 508041,
+      "sha256": "873fb686e76c8059479405f9788ad2d9c31a15536e5929865404a820668a81d8",
+      "anonymous_download_verified": true
+    },
+    {
+      "repository": "air-plugin",
+      "tag": "v0.1.11",
+      "asset": "plugin-package.json",
+      "bytes": 1341,
+      "sha256": "15cc68ebb4c8268efdb7686e5bfd9d96f4ba7a351d63849006d74ca5d03af1e3",
+      "anonymous_download_verified": true
+    }
+  ],
+  "anonymous_downloads_verified": true,
+  "tags_exact_source_commits": true,
+  "ci_executed": false,
+  "private_history_published": false,
+  "production_ready": false,
+  "limits": [
+    "Finite declared inputs, no global proof or business runtime",
+    "No automatic transfer of review or proof qualification",
+    "GitHub plugin distribution is distinct from approval in the ChatGPT directory"
+  ]
+}

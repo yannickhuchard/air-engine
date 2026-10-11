@@ -78,3 +78,14 @@ de lecture commence par les résultats déclarés, puis les changements : nom du
 cas, état lisible, détail ouvrable au clavier et chemin de dépendance. Les URN
 restent dans les détails. Aucun bouton du site ne donne un avis ou une approbation.
 Les observations navigateur sont des contrôles techniques, sans avis UX humain.
+
+## Réception et distribution
+
+Le [reçu technique](traceability/lot-d-2026-10-11.json) conserve les tests,
+la recette CLI/MCP, le navigateur et les trois dossiers Asteria. Le
+[reçu de publication](traceability/lot-d-publication-2026-10-11.json) ajoute
+installation, restauration, upgrade, exécution avec le wheel et contrôle des
+assets publics. La recherche d'états conserve aussi la limite de 1 Mio du
+snapshot de son moteur de rejeu ; les autres analyses ont leurs budgets propres.
+Le retraitement d'un ancien avis pour une nouvelle baseline reste une décision
+explicite, distincte de l'absence d'impact sur les références déclarées.

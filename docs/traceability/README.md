@@ -16,3 +16,5 @@ sont pas publiées par cette sélection. Les preuves rc9 restent dans sa release
 - [Publication du lot C](lot-c-publication-2026-10-11.json), huit assets publics vérifiés anonymement et reprise avec le wheel installé.
 
 - [Lot D : contre-exemples et impact](lot-d-2026-10-11.json), réception technique locale, aucune reconduction automatique des avis.
+
+- [Publication du lot D](lot-d-publication-2026-10-11.json) : sources exactes, paquets installés, huit assets téléchargés sans authentification.

@@ -2,6 +2,16 @@
 
 ## Lot D : comportements et impact des changements - 11 octobre 2026
 
+Le [moteur 0.35.0.dev4](https://github.com/yannickhuchard/air-engine/releases/tag/v0.35.0.dev4)
+et le [plugin 0.1.11](https://github.com/yannickhuchard/air-plugin/releases/tag/v0.1.11)
+sont publiés après fusion. Les huit assets sont téléchargés sans authentification
+et comparés aux fichiers reçus ; les tags désignent les commits exacts.
+Le wheel passe installation hors ligne, réinstallation, upgrade depuis dev3,
+restauration et retour à la sauvegarde. Les trois nouvelles commandes CLI/MCP
+et huit vues du site passent aussi avec le wheel installé. Voir le
+[reçu de publication](traceability/lot-d-publication-2026-10-11.json).
+Cette préversion conserve ses limites et ne qualifie pas globalement la production.
+
 La version 0.35.0.dev4 ajoute la [recherche de contre-exemples et l'impact des preuves](lot-d-verification-impact.md).
 Des séquences finies sont rejouées par longueur croissante sur une machine exacte.
 Les contrats comparent les échanges à une attente explicite. Invariants violés,
