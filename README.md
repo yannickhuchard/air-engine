@@ -40,7 +40,7 @@ python scripts/install.py --start
 | Distribution | Pour qui ? | État |
 | --- | --- | --- |
 | [Release rc9](https://github.com/yannickhuchard/air-engine/releases/tag/v0.34.0rc9) | Installer la distribution de référence | 0.34.0rc9 ; périmètre et validations propres à cette release |
-| Branche principale de ce dépôt public | Explorer et contribuer aux capacités courantes | 0.35.0.dev3, version de développement ; PWA, parcours interactifs, News, finances, transformation et vidéos |
+| Branche principale de ce dépôt public | Explorer et contribuer aux capacités courantes | 0.35.0.dev4, version de développement ; PWA, parcours interactifs, News, finances, transformation et vidéos |
 | [Plugin public air-plugin](https://github.com/yannickhuchard/air-plugin) | Guider l’installation et le travail avec un agent | Distribution de skills séparée du moteur ; disponibilité dans un annuaire à vérifier séparément |
 
 [Distributions 0.35 de développement](https://github.com/yannickhuchard/air-engine/releases) : installation et qualifications propres à chaque version.
@@ -63,3 +63,5 @@ AIR est sous [Apache-2.0](LICENSE), avec [avis et licences tierces](NOTICE). Voi
 Pour développer : `python scripts/install.py --extras dev,proofs,backup`, puis `.venv/Scripts/python.exe -m pytest -q` (Unix : `.venv/bin/python`). Les tests locaux accompagnent les changements ; aucune CI push/PR n’est activée.
 
 [État de réalisation](docs/etat-implementation.md) et [validation publique](docs/validation.md) séparent capacités livrées, critères ouverts et validations non exécutées. AIR ne revendique ni conformité normative totale ni compatibilité reçue avec tous les clients mentionnés.
+
+[Rechercher des contre-exemples et préparer les changements](docs/lot-d-verification-impact.md) : entrées reproductibles, preuves à reprendre et limites explicites.

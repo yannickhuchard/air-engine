@@ -40,7 +40,7 @@ from air.state_replay import REQUEST as STATE_REQUEST
 from air.policy_check import REQUEST as POLICY_REQUEST
 from air.architecture import REQUEST as ARCHITECTURE_REQUEST
 from air.openapi_compiler import REQUEST as OPENAPI_REQUEST
-from air import completeness, interface_contracts, builder_handoff
+from air import completeness, interface_contracts, builder_handoff, behavior_search, evidence_impact
 from air.workspace import REQUEST as WORKSPACE_REQUEST
 from air.ide_adapter import REQUEST as ADAPTER_REQUEST
 from air.portfolio import REQUEST as PORTFOLIO_REQUEST, INDEX_REQUEST as PORTFOLIO_INDEX_REQUEST
@@ -100,6 +100,9 @@ TOOLS = {
     "air_index_portfolio": ("Compile the holistic index of a portfolio from the pinned closed baselines of its projects: closure, design chain coverage, shared identities with agreement or divergence, cross-project dependencies and gaps. Read-only and exact at the pins; divergences require review.", PORTFOLIO_INDEX_REQUEST, "POST", "/v1/portfolios/index", True),
     "air_query_transformation": ("Query programmes, architecture projects, tasks and sourcing at supplied authorized exact baselines. Filter by type, declared status or owner; paginate. Dependency edges retain witnesses. Declared completion is separate from readiness and business implementation. No federation or discovery of other clients. Read-only.", TRANSFORMATION_QUERY, "POST", "/v1/transformations/query", True),
     "air_compile_openapi": ("Compile an OpenAPI 3.1.1 design description from exact local HTTP/JSON bindings and authorized schema artifacts. Returns mappings and unimplemented semantics; does not deploy or grant authority.", OPENAPI_REQUEST, "POST", "/v1/compilations/openapi", True),
+    "air_search_state_counterexamples": ("Explore finite declared state sequences, shortest first. Return reproducible counterexamples, UNKNOWN and explicit limits. No runtime or proof of completeness.", behavior_search.STATE_REQUEST, "POST", "/v1/behavior/states", True),
+    "air_search_interface_counterexamples": ("Check finite declared exchanges against explicit PASS/FAIL expectations. Return counterexamples and unknowns. No endpoint call.", behavior_search.INTERFACE_REQUEST, "POST", "/v1/behavior/interfaces", True),
+    "air_assess_evidence_impact": ("Compare exact baselines and trace changed proof dependencies. Historical evidence is preserved; no automatic qualification on a new baseline.", evidence_impact.REQUEST, "POST", "/v1/evidence/impact", True),
     'air_compile_builder_handoff': ('Export a frozen design handoff, exact units, role/team responsibilities, contract suites and questions. Read only; external artifacts remain in AIR. No launch or delivery authority.', builder_handoff.COMPILE, 'POST', '/v1/handoffs/compile', True),
     'air_create_builder_handoff': ('Record an immutable versioned design handoff under write rights. No team acceptance is implied. An existing version cannot change scope.', builder_handoff.CREATE, 'POST', '/v1/handoffs/create', False),
     'air_read_builder_handoff': ('Read a handoff against an explicit baseline and effective role receipts. Old baseline acceptance never applies to another revision.', builder_handoff.READ, 'POST', '/v1/handoffs/read', True),

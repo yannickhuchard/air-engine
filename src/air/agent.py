@@ -901,6 +901,8 @@ def guide(store, principal, policy, request):
             parent_row = store.get(parents[0]['id'], parents[0]['revision'])
             parent = {'id': parents[0]['id'], 'revision': parents[0]['revision'], 'digest': parent_row['digest']}
             steps.append(_step('List what changed since the previous revision (content changes first)', 'air_diff', {'before': parent, 'after': s}))
+            steps.append(_step('Trace which proof dependencies changed; preserve historical evidence without carrying approvals to this revision',
+                'air_assess_evidence_impact', {'before': parent, 'after': s}))
             try:
                 previous = ScopedStore(store, principal, policy).export_baseline(parent)
                 before_arch = inspect_objects(store, principal, policy, previous['objects'], previous['baseline']['meta']['namespace'], 'SUMMARY')['checks']

@@ -422,3 +422,6 @@ svg .air-linked { cursor:pointer } svg .air-linked:focus { outline:3px solid var
 .contextual-completeness { padding:clamp(1rem,2vw,1.5rem); border:1px solid var(--air-completeness-border); border-left:4px solid var(--accent,#176b7a); border-radius:var(--radius,12px); margin:1.5rem 0; }
 .contextual-completeness h2 { margin-top:0; }
 .contextual-completeness > a { display:inline-block; margin-top:.25rem; font-weight:650; }
+/* Exact proof identifiers remain readable inside expanded mobile witness panels. */
+.verification-view{overflow-wrap:anywhere;min-width:0}
+.verification-view details{min-width:0}

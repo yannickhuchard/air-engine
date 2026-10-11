@@ -1,0 +1,104 @@
+{
+  "schema": "air.lot-reception/1",
+  "lot": "D",
+  "date": "2026-10-11",
+  "version": "0.35.0.dev4",
+  "status": "PASS_SCOPED",
+  "scope": "Local Windows, Python, SQLite; finite declared design domains and exact-baseline reference dependencies",
+  "tests": [
+    {
+      "passed": 105,
+      "failed": 0,
+      "scope": "State replay, qualification, contracts, handoff, MCP and site regression",
+      "log_digest": "sha256:5ad549be8faf6aff04a6124824b852e1647483916c12b778dbc97081ced9dc2a"
+    },
+    {
+      "passed": 58,
+      "failed": 0,
+      "scope": "Behavior, plugin, atelier, reviews and projections",
+      "log_digest": "sha256:482b99011ee0779a9c21ebf5a08aa10ac01e48730086dc0691c3728317207a24"
+    },
+    {
+      "passed": 20,
+      "failed": 0,
+      "scope": "Final proof witnesses and responsive site regression",
+      "log_digest": "sha256:da95594162dd85085e19d561a464ac4ba1d0f45dcb743f00707dfa93bd2e625c"
+    }
+  ],
+  "integration": {
+    "version": "0.35.0.dev4",
+    "status": "PASS_SCOPED",
+    "scope": "Fictional design inputs, no runtime or independent opinion",
+    "cli_commands": [
+      "behavior-states",
+      "behavior-interfaces",
+      "evidence-impact"
+    ],
+    "mcp_equal_to_cli": true,
+    "state_counterexamples": 2,
+    "state_report_digest": "sha256:2b10a0c9df26a0a7b19741e948543f82cc04eedb3545f3375ec6df03893d085c",
+    "interface_counterexamples": 1,
+    "interface_unknowns": 1,
+    "impact_summary": {
+      "IMPACTED": 1,
+      "INCONCLUSIVE_DEPENDENCIES": 0,
+      "NO_DECLARED_IMPACT": 0
+    },
+    "impact_report_digest": "sha256:84264c59fff9eb7befe5048777d081f863caf3e0834101f9218bffe0efd2685c",
+    "site_files": 240,
+    "runtime_executed": false,
+    "authorization_granted": false
+  },
+  "integration_digest": "sha256:7ef8effb68ad81a6a7e8cf98554fabca0a5ba704eaa7715953f74f0cfddfb3f6",
+  "browser": {
+    "status": "PASS_SCOPED",
+    "views": 8,
+    "widths": [
+      320,
+      390,
+      768,
+      1440
+    ],
+    "javascript_enabled_and_disabled": true,
+    "all_details_opened_by_keyboard": true,
+    "overflow": false,
+    "images_loaded": true,
+    "remote_requests": 0,
+    "source_digest": "sha256:0f8560ffd8f5a767b34a7aee2f9923aa4e4eadafe6944ffc98a0357b9d531d61",
+    "human_user_research": false
+  },
+  "demonstration": {
+    "milestone": "DEMO-METIER-1",
+    "status": "PASS_SCOPED",
+    "dossiers": [
+      {
+        "id": "D01",
+        "title": "Portail SAV et orchestration des interventions",
+        "status": "PASS"
+      },
+      {
+        "id": "D02",
+        "title": "Maintenance connectée d’un atelier",
+        "status": "PASS"
+      },
+      {
+        "id": "D03",
+        "title": "Arrivées, mobilités et départs",
+        "status": "PASS"
+      }
+    ],
+    "http_executed": true,
+    "mcp_executed": true,
+    "source_digest": "sha256:a0528b1948bb7dacaa41b1e720092e73be7ddc2f6cef8ee7b31fc33f31c54cb2"
+  },
+  "skills_validated": true,
+  "ci_executed": false,
+  "independent_review_performed": false,
+  "production_ready": false,
+  "limits": [
+    "Finite declared inputs, no global proof or actual business execution",
+    "No automatic transfer of proof or review qualification",
+    "Declared dependency closure only; absent references and budgets explicit",
+    "GitHub plugin publication does not attest OpenAI approval"
+  ]
+}

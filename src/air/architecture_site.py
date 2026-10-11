@@ -190,6 +190,7 @@ def navigation(topics, active=''):
              '<a class="dossier-home" href="questions.html">Trouver une réponse</a>',
              '<a class="dossier-home" ' + ('aria-current="page" ' if active == 'cooperate' else '') + 'href="cooperate.html">Travailler avec un assistant</a>',
              '<a class="dossier-home" ' + ('aria-current="page" ' if active.startswith('handoff') or active.startswith('diagram-handoff') else '') + 'href="handoff.html">Préparer la réalisation</a>',
+             '<a class="dossier-home" ' + ('aria-current="page" ' if active == 'verification' else '') + 'href="verification.html">Vérifications et changements</a>',
              '<details' + (' open' if active.startswith('role-') else '') + '><summary>Mon parcours de lecture</summary><ul>' + ''.join(
                  '<li><a ' + ('aria-current="page" ' if active == 'role-' + role else '') + 'href="role-' + role + '.html">' + H(label) + '</a></li>'
                  for role, label, _, _ in site_questions.ROLES) + '</ul></details>']
@@ -386,7 +387,7 @@ def temporal_page(data, dossiers, exports):
     return body, links
 
 
-def compile_site(exports, gates, request, build_topics, model_content, brands=None, interface_suites=None, contextual_models=None, builder_receipts=None):
+def compile_site(exports, gates, request, build_topics, model_content, brands=None, interface_suites=None, contextual_models=None, builder_receipts=None, evidence_reports=None):
     """Each pinned dossier is rendered separately: conflicting revisions never merge."""
     directory = request.get('directory', 'livrables') + '/site'
     files, dossiers, diagram_count = [], [], 0
@@ -484,6 +485,12 @@ def compile_site(exports, gates, request, build_topics, model_content, brands=No
         add(prefix + 'handoff.json', 'application/json', render_json(handoff))
         receipts = (builder_receipts or {}).get(e['digest'])
         if receipts is not None: add(prefix + 'builder-receipts.json', 'application/json', render_json(receipts))
+        evidence = (evidence_reports or {}).get(e['digest'])
+        from air.evidence_impact import declared_site
+        from air.evidence_impact_html import render as evidence_html
+        evidence = evidence if evidence is not None else declared_site(e)
+        add(prefix + 'verification-impact.json', 'application/json', render_json(evidence))
+        add(prefix + 'verification.html', 'text/html', dossier_shell('Vérifications et changements', evidence_html(evidence), request['title'], navigation(topics, 'verification'), '../../', focus_nodes))
         for page_path, page_title, page_body in site_handoff_html.pages(handoff, g, diagram, receipts):
             add(prefix + page_path, 'text/html', dossier_shell(page_title, page_body, request['title'], navigation(topics, page_path[:-5]), '../../', focus_nodes))
             if page_path.startswith('diagram-'): diagram_count += 1

@@ -37,7 +37,7 @@ from air.workspace import compile_workspace
 from air.ide_adapter import compile_adapter
 from air.portfolio import compile_portfolio, index_portfolio
 from air import transformation_view, project_updates, video_refresh
-from air import completeness, interface_contracts, builder_handoff
+from air import completeness, interface_contracts, builder_handoff, behavior_search, evidence_impact
 from air.baseline_closure import compute_closure
 from air import artifacts, view_capture
 from air.audience import compile_view as compile_audience_view
@@ -76,6 +76,9 @@ def invoke(store, principal, name, args, settings=None):
         if name == "air_describe_artifact": return artifacts.describe(store, principal, principal["policy"], args)
         if name == "air_read_artifact": return artifacts.read_base64(store, principal, principal["policy"], args)
         if name == "air_compile_openapi": return compile_openapi(store, principal, principal["policy"], args)
+        if name == "air_search_state_counterexamples": return behavior_search.search_states(store, principal, principal['policy'], args)
+        if name == "air_search_interface_counterexamples": return behavior_search.search_interfaces(store, principal, principal['policy'], args)
+        if name == "air_assess_evidence_impact": return evidence_impact.compare(store, principal, principal['policy'], args)
         if name == "air_compile_builder_handoff": return builder_handoff.compile_package(store, principal, principal['policy'], args)
         if name == "air_create_builder_handoff": return builder_handoff.create_package(store, principal, principal['policy'], args, settings)
         if name == "air_read_builder_handoff": return builder_handoff.read_package(store, principal, principal['policy'], args)

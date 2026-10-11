@@ -14,3 +14,5 @@ sont pas publiées par cette sélection. Les preuves rc9 restent dans sa release
 - [Lot C : transmission et réception](lot-c-2026-10-11.json), équipes fictives, aucun avis humain ou lancement inféré.
 
 - [Publication du lot C](lot-c-publication-2026-10-11.json), huit assets publics vérifiés anonymement et reprise avec le wheel installé.
+
+- [Lot D : contre-exemples et impact](lot-d-2026-10-11.json), réception technique locale, aucune reconduction automatique des avis.
