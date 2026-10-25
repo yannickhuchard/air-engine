@@ -1,5 +1,13 @@
 # État de réalisation public
 
+## Documentation d'entrée : 25 octobre 2026
+
+Le README distingue moteur, plugin et dossier d'architecture, puis décrit
+l'installation, les contrôles et le premier parcours. Le [guide pour agents](agent-quickstart.md)
+précise les entrées, chemins, identités et étapes de conception. La version
+publique reste 0.35.0.dev4 ; cette révision documentaire ne modifie ni les
+archives publiées ni les qualifications conservées ci-dessous.
+
 ## Lot D : comportements et impact des changements - 11 octobre 2026
 
 Le [moteur 0.35.0.dev4](https://github.com/yannickhuchard/air-engine/releases/tag/v0.35.0.dev4)
