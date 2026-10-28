@@ -1,5 +1,62 @@
 # Journal des versions
 
+## 0.35.0.dev8, corrections d'audit en développement local
+
+- Templates de portefeuille Codex/ChatGPT, CI manuelle et validation refusée sans moteur.
+- Matrice de qualification liée à la version ; preuves historiques G1 conservées.
+- Approbation exacte des modifications conséquentes et progression par critères fermés.
+- Export de contexte borné, destination/finalité/classifications autorisées et reçu traçable.
+- Identités modèles liées à leur destination pour les lectures AIR, artefacts historiques
+  non classifiés traités comme RESTRICTED et conservation de leurs octets.
+- Plan optionnel de scénarios par exigence, qualité et cycle de vie ; références typées.
+- Traces de génération et comparaison de critères, sans attestation d'usage du fournisseur.
+- Import de preuves CI lié au commit, au build retenu et aux résultats détaillés.
+- Comparaison des efforts observés avec estimations, revue et reprises incluses.
+- Parcours local architecture, constructeurs fictifs, prototype Git et tests signés ;
+  régression volontaire détectée sans reconduction de réception.
+- Contrôleurs de séances UX et de charge synthétique, sans participants ni capacité
+  entreprise inventés. Réceptions natives et humaines toujours ouvertes.
+- Marketplace locale reproductible du plugin CLI 0.1.16, sans publication déduite.
+- Installation fraîche avec l'option proofs pour la recette signée Asteria ;
+  restauration des octets CRLF de la source d'approbation ProxiBot déjà épinglée.
+
+## Non publié : sommaire progressif des dossiers
+
+- Sept parties de lecture, du cadrage à la vérification et au pilotage,
+  regroupant les 38 sujets par dimension sans duplication.
+- Pages d'entrée, repères de lecture et liens entre parties ; accès métier,
+  COMEX et équipes de réalisation ; liens actifs des vues spécialisées corrigés.
+
+## Non publié : ergonomie de la carte des parties prenantes
+
+- Carte adaptative avec rôles et personnes distincts, filtres par état,
+  recherche locale et fiche contextuelle.
+- Navigation tactile et clavier, liens directs conservés, lecture sans
+  script et impression de toutes les contributions.
+
+## 0.35.0.dev5 / plugin 0.1.12, développement local
+
+- Contrôleur de complétion persistant : intention et sources exactes, tâches
+  prioritaires, mandat technique borné, questions et reprise entre clients.
+- Application atomique des objets, baseline et checkpoint ; refus des conflits,
+  mandats expirés, budgets épuisés et changements engageants non approuvés.
+- Six outils CLI/API/MCP, configurations Cursor, Antigravity et ChatGPT,
+  skills actualisés et page « Progression avec un agent » dans le dossier.
+- Readiness reste l’autorité ; aucune preuve ou revue humaine inférée.
+- Correction du fallback de références techniques lorsque :has est indisponible.
+- Distribution publique et recettes natives restent des réceptions séparées.
+
+## Non publié : design Atlas du site projet
+
+- Nouveau template par défaut du site d'architecture :
+  - bandeau en trame de plan, navigation en pastilles et feuille de lecture surélevée ;
+  - surfaces unifiées ;
+  - mouvements liés à la lecture, coupés par le mouvement réduit.
+- Références techniques (URN, identifiants, empreintes, sélecteurs) masquées par défaut
+  et affichées par l'interrupteur « Références techniques ». Il fonctionne sans
+  JavaScript, garde le choix entre les pages et ne retire aucune valeur du HTML.
+  Voir [UX06](docs/ux06-design-atlas.md).
+
 ## 0.35.0.dev4 / plugin 0.1.11
 
 - Recherche finie de contre-exemples : machines à états et échanges de contrat,
@@ -7,7 +64,6 @@
 - Impact entre baselines exactes : chemins de dépendance des cas et preuves,
   historique conservé et aucune reconduction implicite des avis.
 - CLI, API, MCP, guide REVIEW, skills et page Vérifications et changements.
-
 
 ## 0.35.0.dev3 et plugin 0.1.10
 
@@ -19,7 +75,6 @@
   unités sans paquet et versions remplacées. Aucune autorisation de lancement.
 - Recette isolée avec deux équipes fictives ; ni avis humain ni livraison métier
   ne sont inférés. Les artefacts externes restent dans leur registre autorisé.
-
 
 ## 0.35.0.dev2 et plugin 0.1.9
 
@@ -35,14 +90,13 @@
   Deux prototypes indépendants forment la recette technique, sans réception
   humaine ou qualification globale de production déduite.
 
-
 ## Plugin AIR 0.1.2
 
 - Nom affiché AIR - Architecture Workspace ; identifiant `air-local` conservé.
 - Logo original inclus ; attribution Yannick Huchard et Apache-2.0.
 - Packaging reproductible des textes et du PNG, sans fichiers privés.
 
-## 0.35.0.dev1 - Distribution de développement publique
+## 0.35.0.dev1 - Développement normatif, distribution publique de développement
 
 - Branding par projet et dossier exact : CLI/MCP, sous-dossier portable, SVG,
   couleurs et familles de polices locales, import DESIGN.md alpha avec mapping
@@ -245,3 +299,24 @@ Architecture de solution livrable ([contrat](docs/lot-solution-livrable.md)).
 ## 0.32.0.dev1 - 23 septembre 2026
 
 - Prêt à construire, preuve par simulation et dossier de livrables ([contrat](docs/lot-pret-a-construire.md)).
+
+## 0.35.0.dev6, 19 octobre 2026, source candidate
+
+- Gates par périmètre et socle commun, revues exactes indépendantes et critère
+  SCOPED_GATES ajouté à la readiness seulement pour les dossiers concernés.
+- Tableau de conception filtrable par équipe, membre, semaine ISO, retard et blocage.
+- Chaînes typées exigences, règles, données, API, tests et preuves, avec ruptures.
+- Rattachement des rapports CI/CD, reprise, RTO/RPO et exercices d’astreinte.
+- Exports CSV et Excel sans dépendance ajoutée ; site et six outils CLI/API/MCP.
+- Dossier portable et artefacts retenus, référentiel optionnel préféré par défaut,
+  contrôle local, reprise explicite et refus des conflits ; diagnostic HTTP 429.
+- Plugin source 0.1.13 : guidage par fichiers, modèle de session embarqué et reprise.
+
+## 0.35.0.dev7, 19 octobre 2026, source candidate
+
+- Livrable standard 38 Stakeholders Map : SVG interactif, fiches de participation,
+  Markdown, JSON, accueil, graphe et checklist documentaire.
+- StakeholderParticipation documente la raison de l'implication, les responsabilités
+  de projet, le rôle, la mobilisation et les besoins de staffing sans identité inventée.
+- RACI lié au rôle exact, lecture seule CLI/API/MCP air_stakeholders_map et
+  guidage du plugin source 0.1.14. Aucune embauche ou autorité exécutée.

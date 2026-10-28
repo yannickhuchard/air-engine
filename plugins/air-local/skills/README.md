@@ -6,7 +6,7 @@ utiles et les contrôles à effectuer ; il ne remplace pas le moteur AIR ni ses 
 | Votre situation | Skill | Résultat attendu |
 | --- | --- | --- |
 | Vous commencez ou votre connexion ne fonctionne pas | [air-local-setup](air-local-setup/SKILL.md) | Installation/connexion expliquée et vérifiée dans votre projet |
-| Vous concevez ou faites évoluer un dossier | [air-local-design](air-local-design/SKILL.md) | Modèle sourcé, écarts identifiés, décisions conservées et livrables régénérés |
+| Vous concevez par fichiers, avec ou sans connexion, ou faites évoluer un dossier | [air-local-design](air-local-design/SKILL.md) | Modèle sourcé, écarts identifiés, décisions conservées et livrables régénérés |
 
 Commencez par décrire votre besoin en langage courant :
 
@@ -18,3 +18,5 @@ les modifications autorisées. Les preuves manquantes restent visibles.
 Il peut préparer News et vidéos si le moteur expose les outils correspondants ;
 le rendu MP4 nécessite un atelier optionnel. Installer ce skill ne publie rien
 et ne connecte pas automatiquement un client cloud à votre poste.
+
+Le mode portable est décrit dans [air-local-design](air-local-design/references/portable-session.md). Le référentiel est préféré par défaut et reste optionnel. Les vérifications moteur attendent une exécution effective.

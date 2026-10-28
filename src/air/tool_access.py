@@ -1,5 +1,7 @@
 """One action map for MCP discovery and dispatch; namespace checks remain in each service."""
 OVERRIDES = {
+    'air_prepare_context_export': 'export_context',
+    'air_authorize_completion_run': 'authorize_design',
     'air_receive_builder_handoff': 'receive', 'air_revoke_builder_receipt': 'receive',
     'air_package_publish': 'publish', 'air_package_revoke': 'publish',
     'air_capacity_publish': 'capacity', 'air_admission_review': 'review',

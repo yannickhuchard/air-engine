@@ -1,7 +1,7 @@
 {
   "name": "air-local",
-  "version": "0.1.11",
-  "description": "AIR - Architecture Workspace : concevoir, vérifier et livrer des projets d’architecture avec un moteur AIR local.",
+  "version": "0.1.14",
+  "description": "AIR - Architecture Workspace : concevoir des projets portables par fichiers et les vérifier avec le moteur AIR optionnel.",
   "author": {
     "name": "Yannick Huchard",
     "url": "https://github.com/yannickhuchard"
@@ -19,7 +19,7 @@
   "interface": {
     "displayName": "AIR  -  Architecture Workspace",
     "shortDescription": "Concevoir et vérifier vos architectures avec AIR.",
-    "longDescription": "Plugin officiel développé par Yannick Huchard. Parcours pour installer et connecter AIR, puis concevoir, vérifier, simuler et livrer des dossiers d’architecture avec le moteur AIR de votre entreprise. Le moteur et sa connexion MCP sont des prérequis séparés ; ce paquet ne fournit ni serveur central, ni hébergement. Python, SQLite et identité locale par défaut. Les applications métier futures ne sont pas exécutées par le plugin.",
+    "longDescription": "Plugin officiel développé par Yannick Huchard. Concevoir un dossier AIR portable par fichiers dans une conversation, même sans connexion au référentiel. Le moteur AIR séparé permet les validations déterministes, la traçabilité, les gates et la reprise via MCP. Le référentiel est préféré par défaut et optionnel ; sa connexion peut être configurée plus tard. Aucun hébergement central ou déploiement métier fourni. Python, SQLite et identité locale par défaut.",
     "developerName": "Yannick Huchard",
     "category": "Productivity",
     "capabilities": [

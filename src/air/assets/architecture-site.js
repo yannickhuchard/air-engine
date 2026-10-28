@@ -1,4 +1,17 @@
 'use strict';
+// Exact references stay in the page; the reader chooses to show them. The choice is a local preference only.
+(() => {
+  const toggle = document.getElementById('air-tech');
+  if (!toggle) return;
+  const key = 'air-site-tech-refs';
+  try { if (localStorage.getItem(key) === '1') toggle.checked = true; } catch (_) {}
+  const apply = () => document.documentElement.classList.toggle('show-tech', toggle.checked);
+  apply();
+  toggle.addEventListener('change', () => {
+    apply();
+    try { localStorage.setItem(key, toggle.checked ? '1' : '0'); } catch (_) {}
+  });
+})();
 (() => {
   const filter = document.getElementById('sankey-filter');
   if (!filter) return;
@@ -23,6 +36,16 @@
   document.querySelectorAll('.workspace-nav nav details').forEach(group => {
     group.open = Boolean(group.querySelector('[aria-current="page"]'));
   });
+  // Keep the selected reading chapter in view without moving the document or focus.
+  if (!compact.matches && nav) {
+    const panel = nav.querySelector('nav');
+    const selected = panel.querySelector('[data-nav-active="true"]>summary, a[aria-current="page"]');
+    if (selected) requestAnimationFrame(() => {
+      const introduction = panel.querySelector('.nav-introduction');
+      const reserved = introduction && !introduction.contains(selected) ? introduction.getBoundingClientRect().height + 12 : 12;
+      panel.scrollTop = Math.max(0, selected.getBoundingClientRect().top - panel.getBoundingClientRect().top + panel.scrollTop - reserved);
+    });
+  }
   const nodeInfo = JSON.parse(document.getElementById('air-nodes').textContent);
   function kind(type) {
     if (['Concept','DataEntity','PhysicalTable','Message','Event','DataSchema'].includes(type)) return 'data';

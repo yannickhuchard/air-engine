@@ -28,7 +28,7 @@ def create_review(store, principal, policy, request, settings=None):
     if target is None or target["digest"] != request["target"]["digest"]:
         raise Conflict("Review target digest does not match")
     obj = target["object"]
-    if obj["meta"]["type"] not in ("air.Assertion", "air.Baseline", "air.SemanticContract", "air.Requirement"):
+    if obj["meta"]["type"] not in ("air.Assertion", "air.Baseline", "air.SemanticContract", "air.Requirement", "air.ScopeGate"):
         raise InvalidModel("Unsupported review target type")
     scope = obj["meta"]["namespace"]
     policy.require(principal, "review", scope)
@@ -37,6 +37,9 @@ def create_review(store, principal, policy, request, settings=None):
     authors = [store.author(request["target"])]
     if obj["meta"]["type"] == "air.Baseline":
         authors.extend(store.author(exact(o)) for o in baseline["objects"])
+    if obj['meta']['type'] == 'air.ScopeGate':
+        from air.delivery_assurance import gate_closure
+        authors.extend(store.author(exact(o)) for o in gate_closure(baseline, obj))
     if None in authors:
         raise InvalidModel("Authenticated authorship is unavailable for this review scope")
     if principal["subject"] in authors:

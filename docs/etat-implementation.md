@@ -1,5 +1,17 @@
 # État de réalisation public
 
+## Moteur 0.35.0.dev8 : 28 octobre 2026
+
+Préversion de développement accompagnée des skills CLI 0.1.16 et MCP projet
+0.1.14. Complétion persistante, gates par périmètre, sessions portables, parties
+prenantes, plans de couverture, exports de contexte, traces de génération,
+import CI lié au build et comparaison d'effort sont inclus. Les contrats et
+limites figurent dans les [corrections d'audit](audit-remediation-2026-10-24.md).
+Les archives, empreintes et reçus d'installation sont fournis dans la
+[release dev8](https://github.com/yannickhuchard/air-engine/releases/tag/v0.35.0.dev8).
+Les contrôles locaux ne valent ni réception des clients natifs, ni étude humaine,
+ni capacité entreprise. G1 reste lié à rc9 ; aucune CI n'est lancée pour ce lot.
+
 ## Documentation d'entrée : 25 octobre 2026
 
 Le README distingue moteur, plugin et dossier d'architecture, puis décrit

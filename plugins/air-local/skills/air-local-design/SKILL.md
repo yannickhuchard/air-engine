@@ -1,12 +1,78 @@
 ---
 name: air-local-design
-description: Concevoir, vérifier, simuler et livrer un dossier d'architecture AIR avec le MCP du projet déjà connecté. Utiliser pour faire progresser un design logique vers des plans prêts pour les ingénieurs, chefs de projet et ops, sans exécuter l'application métier future.
+description: Concevoir, vérifier, simuler et livrer un dossier d'architecture AIR par fichiers portables ou avec le MCP du projet connecté. Utiliser pour faire progresser un design logique vers des plans prêts pour les ingénieurs, chefs de projet et ops, sans exécuter l'application métier future.
 metadata:
   author: Yannick Huchard
   plugin: air-local
 ---
 
 # Concevoir avec AIR
+
+## Choisir le mode de travail
+
+Le référentiel est préféré par défaut et reste optionnel. Dans une conversation
+ChatGPT normale, sans MCP disponible ou après HTTP 429, continuer par fichiers
+avec [le mode portable](references/portable-session.md). Les capacités ne sont
+pas absentes parce qu'une connexion échoue. Aucun appel serveur n'est requis
+pour préparer des drafts. Ne pas forcer une installation ou une reconnexion
+avant de discuter et concevoir le dossier. Les contrôles moteur restent
+NOT_EXECUTED, le verdict reste UNKNOWN sans résultat réellement calculé.
+
+Avec une connexion fonctionnelle, commencer par l'état exact du dossier.
+`air_assess_scope_gates` évalue chaque ScopeGate et ses prérequis indépendamment.
+Décrire les gates My Help, My Health et socle commun comme des objets métier de
+l'entreprise, pas comme des noms réservés du framework. Leurs membres explicites,
+exigences et dépendances définissent la portée ; leurs revues sont distinctes.
+`air_delivery_dashboard` filtre les tâches par équipe, membre, semaine ISO,
+retard et blocage avec une date as_of explicite.
+
+`air_traceability_coverage` contrôle les TraceabilityLink adjacents : exigence,
+règle, donnée, API, test, preuve. Ne pas inventer un lien pour gonfler un score.
+Importer les rapports par `air_import_artifact`, puis proposer les objets
+OperationalEvidence : CI_CD, RECOVERY_TEST, RTO_RPO, ON_CALL_EXERCISE.
+Indiquer environnement, date, exécutant, résultat et artefact exact ; CI_CD exige
+run_url et source_revision, RTO_RPO les deux mesures et objectifs en secondes.
+Ne jamais lancer une CI ou un exercice réel pour renseigner une preuve prévue.
+`air_export_checklist` produit CSV ou XLSX, attachable à une conversation.
+Une couverture ou un gate ciblé ne remplace jamais `air_assess_readiness`.
+
+## Conduire un dossier jusqu’à sa complétude
+
+Pour une demande de conception complète, vérifier le catalogue courant puis
+créer `air_create_completion_run` avec une baseline, son Scope, des objectifs
+Goal/Requirement exacts et l’intention convenue. Conserver `run` et `checkpoint`.
+À chaque reprise, appeler `air_read_completion_run` : AIR réévalue la porte
+officielle et priorise les tâches ; le modèle du client conçoit les corrections.
+
+Obtenir une fois un mandat technique borné par une identité ayant le droit
+serveur `authorize_design`. Ne jamais ajouter ce droit à sa propre politique.
+Le mandat précise les sujets exécutants, les types, budgets et l’expiration.
+Il ne constitue pas une revue, une décision métier ou une acceptation de risque.
+Préparer avec `air_validate_drafts` et `air_rebase_drafts` (`include_bundle: false`),
+puis lire le candidat avec `air_read_completion_run` et son `prepared_change`.
+Avant une interruption, CHECKPOINT peut conserver ce `prepared_change` ; relire
+`pending_change` à la reprise plutôt que régénérer une proposition déjà préparée.
+Si admissible sous mandat actif, `air_apply_completion_run` dépose et fige
+atomiquement avec le dernier checkpoint. Cet appel remplace dépôt puis fermeture
+séparés et n’exige pas de redemander chaque détail technique déjà autorisé.
+
+Répéter après chaque lecture fraîche. Pour un choix conséquent ou une preuve
+indisponible, `air_advance_completion_run` ESCALATE enregistre une question sourcée.
+Continuer les tâches indépendantes autorisées. RESOLVE exige une identité ayant
+`authorize_design` et ne fabrique aucune preuve ; les changements engageants
+exigent une approbation de proposition exacte `approved_prepared`.
+Un changement de Scope ou d’objectif exige un nouveau parcours explicite.
+Sur conflit, relire avant de reprendre ; ADOPT_BASELINE est explicite.
+Préserver les clés d’idempotence d’un appel au résultat incertain.
+
+S’arrêter sur READY_TO_BUILD, décision bloquante, budget, expiration ou absence de
+progrès. `air_stop_completion_run` permet PAUSED ou CANCELLED. Une autorisation
+technique ne ferme aucun critère humain. Régénérer les livrables et leur page
+`completion.html`. Si le catalogue manque, diagnostiquer sans contourner ; un
+429 appelle une reprise bornée, pas une réussite inventée. Le client garde la
+maîtrise de la durée de session ; AIR rend le travail reprenable et ne maintient
+pas un modèle actif après fermeture. La distribution du plugin seule ne configure
+aucune connexion et ne qualifie aucun client natif.
 
 Pour explorer le comportement, lire la machine ou le contrat exact avant de
 déclarer un petit domaine d'entrées sourcées. Si le catalogue les expose, utiliser
@@ -206,3 +272,18 @@ nouvelles. Actualiser les livrables après chaque réception. Distinguer périm�
 reçu pour préparation, ready-to-build, lancement, tests et réalisation effective.
 Demander `content: DIGESTS` avant FULL dans le MCP ; exporter les grands paquets
 par CLI `handoff-compile --workspace ... --apply`, qui possède un budget adapté.
+
+## Cartographier les parties prenantes
+
+Le livrable standard 38-stakeholders-map représente les rôles impliqués, les
+personnes/groupes à mobiliser et les rôles vacants. Lire air_stakeholders_map
+à une baseline exacte. Décrire StakeholderParticipation avant de proposer
+les objets : scope, rôle, état, raison, responsabilités spécifiques au projet,
+liens d'architecture, plan de mobilisation et responsable de coordination.
+INVOLVED et TO_INVOLVE désignent une partie prenante exacte. MISSING décrit
+un rôle vacant sans inventer une personne. Indiquer ASSIGN, RECRUIT, PARTNER
+ou ASSESS selon le choix documenté ; ne pas assimiler l'absence d'affectation
+à un recrutement. Les anciens rôles sans participation restent à préciser.
+Régénérer les livrables pour actualiser la carte, sa page, ses sources et la
+checklist documentaire. Le RACI est repris depuis les objets déclarés ; ni
+la carte ni un nom n'accordent d'autorité ou ne prouvent une embauche réelle.

@@ -23,7 +23,7 @@ def test_summary_is_standard_before_detail_and_keeps_funding_and_gate_limits(com
     assert home.index('id="management-summary"') < home.index('Les réponses dont vous avez besoin')
     root = files['livrables/site/index.html']
     assert root.index('Management Summary') < root.index('id="dossier-search"')
-    assert len(report['website']['dossiers']) == 1 and d['topics'] == 37
+    assert len(report['website']['dossiers']) == 1 and d['topics'] == 38
     assert 'livrables/00-management-summary.json' in files
 
 

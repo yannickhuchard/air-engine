@@ -55,7 +55,7 @@ ONE = {
     "air.Actor": {"boundary": ["air.Scope"]},
     "air.ConstructionUnit": {"estimate": ["air.Estimate"]},
     "air.Estimate": {"target": ["air.ConstructionUnit"]},
-    "air.VerificationCase": {"target": ["air.Requirement", "air.Function", "air.SemanticContract", "air.ConstructionUnit", "air.BusinessRule", "air.Constraint", "air.Control"]},
+    "air.VerificationCase": {"target": ["air.Requirement", "air.Function", "air.SemanticContract", "air.ConstructionUnit", "air.BusinessRule", "air.Constraint", "air.Control", "air.QualityRequirement"]},
 }
 
 

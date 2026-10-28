@@ -13,7 +13,7 @@ from air.foundation import check_schema, InvalidModel
 from air.transport import origin as canonical_origin
 
 ENGINE = 'air.ide-adapter/0.31'
-CLIENTS = ['claude-code', 'codex']
+CLIENTS = ['claude-code', 'codex', 'cursor', 'antigravity', 'chatgpt']
 REQUEST = record({
     'client': {'enum': CLIENTS},
     'workspace': record({'name': {**TEXT, 'maxLength': 128}, 'organization': {**TEXT, 'maxLength': 128},
@@ -22,11 +22,12 @@ REQUEST = record({
                       'port': {'type': 'integer', 'minimum': 1, 'maximum': 65535}, 'url': {**TEXT, 'maxLength': 512},
                       'ca_file': LOCAL_PATH}, ['interpreter', 'home', 'credential']),
     'access': {'enum': ['read-only', 'contribute']},
+    'design_authority': {'type': 'boolean'},
     'shared_instructions': {'type': 'string', 'pattern': r'^[A-Za-z0-9][A-Za-z0-9._/-]{0,127}\.md$'},
 }, ['client', 'workspace', 'server', 'access'])
-GUIDED = ['air_search_state_counterexamples', 'air_search_interface_counterexamples', 'air_assess_evidence_impact', 'air_compile_builder_handoff', 'air_read_builder_handoff', 'air_assess_builder_handoffs', 'air_assess_completeness', 'air_compile_interface_suite', 'air_verify_interface_exchange', 'air_guide', 'air_list_revisions', 'air_browse_baseline', 'air_describe_type', 'air_validate_drafts', 'air_rebase_drafts',
+GUIDED = ['air_stakeholders_map', 'air_assess_scope_gates', 'air_delivery_dashboard', 'air_traceability_coverage', 'air_export_checklist', 'air_export_portable_session', 'air_read_completion_run', 'air_search_state_counterexamples', 'air_search_interface_counterexamples', 'air_assess_evidence_impact', 'air_compile_builder_handoff', 'air_read_builder_handoff', 'air_assess_builder_handoffs', 'air_assess_completeness', 'air_compile_interface_suite', 'air_verify_interface_exchange', 'air_guide', 'air_list_revisions', 'air_browse_baseline', 'air_describe_type', 'air_validate_drafts', 'air_rebase_drafts',
           'air_assess_readiness', 'air_simulate_scenario', 'air_walk_scenarios', 'air_query_business_paths', 'air_resume_question', 'air_query_transformation', 'air_query_project_updates', 'air_refresh_videos']
-READ_ONLY = sorted(GUIDED + ['air_reconstruct_temporal', 'air_convert_currency', 'air_read_checkpoint', 'air_preview_connector',
+READ_ONLY = sorted(GUIDED + ['air_calibrate_effort', 'air_read_generation_trace', 'air_reconstruct_temporal', 'air_convert_currency', 'air_read_checkpoint', 'air_preview_connector',
     'air_admission_read', 'air_assess_goal_targets', 'air_capabilities', 'air_capacity_get', 'air_check_policy',
     'air_collaboration_read', 'air_compile_audience_view', 'air_compile_ide_adapter', 'air_compile_openapi', 'air_compile_view',
     'air_compile_workbench', 'air_compile_workspace', 'air_compile_portfolio', 'air_compile_deliverables', 'air_compile_branding', 'air_compile_presentation', 'air_index_portfolio', 'air_compute_baseline_closure',
@@ -34,14 +35,20 @@ READ_ONLY = sorted(GUIDED + ['air_reconstruct_temporal', 'air_convert_currency',
     'air_inspect_knowledge', 'air_inspect_organization', 'air_inspect_workflow', 'air_package_read', 'air_plan', 'air_read_artifact',
     'air_read_captured_view', 'air_read_context', 'air_reconcile', 'air_replay_state_machine', 'air_runtime_compare', 'air_simulate',
     'air_validate_construction', 'air_validate_data', 'air_whoami'])
-CONTRIBUTE = ['air_create_builder_handoff', 'air_receive_checkpoint', 'air_cancel_job', 'air_capture_view', 'air_collaboration_submit', 'air_deposit_prepared', 'air_discover', 'air_record_simulation', 'air_freeze_baseline', 'air_freeze_prepared', 'air_get_context',
+CONTRIBUTE = ['air_ingest_ci_evidence', 'air_record_generation_trace', 'air_prepare_context_export', 'air_reconcile_portable_session', 'air_create_completion_run', 'air_advance_completion_run', 'air_stop_completion_run', 'air_apply_completion_run', 'air_create_builder_handoff', 'air_receive_checkpoint', 'air_cancel_job', 'air_capture_view', 'air_collaboration_submit', 'air_deposit_prepared', 'air_discover', 'air_record_simulation', 'air_freeze_baseline', 'air_freeze_prepared', 'air_get_context',
     'air_import_artifact', 'air_import_drafts', 'air_package_prepare', 'air_propose_change', 'air_runtime_ingest', 'air_submit_job']
-COMMITTING = ['air_receive_builder_handoff', 'air_revoke_builder_receipt', 'air_admission_activate', 'air_admission_admit', 'air_admission_propose', 'air_admission_release',
+COMMITTING = ['air_authorize_completion_run', 'air_receive_builder_handoff', 'air_revoke_builder_receipt', 'air_admission_activate', 'air_admission_admit', 'air_admission_propose', 'air_admission_release',
     'air_admission_review', 'air_admission_revoke_review', 'air_capacity_publish', 'air_closure_close',
     'air_closure_propose', 'air_closure_review', 'air_closure_revoke_review', 'air_package_publish', 'air_package_revoke',
     'air_renewal_propose', 'air_renewal_renew']
 TOOLCHAIN = toolchain('air.ide-adapter-toolchain/0.31')
 SURFACES = {
+    'cursor': {'client': 'cursor', 'surface': 'MCP stdio depuis .cursor/mcp.json', 'transport': 'MCP stdio vers l’API AIR',
+        'instructions': ['AGENTS.md', '.agents/skills'], 'permissions': 'Politique AIR ; permissions du client à vérifier'},
+    'antigravity': {'client': 'antigravity', 'surface': 'MCP stdio depuis .agents/mcp_config.json', 'transport': 'MCP stdio vers l’API AIR',
+        'instructions': ['AGENTS.md', '.agents/skills'], 'permissions': 'Politique AIR ; permissions du client à vérifier'},
+    'chatgpt': {'client': 'chatgpt', 'surface': 'Connexion MCP distante autorisée à configurer dans ChatGPT', 'transport': 'MCP HTTP distant autorisé',
+        'instructions': ['chatgpt/AIR-COMPLETION.md'], 'permissions': 'Politique AIR et approbations ChatGPT ; aucune connexion automatique'},
     'claude-code': {'client': 'claude-code', 'surface': 'processus MCP stdio lancé par Claude Code depuis .mcp.json', 'transport': 'MCP stdio vers l’API AIR',
         'instructions': ['CLAUDE.md', '.claude/skills', '.claude/commands', '.claude/agents'], 'permissions': '.claude/settings.json (allow/deny)'},
     'codex': {'client': 'codex', 'surface': 'processus MCP stdio lancé par Codex depuis .codex/config.toml d’un projet approuvé', 'transport': 'MCP stdio vers l’API AIR',
@@ -54,7 +61,7 @@ COMMON_SURFACE = {'auth_modes': ['jeton local lu par l’adaptateur', 'OIDC côt
 LIMITATIONS = [
     'Les fichiers décrivent une configuration cliente ; ils n’accordent aucun droit et le serveur reste seul juge',
     'Aucune matrice de compatibilité client n’est revendiquée au-delà du démarrage vérifié de l’adaptateur MCP',
-    'Les opérations engageantes sont absentes de cette configuration : un refus déclaré, pas une garantie du client',
+    'Admissions, publications et réceptions engageantes restent exclues ; le mandat technique optionnel exige les droits serveur et la confirmation du client',
     'Une règle de permission cliente ignorée ou modifiée localement n’est pas détectée par AIR',
 ]
 CODEX_LIMITATIONS = [
@@ -78,8 +85,11 @@ def _command(server):
     return {'command': interpreter, 'args': args}
 
 
-def _tools(access):
+def _tools(access, design_authority=False):
     allowed = sorted(READ_ONLY + (CONTRIBUTE if access == 'contribute' else []))
+    if design_authority:
+        if access != 'contribute': raise InvalidModel('Design authority requires contribute access and an explicit server grant')
+        allowed = sorted(allowed + ['air_authorize_completion_run'])
     return allowed, sorted(set(READ_ONLY + CONTRIBUTE + COMMITTING) - set(allowed))
 
 
@@ -174,7 +184,7 @@ def _journeys(request):
     ]
     if contribute:
         change_steps += [
-            'Attendre un accord explicite. Puis `air_deposit_prepared` avec l’identifiant `prepared_change` du rebase, et ensuite, dans un second appel, `air_freeze_prepared` avec le même identifiant, un nom et une description qui disent ce que fait ce changement.',
+            'Si un parcours de complétion possède un mandat technique actif et que son aperçu accepte ce prepared_change, utiliser air_apply_completion_run avec le dernier checkpoint : dépôt et baseline sont atomiques, sans nouvel accord pour chaque détail autorisé. Sinon, obtenir l’accord explicite requis puis air_deposit_prepared et air_freeze_prepared dans cet ordre. Ne jamais s’accorder authorize_design ni déduire un avis humain du mandat.',
             'Vérifier avec `air_guide` en intention `REVIEW` sur la nouvelle révision, puis produire les livrables (parcours livrer).']
     else:
         change_steps += ['Cette configuration est en lecture seule : remettre le dossier du changement à un contributeur habilité ; un dépôt serait refusé.']
@@ -337,7 +347,8 @@ def _settings(allowed, denied):
     return render_json({
         'enabledMcpjsonServers': ['air'],
         'permissions': {
-            'allow': ['mcp__air__' + name for name in allowed],
+            'allow': ['mcp__air__' + name for name in allowed if name != 'air_authorize_completion_run'],
+            **({'ask': ['mcp__air__air_authorize_completion_run']} if 'air_authorize_completion_run' in allowed else {}),
             'deny': ['mcp__air__' + name for name in denied] + ['Read(**/.air/**)', 'Read(**/.air-*/**)', 'Read(**/credentials.json)',
                      'Read(**/*.json.token)', 'Read(**/*.pem)', 'Read(./.mcp.json)'],
         },
@@ -356,7 +367,7 @@ def _codex_config(server, allowed, access):
              'tool_timeout_sec = 180',
              'enabled_tools = [' + ', '.join(toml_string(name) for name in allowed) + ']', '']
     if access == 'contribute':
-        for name in sorted(CONTRIBUTE):
+        for name in sorted(CONTRIBUTE + (['air_authorize_completion_run'] if 'air_authorize_completion_run' in allowed else [])):
             lines += ['[mcp_servers.air.tools.' + name + ']', 'approval_mode = "prompt"', '']
     return render_text(lines)
 
@@ -368,7 +379,20 @@ def _skill_lines(request, allowed):
         lines += ['### ' + journey['name'] + ' - ' + journey['description'], '']
         lines += [str(i) + '. ' + step.replace('$1', '<' + (journey['hint'].split(' ')[0].strip('<>') or 'code') + '>') for i, step in enumerate(journey['steps'], 1)]
         lines.append('')
-    lines += ['## Pilotage et synthèse', '',
+    lines += ['## Compléter sans perdre le fil', '',
+              'Sur demande de conception complète, air_create_completion_run épingle baseline, Scope, objectifs et intention. Conserver run et checkpoint.',
+              'À toute reprise, air_read_completion_run réévalue les sources et air_assess_readiness. Ses tâches sont prioritaires ; le modèle du client prépare les corrections.',
+              'Un contributeur doit obtenir un mandat borné par une identité ayant authorize_design. Seule une configuration design_authority explicite expose cet outil ; elle ne donne aucun droit serveur ni autorisation de s’auto-mandater.',
+              'Lire les objets par pages, décrire les types, valider, rebaser avec include_bundle: false puis lire le candidat avec air_read_completion_run.',
+              'Sous mandat actif, air_apply_completion_run applique un changement technique admissible et avance le checkpoint atomiquement. Répéter jusqu’au verdict ou à un blocage explicite.',
+              'Pour une décision métier, conflit ou preuve indisponible, air_advance_completion_run ESCALATE conserve une question et ses sources. Continuer seulement les travaux indépendants autorisés.',
+              'Une réponse RESOLVE exige authorize_design ; elle ne signe ni revue indépendante ni acceptation. Une proposition engageante exige une approbation exacte approved_prepared.',
+              'En cas de conflit, relire ; ne pas écraser. ADOPT_BASELINE doit être explicite. Conserver les clés d’idempotence lors d’une reprise incertaine.',
+              'PAUSED et CANCELLED viennent de air_stop_completion_run. Expiration, budget épuisé et absence de progrès demandent une réévaluation, jamais une boucle infinie.',
+              'READY_TO_BUILD exige la porte officielle et aucune tâche ou question bloquante. Publier les livrables et completion.html depuis la baseline exacte.',
+              'Un outil absent ou un 404 exige un diagnostic de connexion. Un 429 appelle une reprise bornée selon les indications du client. Ne pas inventer de résultat.',
+              'Le client décide de sa durée d’exécution ; aucun maintien de modèle actif après fermeture n’est promis. Lire completion-runs.json pour reprendre dans un autre client.', '',
+              '## Pilotage et synthèse', '',
               'Lire le Management Summary en tête du dossier. Régénérer les livrables après chaque baseline figée.',
               'Les types TransformationProgramme, ArchitectureProject et ArchitectureTask décrivent les travaux de conception.',
               'Clôture : décision et date exactes, aucune tâche active. Terminé et annulé restent distincts ; readiness reste indépendant.',
@@ -470,10 +494,11 @@ def compile_adapter(store, principal, policy, request):
     try: bounded(request)
     except ExprError as exc: raise InvalidModel('Adapter request exceeds its budget') from exc
     server = _command(request['server'])
-    allowed, denied = _tools(request['access'])
+    allowed, denied = _tools(request['access'], request.get('design_authority', False))
     client = request['client']
     normalized = {'client': client, 'workspace': request['workspace'], 'access': request['access'],
-        'server_command': server, 'shared_instructions': request.get('shared_instructions')}
+        'server_command': server, 'shared_instructions': request.get('shared_instructions'),
+        'design_authority': request.get('design_authority', False)}
     source_digest = artifact_digest({'normalized': normalized, 'generator': TOOLCHAIN['source_digest']})
     journeys = _journeys(request)
     if client == 'claude-code':
@@ -485,6 +510,25 @@ def compile_adapter(store, principal, policy, request):
         files += [product('.claude/commands/' + j['name'] + '.md', 'text/markdown', _claude_command(j, source_digest), "GENERATED") for j in journeys]
         files += [product(path, 'text/markdown', text, 'GENERATED') for path, text in portable_skills('claude', request)]
         manifest_path = '.claude/air-adapter.json'
+    elif client in ('cursor', 'antigravity', 'chatgpt'):
+        if client == 'chatgpt':
+            remote = request['server'].get('url')
+            connection = {'client': 'chatgpt', 'automatic_connection': False, 'client_qualified': False,
+                'endpoint': _origin(remote) + '/mcp' if remote else None,
+                'requirements': ['Adresse MCP distante ou tunnel autorisé', 'Authentification configurée côté AIR et côté client',
+                    'Actualiser le catalogue après installation ; ne jamais transmettre le fichier de jeton au modèle'],
+                'long_running_execution_guaranteed': False}
+            files = [product('chatgpt/air-connection.json', 'application/json', render_json(connection), 'GENERATED'),
+                product('chatgpt/AIR-COMPLETION.md', 'text/markdown', _skill(request, allowed, source_digest), 'GENERATED')]
+            manifest_path = 'chatgpt/air-adapter.json'
+        else:
+            config_path = '.cursor/mcp.json' if client == 'cursor' else '.agents/mcp_config.json'
+            files = [product(config_path, 'application/json', render_json({'mcpServers': {'air': server}}), 'GENERATED'),
+                product('AGENTS.md', 'text/markdown', _agents_md(request, allowed, denied, source_digest), 'MARKED_SECTION'),
+                product('.agents/skills/air-referentiel/SKILL.md', 'text/markdown', _skill(request, allowed, source_digest), 'GENERATED')]
+            files += [product('.agents/skills/' + j['name'] + '/SKILL.md', 'text/markdown', _codex_skill(j, source_digest), 'GENERATED') for j in journeys]
+            files += [product(path, 'text/markdown', text, 'GENERATED') for path, text in portable_skills('agents', request)]
+            manifest_path = ('.cursor/' if client == 'cursor' else '.agents/') + 'air-adapter.json'
     else:
         files = [product('.codex/config.toml', 'application/toml', _codex_config(server, allowed, request['access']), 'GENERATED'),
                  product('AGENTS.md', 'text/markdown', _agents_md(request, allowed, denied, source_digest), 'MARKED_SECTION'),

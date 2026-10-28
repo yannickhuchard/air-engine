@@ -13,7 +13,7 @@ def test_six_role_routes_preserve_pins_sources_and_all_topics(compiled):
     root = 'livrables/site/' + str(PurePosixPath(dossier['path']).parent) + '/'
     reading = json.loads(files[root + 'questions.json'])
     assert reading['baseline'] == request['baselines'][0]
-    assert len(reading['questions']) == len(deliverables.CATALOGUE) == 37
+    assert len(reading['questions']) == len(deliverables.CATALOGUE) == 38
     assert len(reading['roles']) == 6
     assert not reading['audience_is_access_control']
     objects = json.loads(files['livrables/architecture-model.json'])['snapshots'][0]['objects']

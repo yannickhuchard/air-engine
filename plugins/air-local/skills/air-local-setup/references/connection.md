@@ -41,6 +41,19 @@ ses règles de confiance. Ne pas désactiver ces règles. Claude Code utilise le
 même générateur avec `client: claude-code` ; sa réception P07 n'est plus requise.
 Les autres IDE ont leurs formats propres décrits dans `docs/distribution.md`.
 
+Dans le moteur 0.35.0.dev5, `client: cursor` génère `.cursor/mcp.json` et
+`client: antigravity` génère `.agents/mcp_config.json`, avec les instructions
+portables. Vérifier ces formats dans le client réel. Pour la complétion,
+conserver `run` et reprendre par `air_read_completion_run` : ne pas recréer un
+parcours à chaque conversation. Le fichier `completion-runs.json` du site
+conserve les références de reprise mais reste figé à l’export.
+
+Pour exposer le mandat technique dans le client de l’architecte, ajouter
+`design_authority: true` à une requête `access: contribute`, avec un sujet
+déjà habilité à `authorize_design` côté serveur. Le mandat exige une demande
+utilisateur autorisée ; cette option n’est ni une élévation ni une revue humaine.
+Lire le contrat `docs/architecture-completion-controller.md` du moteur.
+
 ## ChatGPT
 
 Le processus MCP local stdio n'est pas directement une connexion ChatGPT distante.
@@ -49,6 +62,12 @@ pour la connexion MCP via tunnel sécurisé. Chaque installation garde sa propre
 connexion et son identité ; ne jamais distribuer celle du développeur AIR.
 Le plugin de skills peut accompagner cette connexion, sans la créer ni remplacer
 son authentification. Un tunnel privé n'est pas une publication dans l'annuaire public.
+
+`client: chatgpt` prépare `chatgpt/air-connection.json` et
+`chatgpt/AIR-COMPLETION.md`. Sans adresse distante, aucun endpoint n’est inventé.
+L’architecte doit autoriser la connexion et vérifier réellement identité,
+catalogue et baseline. La persistance AIR ne maintient pas le modèle actif
+après fermeture du client.
 
 Si un outil attendu manque : comparer version et capacités avec le catalogue
 effectivement visible ; utiliser la découverte des outils différés si disponible.

@@ -244,6 +244,30 @@ def d_roles(g):
     return 'Liste des rôles', lines, roles + actors
 
 
+def d_stakeholders(g):
+    from air import stakeholders
+    view = stakeholders.project({'objects': list(g.by_ref.values())})
+    lines = ['Qui doit contribuer au projet, pourquoi et avec quelles responsabilités ? Les rôles vacants restent distincts des personnes identifiées.', '']
+    diagram = ['flowchart TB', '  project["Projet d’architecture"]']
+    for e in view['entries']:
+        title = e['role']['name'] if e['role'] else e['reference']['name']
+        diagram.append('  ' + e['id'].replace('-', '_') + '[' + label(title + ' : ' + stakeholders.STATE_LABELS[e['state']]) + ']')
+        diagram.append('  project ' + ('-.-> ' if e['state'] in ('MISSING', 'UNASSESSED') else '--> ') + e['id'].replace('-', '_'))
+    lines += mermaid(diagram) if view['entries'] else ['Aucune participation documentée. Déclarer les parties prenantes, leurs contributions et les besoins de mobilisation.']
+    lines += ['', *table(['Rôle ou partie prenante', 'État', 'Personne ou groupe', 'Pourquoi', 'Responsabilités dans le projet', 'Mobilisation'],
+        [[e['role']['name'] if e['role'] else e['reference']['name'], stakeholders.STATE_LABELS[e['state']],
+          ', '.join(p['name'] for p in e['holders']) or 'Non affecté', e['reason'] or 'À documenter',
+          '; '.join(e['responsibilities']) or 'À documenter', stakeholders.ACTION_LABELS[e['staffing_action']]] for e in view['entries']])]
+    for e in view['entries']:
+        lines += ['', '## ' + (e['role']['name'] if e['role'] else e['reference']['name']),
+            'Plan de mobilisation : ' + (e['engagement_plan'] or 'À documenter'),
+            'Coordination : ' + (e['coordination_owner'] or 'À désigner'),
+            'Participation attendue : ' + (e['needed_by'] or 'Date à préciser'),
+            'Éléments concernés : ' + (', '.join(p['name'] for p in e['architecture_links']) or 'À relier au projet')]
+    lines += ['', 'États déclarés, sans preuve automatique d’engagement ou d’embauche. Une affectation non documentée ne constitue pas à elle seule un besoin de recrutement.']
+    return 'Stakeholders Map', lines, [g.by_ref[(r['id'], r['revision'])] for r in view['sources']]
+
+
 def _organisation(g, root_id, phase, heading):
     units = g.of('OrganizationUnit');children = defaultdict(list)
     for u in units:
@@ -1092,6 +1116,7 @@ CATALOGUE = [
     ('29-evenements', d_events), ('30-navigation-interfaces', d_navigation), ('31-equipements-machines', d_devices),
     ('32-scenarios-acceptation', d_scenarios), ('33-tests-non-regression', d_regression), ('34-matrice-conformite', d_compliance),
     ('35-exigences-non-fonctionnelles', d_nfr), ('36-estimation-ia', d_ai_estimate), ('37-feuilles-de-route', d_roadmaps),
+    ('38-stakeholders-map', d_stakeholders),
 ]
 
 
@@ -1160,7 +1185,11 @@ def compile_deliverables(store, principal, policy, request):
             for e, ref in zip(exports, request['baselines'])}
         from air import evidence_impact
         evidence_reports = {e['digest']: evidence_impact.for_site(store, principal, policy, e) for e in exports}
-        site_files, site_manifest = compile_site(exports, gates, request, lambda graph, local_gates: build_topics(graph, local_gates, request), render_json(model), brands, suites, contexts, receipts, evidence_reports)
+        from air import completion
+        completion_reports = {e['digest']: completion.for_site(store, principal, policy, ref) for e, ref in zip(exports, request['baselines'])}
+        from air import delivery_assurance
+        assurance_reports = {e['digest']: delivery_assurance.assess_gates(store, principal, policy, {'baseline': ref}) for e, ref in zip(exports, request['baselines'])}
+        site_files, site_manifest = compile_site(exports, gates, request, lambda graph, local_gates: build_topics(graph, local_gates, request), render_json(model), brands, suites, contexts, receipts, evidence_reports, completion_reports, assurance_reports)
         files.extend(site_files)
     warnings = (['## Révisions divergentes dans la synthèse', '',
         'Les documents Markdown de synthèse regroupent les objets par identifiant et retiennent la plus haute révision. Ils ne sont pas une comparaison existant/cible.',

@@ -1,16 +1,27 @@
 """Explicit namespace grants, reloaded for each authenticated request."""
 from pathlib import Path
-from air.core import record, reference_slots
+from datetime import datetime, timezone
+from air.core import INSTANT, record, reference_slots
 from air.expr import artifact_digest
 from air.foundation import InvalidModel, check_schema, key
 from air.parsing import parse
 
-ACTIONS = ("read", "write", "review", "publish", "admit", "activate", "capacity", "attest", "operate", "receive")
+ACTIONS = ("read", "write", "review", "publish", "admit", "activate", "capacity", "attest", "operate", "receive", "authorize_design", "export_context")
 NAMESPACES = {"type": "array", "items": {"type": "string", "pattern": "^(?:\\*|[a-z][a-z0-9_.-]{0,127})$"},
               "maxItems": 256, "uniqueItems": True}
 POLICY = record({"version": {"type": "string", "minLength": 1, "maxLength": 128},
                  "subjects": {"type": "object", "maxProperties": 1000,
                               "additionalProperties": record({**{action: NAMESPACES for action in ACTIONS},
+                                  'model_context': record({
+                                      'destination': {'type': 'string', 'minLength': 1, 'maxLength': 128},
+                                      'purpose': {'type': 'string', 'minLength': 1, 'maxLength': 128}}),
+                                  'context_destinations': {'type': 'array', 'maxItems': 32, 'items': record({
+                                      'id': {'type': 'string', 'minLength': 1, 'maxLength': 128},
+                                      'purposes': {'type': 'array', 'minItems': 1, 'maxItems': 16,
+                                          'items': {'type': 'string', 'minLength': 1, 'maxLength': 128}, 'uniqueItems': True},
+                                      'classifications': {'type': 'array', 'minItems': 1, 'maxItems': 4, 'uniqueItems': True,
+                                          'items': {'enum': ['PUBLIC', 'INTERNAL', 'CONFIDENTIAL', 'RESTRICTED']}},
+                                      'expires_at': INSTANT})},
                                   'builder_roles': {'type': 'array', 'maxItems': 128, 'uniqueItems': True,
                                       'items': record({'id': {'type': 'string', 'format': 'uri'},
                                           'revision': {'type': 'integer', 'minimum': 1},
@@ -58,13 +69,35 @@ class AccessPolicy:
 
     def allows(self, principal, action, namespace):
         role = principal["role"]
-        if action != "read" and role not in ("editor", "admin"):
+        if action not in ("read", "export_context") and role not in ("editor", "admin"):
             return False
         if self.document is None:
             # Explicit business authority is always needed for approval and commitment.
             return action in ("read", "write") or action == 'operate' and role == 'admin'
-        grants = self.document["subjects"].get(principal["subject"], {}).get(action, [])
-        return "*" in grants or namespace in grants
+        subject = self.document["subjects"].get(principal["subject"], {})
+        grants = subject.get(action, [])
+        if not ("*" in grants or namespace in grants): return False
+        binding = subject.get('model_context')
+        if action == 'read' and binding:
+            exports = subject.get('export_context', [])
+            return bool(self.context_grant(principal, **binding) and ('*' in exports or namespace in exports))
+        return True
+
+    def context_grant(self, principal, destination, purpose):
+        subject = (self.document or {}).get('subjects', {}).get(principal['subject'], {})
+        matches = [g for g in subject.get('context_destinations', []) if g['id'] == destination and purpose in g['purposes']]
+        if len(matches) == 1 and datetime.fromisoformat(matches[0]['expires_at']) > datetime.now(timezone.utc):
+            return matches[0]
+        return None
+
+    def check_model_context(self, principal, namespace, classification):
+        subject = (self.document or {}).get('subjects', {}).get(principal['subject'], {})
+        binding = subject.get('model_context')
+        if binding:
+            self.require(principal, 'export_context', namespace)
+            grant = self.context_grant(principal, **binding)
+            if not grant or classification not in grant['classifications']:
+                raise Forbidden('Content is outside this model identity destination grant')
 
     def require(self, principal, action, namespace):
         if not self.allows(principal, action, namespace):
@@ -78,6 +111,8 @@ class ScopedStore:
 
     def allow(self, obj, action):
         self.policy.require(self.principal, action, obj["meta"]["namespace"])
+        if action == 'read':
+            self.policy.check_model_context(self.principal, obj['meta']['namespace'], obj['meta']['classification']['level'])
 
     def check_read(self, refs):
         pending = list(refs)

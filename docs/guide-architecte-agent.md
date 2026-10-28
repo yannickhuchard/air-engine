@@ -10,7 +10,27 @@ Pour les versions, le contexte connecté et les schémas réellement découverts
 le [contrat client courant](contrat-client-agent.md) prévaut sur les comptes d’outils
 historiques de ce guide. La qualification rc9 ne couvre pas automatiquement `0.35.0.dev1`.
 
+Depuis le développement **0.35.0.dev5**, un
+[parcours de complétion persistant](architecture-completion-controller.md) conserve
+le mandat technique, les checkpoints et les prochaines tâches. Il permet à un
+agent de poursuivre les détails autorisés sans accord répété. Les décisions
+conséquentes et avis qualifiés gardent leurs propres autorités. Cursor et
+Antigravity disposent aussi de configurations compilées ; leur recette native
+reste distincte de la validation des fichiers et du protocole.
+
 ## 1. Brancher l’agent
+
+Pour installer la variante Skills-only CLI dans un chat local, suivre
+[Installer AIR dans ChatGPT desktop](installation-chatgpt.md). Elle appelle le
+moteur du poste sans MCP. Le tableau et les procédures de catalogue ci-dessous
+décrivent les connexions MCP, notamment le parcours ChatGPT historique.
+
+Pour expliquer ou transmettre le dossier, suivre le [sommaire progressif](ux-navigation-dossier.md) :
+demande, usages, solution, données, qualité et risques, préparation de la construction,
+puis vérification et pilotage. Présenter d'abord la synthèse au commanditaire et
+les conséquences pour le métier ; utiliser ensuite les dimensions détaillées et
+le dossier de transmission avec les équipes de réalisation. Cet ordre de lecture
+n'interdit pas les allers-retours de conception et n'accorde aucune approbation.
 
 | Client | Branchement | Catalogue d’outils |
 | --- | --- | --- |

@@ -25,7 +25,13 @@ from demo_validation import request_for
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def rehearse(output, fresh_environment=False, qualify_design_proofs=False, qualify_external_proofs=False):
+def installation_command(install, fresh_environment, qualify_external_proofs):
+    optional = ['--extras', 'proofs'] if fresh_environment and qualify_external_proofs else []
+    return install + optional + ['--start'] + ([] if fresh_environment else ['--skip-install'])
+
+
+def rehearse(output, fresh_environment=False, qualify_design_proofs=False, qualify_external_proofs=False, install_timeout=900):
+    if not 30 <= install_timeout <= 3600: raise ValueError('Installation deadline must be 30 to 3600 seconds')
     if os.environ.get("AIR_DATABASE_URL"):
         raise ValueError("Unset AIR_DATABASE_URL for the isolated SQLite demonstration")
     output.mkdir(parents=True, exist_ok=True)
@@ -35,8 +41,8 @@ def rehearse(output, fresh_environment=False, qualify_design_proofs=False, quali
     with socket.socket() as probe:
         probe.bind(("127.0.0.1", 0));port = probe.getsockname()[1]
     install = [sys.executable, str(ROOT / "scripts/install.py"), "--home", str(home), "--venv", str(environment), "--port", str(port)]
-    command = install + ["--start"] + ([] if fresh_environment else ["--skip-install"])
-    installed = subprocess.run(command, capture_output=True, text=True, encoding="utf-8", timeout=300)
+    command = installation_command(install, fresh_environment, qualify_external_proofs)
+    installed = subprocess.run(command, capture_output=True, text=True, encoding="utf-8", timeout=install_timeout)
     if installed.returncode:
         raise RuntimeError("Isolated installation failed; no acceptance report emitted")
     cases = read("manifest.json")["dossiers"]
@@ -186,10 +192,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=ROOT / "tmp/demo-asteria/metier")
     parser.add_argument("--fresh-environment", action="store_true")
+    parser.add_argument('--install-timeout', type=int, default=900, help='Fresh dependency installation deadline, 30..3600 seconds; not a performance objective')
     parser.add_argument("--qualify-design-proofs", action="store_true", help="Also exercise the scoped P03 design review binding")
     parser.add_argument('--qualify-external-proofs', action='store_true', help='Run and attest three explicit synthetic Python test suites')
     args = parser.parse_args()
-    result = rehearse(args.output.resolve(), args.fresh_environment, args.qualify_design_proofs or args.qualify_external_proofs, args.qualify_external_proofs)
+    result = rehearse(args.output.resolve(), args.fresh_environment, args.qualify_design_proofs or args.qualify_external_proofs, args.qualify_external_proofs, args.install_timeout)
     print(json.dumps({"status": result["status"], "milestone": result["milestone"], "dossiers": 3, "report": str(args.output / "report.json")}))
 
 

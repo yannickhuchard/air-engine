@@ -554,6 +554,14 @@ def assess_readiness(store, principal, policy, request):
             {'catalogue': context['catalogue'], 'context_state': context['context_state'], 'profiles': context['profiles'],
                'result': context['result'], 'counts': context['counts'], 'open_checks': [c['id'] for c in context['checks'] if c['status'] not in ('DOCUMENTED', 'EXCLUDED_APPROVED')]},
             'Select DossierContext and resolve the contextual questions. Declared exclusions are not effective approvals.')
+    if any(o['meta']['type'] == 'air.ScopeGate' for o in objects):
+        from air.delivery_assurance import assess_exported
+        scoped = assess_exported(store, principal, policy, exported,
+            {'baseline': {**exact(baseline), 'digest': exported['digest']}})
+        pending_scopes = [{'gate': g['gate'], 'blockers': g['blockers']} for g in scoped['gates'] if g['result'] != 'PASS_SCOPED_GATE']
+        criterion('SCOPED_GATES', 'Every explicitly declared scope gate and common prerequisite satisfies its exit criteria',
+            not pending_scopes, {'gates': len(scoped['gates']), 'pending': pending_scopes},
+            'Close the exact scoped trace gaps, recorded tests and reviews required by each gate; no sibling approval is inherited.')
     blocking = [c['code'] for c in criteria if c['status'] == 'NOT_MET']
     target = request['baseline'] if 'baseline' in request else {'prepared_change': request['prepared_change'], 'would_freeze': {
         'id': baseline['meta']['id'], 'revision': baseline['meta']['revision']}, 'candidate': True}

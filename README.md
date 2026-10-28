@@ -41,17 +41,25 @@ does not mean that the future business application has been implemented or run.
 
 ## Version and delivery status
 
-This source branch contains **engine 0.35.0.dev4**. It is a development version.
-The [dev4 release](https://github.com/yannickhuchard/air-engine/releases/tag/v0.35.0.dev4)
-contains its downloadable artifacts and checksums. The
-[rc9 release](https://github.com/yannickhuchard/air-engine/releases/tag/v0.34.0rc9)
-retains its own historical local qualification; that qualification does not extend
-automatically to later versions.
+This branch contains **engine 0.35.0.dev8**, a development prerelease.
+Download its source archive, wheel, checksums and installation report from
+[the dev8 release](https://github.com/yannickhuchard/air-engine/releases/tag/v0.35.0.dev8).
+The companion [plugin release](https://github.com/yannickhuchard/air-plugin/releases/tag/v0.1.16)
+provides **Skills-only CLI 0.1.16**, its ready-to-extract local marketplace, and
+the **project-MCP skills 0.1.14** as a separate package.
 
-Read the [public implementation status](docs/etat-implementation.md) and
-[validation record](docs/validation.md) for delivered features and limits.
-Engine and plugin versions are independent. A GitHub release, an installation
-test and acceptance by a client's public plugin directory are separate events.
+Dev8 adds persistent design completion, scoped delivery checks, portable sessions,
+stakeholder maps, optional scenario assurance plans, generation traces, retained
+CI evidence import and recorded-effort comparisons. See the
+[feature contracts and limits](docs/audit-remediation-2026-10-24.md),
+[context export controls](docs/controle-des-contributions-ia.md) and
+[ChatGPT desktop setup](docs/installation-chatgpt.md).
+
+The [implementation status](docs/etat-implementation.md) and
+[client matrix](docs/traceability/client-release-matrix.json) separate local tests
+from native-client, human and enterprise acceptance. Historical G1 remains
+limited to [rc9](https://github.com/yannickhuchard/air-engine/releases/tag/v0.34.0rc9).
+No production qualification or public-directory approval is inherited by dev8.
 
 ## Install and verify the engine
 

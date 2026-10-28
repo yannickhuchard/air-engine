@@ -16,6 +16,14 @@ Vérifier la version et les empreintes publiées avant installation. Le plugin n
 pas le moteur. Ne pas inventer une installation réussie ni une connexion ChatGPT.
 
 
+## Conversation sans référentiel
+
+Si le besoin est de concevoir dans ChatGPT normal sans connexion fonctionnelle,
+utiliser le mode portable du skill air-local-design. Le référentiel est optionnel,
+préféré par défaut et activable plus tard. Un HTTP 429 n'impose pas d'arrêter
+le design, mais les validations serveur ne peuvent pas être annoncées exécutées.
+Installer ou connecter le moteur lorsque ses contrôles ou le dépôt sont demandés.
+
 ## Identifier l'installation
 
 Repérer le dépôt du moteur (`pyproject.toml`, `scripts/install.py`), le référentiel
@@ -46,6 +54,14 @@ tel que décrit dans le dépôt. Ne pas imposer Docker, Node, cloud ou IdP.
 Lire [la connexion par projet](references/connection.md). Réutiliser `workspace-init`
 et `ide-setup` du moteur : ils produisent les conventions et les configurations
 avec protection des modifications manuelles. Ne pas dupliquer leur logique.
+Avec le moteur 0.35.0.dev5, les clients `cursor` et `antigravity` ont aussi leur
+configuration de projet ; `chatgpt` produit les prérequis d’une connexion distante
+autorisée et le guide de complétion, sans connecter le compte automatiquement.
+Pour un architecte qui veut octroyer le mandat depuis ce même client,
+`design_authority: true` avec `access: contribute` expose l’outil de mandat.
+Cela ne crée pas le droit serveur `authorize_design` ; sa configuration doit
+être explicitement autorisée séparément. Le contributeur ordinaire ne s’accorde
+pas ce droit. Respecter les confirmations propres au client.
 Les chemins de la configuration sont absolus ; les jetons restent dans des
 fichiers privés lus uniquement par le programme. Ne jamais lire ces fichiers
 dans la conversation, imprimer les jetons ou les mettre dans le plugin.

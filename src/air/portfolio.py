@@ -202,7 +202,7 @@ def _readme(request, projects, shared):
         '',
         '1. Installer AIR, créer un identifiant par sujet déclaré, installer `policies/access-policy.json` avec `policy-set`.',
         '2. Créer chaque dépôt : `air workspace-init projects/<code>/workspace.request.json --workspace ../<code> --apply`.',
-        '3. Brancher le client agentique : `air ide-setup` dans chaque dépôt, depuis `claude-code.example.json` complété.',
+        '3. Brancher Codex ou ChatGPT : `air ide-setup` dans chaque dépôt, depuis `codex.example.json` ou `chatgpt.example.json` complété. Claude reste optionnel.',
         '4. Travailler par dépôt : brouillons, `bundle-put`, baseline fermée.',
         '5. Épingler chaque baseline fermée dans `portfolio-index.request.json`, puis compiler l’index :',
         '   `air portfolio-index portfolio-index.request.json --workspace . --credential <sujet>.json --apply --replace-generated`.',
@@ -327,7 +327,7 @@ def _repository_readme(view, is_shared):
         '',
         '~~~sh',
         'air workspace-init projects/' + view['code'] + '/workspace.request.json --workspace ../' + view['code'] + ' --apply',
-        'air ide-setup projects/' + view['code'] + '/claude-code.example.json --workspace ../' + view['code'] + ' --apply',
+        'air ide-setup projects/' + view['code'] + '/codex.example.json --workspace ../' + view['code'] + ' --apply',
         '~~~',
         '',
         '| Élément | Valeur |',
@@ -337,17 +337,18 @@ def _repository_readme(view, is_shared):
         '| Baseline conventionnelle | `' + cell(view['baseline_id']) + '` |',
         '',
         'La requête `workspace.request.json` est produite depuis le manifeste du portefeuille ; la modifier ici crée un',
-        'écart. `claude-code.example.json` est un exemple à compléter avec les chemins absolus du poste avant',
-        '`ide-setup`. Épingler la baseline fermée de ce dépôt dans `portfolio-index.request.json`.',
+        'écart. Compléter les chemins absolus dans `codex.example.json` ou `chatgpt.example.json` avant',
+        '`ide-setup`. ChatGPT nécessite une connexion distante autorisée pour ce parcours MCP ; une configuration générée ne la crée pas.',
+        'Claude reste optionnel. Épingler la baseline fermée de ce dépôt dans `portfolio-index.request.json`.',
     ])
 
 
-def _adapter_example(view, subjects, kind, name, organization):
+def _adapter_example(view, subjects, kind, name, organization, client='claude-code'):
     """A client request the team completes: everything is known except the workstation paths."""
     if kind == 'portfolio': holders = [s for s in subjects if s.get('shared_write')] or [s for s in subjects if len(s['projects']) > 1] or subjects
     else: holders = [s for s in subjects if view['code'] in s['projects']] or [s for s in subjects if s.get('shared_write')]
     credential = (holders[0]['subject'] if holders else 'REMPLACER-SUJET') + '.json'
-    request = {'client': 'claude-code', 'workspace': {'name': name, 'organization': organization['name']},
+    request = {'client': client, 'workspace': {'name': name, 'organization': organization['name']},
                'server': {'interpreter': PLACEHOLDER_PATH + '/python.exe', 'home': PLACEHOLDER_PATH + '/.air', 'credential': credential, 'port': 8740},
                'access': 'read-only' if kind == 'portfolio' else 'contribute', 'shared_instructions': 'AGENTS.md'}
     if kind == 'portfolio': request['workspace']['kind'] = 'portfolio'
@@ -367,7 +368,7 @@ def _gitignore():
 def _workflow_yaml():
     return render_text([
         'name: Contrôles du portefeuille',
-        'on: [push, pull_request]',
+        'on: [workflow_dispatch]',
         'jobs:',
         '  manifests:',
         '    runs-on: ubuntu-latest',
@@ -403,11 +404,17 @@ def compile_portfolio(store, principal, policy, request):
              product('docs/charte-pilote.md', 'text/markdown', _charter(request, projects, shared, subjects), 'SEEDED'),
              product('portfolio-index.request.json', 'application/json', _index_request_seed(), 'SEEDED'),
              product('claude-code.example.json', 'application/json', _adapter_example(None, subjects, 'portfolio', request['portfolio']['name'], organization), 'SEEDED')]
+    for client in ('codex', 'chatgpt'):
+        files.append(product(client + '.example.json', 'application/json',
+            _adapter_example(None, subjects, 'portfolio', request['portfolio']['name'], organization, client), 'SEEDED'))
     for view in projects + ([shared] if shared else []):
         base = 'projects/' + view['code'] + '/'
         files.append(product(base + 'workspace.request.json', 'application/json', render_json(workspace_request(request, view)), 'GENERATED'))
         files.append(product(base + 'README.md', 'text/markdown', _repository_readme(view, view is shared), 'SEEDED'))
         files.append(product(base + 'claude-code.example.json', 'application/json', _adapter_example(view, subjects, 'project', view['title'], organization), 'SEEDED'))
+        for client in ('codex', 'chatgpt'):
+            files.append(product(base + client + '.example.json', 'application/json',
+                _adapter_example(view, subjects, 'project', view['title'], organization, client), 'SEEDED'))
     no_secret(files)
     ordered, total, file_set_digest = collate(files)
     report = {'engine': ENGINE, 'regime': 'PORTFOLIO_SCAFFOLD', 'organization': organization, 'portfolio': request['portfolio'],

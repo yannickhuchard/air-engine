@@ -9,6 +9,39 @@ metadata:
 
 # Architecture de solution prête à construire
 
+## Boucle persistante de conception
+
+Pour compléter un dossier sans interruptions techniques répétées, utiliser
+`air_create_completion_run` avec baseline, Scope et objectifs exacts. Conserver
+`run` ; `air_read_completion_run` restitue le dernier checkpoint, les tâches et
+le verdict officiel. Le modèle du client produit les changements, pas AIR.
+Une identité ayant `authorize_design` doit accorder un mandat borné (sujets,
+types, cycles, objets, absence de progrès, expiration). Ne pas s’attribuer ce
+droit ni confondre mandat technique et approbation métier ou indépendante.
+
+Lire les objets ciblés, décrire les types, valider et préparer par
+`air_rebase_drafts` avec `include_bundle: false`. Lire le candidat via
+`air_read_completion_run` avec `prepared_change`. Sauvegarder au besoin le candidat par CHECKPOINT avec
+`prepared_change` ; sa référence reste `pending_change` après une interruption.
+Quand le candidat est admissible sous
+mandat actif, `air_apply_completion_run` applique objets, baseline et checkpoint
+dans une seule transaction. Cette autorisation préalable remplace l’accord pour
+chaque détail technique et le dépôt/fermeture séparés. Réévaluer et répéter.
+
+ESCALATE par `air_advance_completion_run` conserve une question et ses sources.
+Continuer uniquement les tâches indépendantes autorisées. RESOLVE exige
+`authorize_design` ; il ne vaut aucune preuve ni revue. Les propositions
+engageantes exigent `approved_prepared` exact ; l’intention ne change pas sans
+nouveau parcours. Sur conflit ou baseline avancée, relire ; ADOPT_BASELINE est
+explicite. Garder les clés d’idempotence sur résultat incertain.
+`air_stop_completion_run` pause ou annule, même si le quota de records est plein.
+Budget, expiration et absence de progrès arrêtent la boucle pour réévaluation.
+READY_TO_BUILD vient uniquement du verdict officiel, sans tâche ou question
+bloquante. Régénérer les livrables et `completion.html`. Un client arrêté ne
+laisse pas nécessairement un modèle actif ; AIR permet la reprise dans un autre
+client connecté. Un 429 exige une reprise bornée ; un 404 ou outil absent exige
+un diagnostic du catalogue, jamais une URN ou un résultat inventé.
+
 Pour rechercher une erreur du design, déclarer un domaine fini sourcé et une attente
 avec `air_search_state_counterexamples` ou `air_search_interface_counterexamples`.
 Conserver les entrées et rejeux des contre-exemples, puis corriger et rejouer.
@@ -24,6 +57,11 @@ l'architecte les contextes numérique, données, physique, organisationnel ou
 réglementé. `profiles` dans cet appel est une prévisualisation ; enregistrer
 DossierContext via la contribution habituelle pour conserver le choix.
 Utiliser le profil de modèle `air.build-design/0.35` pour les nouveaux objets.
+Sur un moteur qui expose `solution_assurance`, proposer `DossierContext.assurance_plan` :
+relier chaque MUST à un Goal mesurable et à trois VerificationCase distincts
+pour succès, échec et récupération. Relier chaque qualité MUST à une cible et
+un cas exact ; prévoir migration, retour arrière et retrait. Ne pas inventer
+leur exécution. Ces liens complètent les questions documentaires et les revues.
 Ses treize critères incluent la complétude contextuelle ; les anciens profils
 conservent leurs douze critères. Les exclusions exigent une décision exacte et
 une revue effective de la baseline pour être reconnues, pas un champ ACCEPTED.
@@ -229,3 +267,35 @@ la réalisation, pas un avis indépendant, un test exécuté ou une autorisation
 lancement. Les outils engageants restent exclus des adaptateurs IDE standards.
 Demander les empreintes avant FULL dans le MCP ; utiliser le CLI pour les grands
 exports de paquets. Le manifeste est limité à 4 MiB et la réponse MCP à 8 MiB.
+
+## Livraison par périmètre et reprise portable
+
+Utiliser air_assess_scope_gates pour les critères explicites d'un périmètre et
+ses prérequis communs, puis air_assess_readiness pour le verdict global distinct.
+Le tableau air_delivery_dashboard filtre par team, member, week, late et blocked,
+à date as_of explicite. Tracer les six couches par TraceabilityLink, puis vérifier
+avec air_traceability_coverage. Attacher les rapports retenus avec OperationalEvidence
+pour CI/CD, reprise, RTO/RPO et astreinte. Aucun exercice réel n'est exécuté par ces
+services. Exporter le suivi via air_export_checklist en CSV ou XLSX.
+
+Si MCP est indisponible, conserver ou créer session.json au format
+ air.portable-session/1 avec origin/snapshot/source_digest immuables et drafts
+séparés. Le référentiel est préféré par défaut mais optionnel. Sans moteur,
+les contrôles sont NOT_EXECUTED et le verdict UNKNOWN. Reconnecter plus tard
+avec air_reconcile_portable_session et une base explicite récente : les conflits
+sont à traiter avant dépôt, aucune autorité n'est transférée par le fichier.
+
+## Cartographier les parties prenantes
+
+Le livrable standard 38-stakeholders-map représente les rôles impliqués, les
+personnes/groupes à mobiliser et les rôles vacants. Lire air_stakeholders_map
+à une baseline exacte. Décrire StakeholderParticipation avant de proposer
+les objets : scope, rôle, état, raison, responsabilités spécifiques au projet,
+liens d'architecture, plan de mobilisation et responsable de coordination.
+INVOLVED et TO_INVOLVE désignent une partie prenante exacte. MISSING décrit
+un rôle vacant sans inventer une personne. Indiquer ASSIGN, RECRUIT, PARTNER
+ou ASSESS selon le choix documenté ; ne pas assimiler l'absence d'affectation
+à un recrutement. Les anciens rôles sans participation restent à préciser.
+Régénérer les livrables pour actualiser la carte, sa page, ses sources et la
+checklist documentaire. Le RACI est repris depuis les objets déclarés ; ni
+la carte ni un nom n'accordent d'autorité ou ne prouvent une embauche réelle.

@@ -1,0 +1,8 @@
+{
+  "format": "air.directory-observation-summary/1",
+  "observed_on": "2026-10-23",
+  "state": "SUBMISSION_BLOCKED",
+  "checked_again_for_this_release": false,
+  "public_directory_publication_confirmed": false,
+  "github_distribution_is_separate": true
+}

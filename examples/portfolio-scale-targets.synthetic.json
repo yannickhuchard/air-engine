@@ -1,0 +1,11 @@
+{
+  "format": "air.portfolio-scale-targets/1",
+  "synthetic": true,
+  "projects": 64,
+  "revisions_per_project": 16,
+  "concurrency": 2,
+  "description_bytes": 4096,
+  "put_p95_seconds": 5,
+  "read_p95_seconds": 5,
+  "restore_seconds": 60
+}

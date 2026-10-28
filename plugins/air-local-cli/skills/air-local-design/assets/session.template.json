@@ -1,0 +1,16 @@
+{
+  "format": "air.portable-session/1",
+  "project_id": "reference.project",
+  "title": "Projet d’architecture",
+  "repository": {
+    "enabled": true,
+    "required": false,
+    "endpoint": null,
+    "availability": "UNVERIFIED"
+  },
+  "origin": null,
+  "snapshot": null,
+  "source_digest": null,
+  "drafts": [],
+  "questions": []
+}

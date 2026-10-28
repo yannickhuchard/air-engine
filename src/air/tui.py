@@ -21,7 +21,7 @@ TEAL = (23, 29, 30, 36, 37, 43, 37, 36, 30, 29)
 # command -> (title fr, title en, server step fr, server step en, explanations fr, explanations en)
 SPECS = {
     'deliverables': ('Compiler le dossier de livrables', 'Compile the deliverables pack',
-                     'AIR compile 37 documents et le deck de direction', 'AIR compiles 37 documents and the executive deck',
+                     'AIR compile 38 documents et le deck de direction', 'AIR compiles 38 documents and the executive deck',
                      ['lecture des baselines épinglées et de leurs emprunts', 'calcul de la porte prêt à construire de chaque baseline',
                       'diagrammes Mermaid : graphe, séquences, états, infrastructure, gantt', 'matrice de conformité, estimation IA, feuilles de route',
                       'deck bilingue : titres d’action calculés depuis le modèle'],

@@ -6,13 +6,15 @@ import re
 from air.expr import Program, bounded, typed, wire, ExprError
 from air.knowledge_schema import literal_values
 from air import transformation_schema
+from air import delivery_assurance_schema as assurance
+from air import stakeholder_schema
 
 PROFILE = 'air.delivery/0.32'
 NAMES = ['VerificationRun', 'PerformanceModel', 'SimulationScenario', 'Milestone', 'Environment', 'NetworkZone',
          'RuntimeComponent', 'Connection', 'Technology', 'PhysicalTable', 'CostItem', 'ValueStream', 'CustomerJourney',
          'ArchitecturePrinciple', 'RaciAssignment', 'RiskAssessment', 'ConceptRelation', 'ContextRelation', 'NavigationMap', 'Device',
          'AcceptanceScenario', 'QualityRequirement', 'ComplianceMapping', 'AgenticToolPlan', 'DeliveryEstimate', 'Roadmap', 'FinancialPlan',
-         'JourneyCatalog', 'Touchpoint', 'UsagePoint'] + transformation_schema.NAMES
+         'JourneyCatalog', 'Touchpoint', 'UsagePoint'] + transformation_schema.NAMES + assurance.NAMES + stakeholder_schema.NAMES
 IDENTIFIER = {'type': 'string', 'pattern': '^[A-Za-z][A-Za-z0-9_.-]{0,63}$'}
 MS = {'type': 'integer', 'minimum': 0, 'maximum': 86400000}
 MONTH = {'type': 'string', 'pattern': r'^20[0-9]{2}-(0[1-9]|1[0-2])$'}
@@ -48,6 +50,8 @@ def bodies(record, text, uri, ref, refs, nonempty, instant, artifact_ref):
         'label': short, 'quantity': DECIMAL, 'unit': short, 'unit_price': DECIMAL, 'explanation': text})},
         'sources': nonempty, 'evidence_status': {'enum': ['ASSUMPTION', 'DOCUMENTED_QUOTE', 'RECORDED_COST']}})
     return {
+        **stakeholder_schema.bodies(record, text, uri, ref, nonempty, DAY),
+        **assurance.bodies(record, text, uri, ref, refs, nonempty, instant, artifact_ref),
         **transformation_schema.bodies(record, text, uri, ref, refs, nonempty, instant, DAY),
         'air.VerificationRun': record({'case': ref, 'method': {'enum': sorted(PROOF_LEVELS)}, 'result': {'enum': ['PASS', 'FAIL', 'INCONCLUSIVE']},
             'proof_level': {'enum': sorted({v for values in PROOF_LEVELS.values() for v in values})}, 'executed_at': instant,
@@ -243,6 +247,8 @@ REFERENCE_FIELDS = {
 
 
 def slots(obj, data_types):
+    yield from stakeholder_schema.slots(obj, data_types)
+    yield from assurance.slots(obj, data_types)
     yield from transformation_schema.slots(obj, data_types)
     body, kind = obj['body'], obj['meta']['type']
     if kind == 'air.CostItem' and 'calculation' in body:
@@ -305,6 +311,7 @@ def slots(obj, data_types):
 
 
 def local_issues(obj):
+    yield from stakeholder_schema.local_issues(obj)
     yield from transformation_schema.local_issues(obj)
     body, kind = obj['body'], obj['meta']['type']
     if kind == 'air.JourneyCatalog':
@@ -434,6 +441,7 @@ def local_issues(obj):
 
 
 def graph_issues(objects, by_ref):
+    yield from assurance.graph_issues(objects, by_ref)
     yield from transformation_schema.graph_issues(objects, by_ref)
     key = lambda r: (r['id'], r['revision'])
     accountable = {}

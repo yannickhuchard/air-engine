@@ -4,10 +4,11 @@ from fastapi.responses import JSONResponse, Response
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.exc import OperationalError
 from starlette.concurrency import run_in_threadpool
+from air import delivery_assurance, checklist_export, portable_session, stakeholders
 from air import __version__
 from air import question_capsule
 from air import transformation_view, project_updates, video_refresh
-from air import completeness, interface_contracts, builder_handoff, behavior_search, evidence_impact
+from air import completeness, interface_contracts, builder_handoff, behavior_search, evidence_impact, completion, context_export, generation_trace, ci_evidence, effort_calibration
 from air.auth import OIDCVerifier
 from air.core import capabilities, schema, TYPES, validate
 from air.parsing import parse
@@ -255,6 +256,8 @@ def create_app(settings, run_worker=True):
         descriptor = {"namespace": request.headers.get("x-air-namespace", ""),
             "media_type": request.headers.get("x-air-media-type", "application/octet-stream"),
             "idempotency_key": request.headers.get("idempotency-key", "")}
+        if request.headers.get('x-air-classification'):
+            descriptor['classification'] = {'level': request.headers['x-air-classification']}
         from air.foundation import check_schema
         check_schema(descriptor, artifacts.UPLOAD)
         principal["policy"].require(principal, "write", descriptor["namespace"])
@@ -294,6 +297,58 @@ def create_app(settings, run_worker=True):
     async def openapi_compilation(request: Request, principal=Depends(identity)):
         return await run_in_threadpool(compile_openapi, store, principal, principal["policy"], await document(request))
 
+    @app.post("/v1/stakeholders/map")
+    async def stakeholders_map(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(stakeholders.query, store, principal, principal['policy'], await document(request))
+
+    @app.post("/v1/scope-gates/assess")
+    async def scope_gates_assess(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(delivery_assurance.assess_gates, store, principal, principal["policy"], await document(request))
+
+    @app.post("/v1/delivery/dashboard")
+    async def delivery_dashboard(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(delivery_assurance.dashboard, store, principal, principal["policy"], await document(request))
+
+    @app.post("/v1/traceability/coverage")
+    async def traceability_coverage(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(delivery_assurance.coverage, store, principal, principal["policy"], await document(request))
+
+    @app.post("/v1/checklists/compile")
+    async def checklists_compile(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(checklist_export.compile_export, store, principal, principal["policy"], await document(request))
+
+    @app.post("/v1/sessions/export")
+    async def sessions_export(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(portable_session.export_session, store, principal, principal["policy"], await document(request))
+
+    @app.post("/v1/sessions/reconcile")
+    async def sessions_reconcile(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(portable_session.reconcile, store, principal, principal["policy"], await document(request), settings)
+
+    @app.post("/v1/completion/create")
+    async def completion_create(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(completion.create, store, principal, principal['policy'], await document(request), settings)
+
+    @app.post("/v1/completion/read")
+    async def completion_read(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(completion.read, store, principal, principal['policy'], await document(request))
+
+    @app.post("/v1/completion/advance")
+    async def completion_advance(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(completion.advance, store, principal, principal['policy'], await document(request), settings)
+
+    @app.post("/v1/completion/authorize")
+    async def completion_authorize(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(completion.authorize, store, principal, principal['policy'], await document(request), settings)
+
+    @app.post("/v1/completion/apply")
+    async def completion_apply(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(completion.apply, store, principal, principal['policy'], await document(request), settings)
+
+    @app.post("/v1/completion/stop")
+    async def completion_stop(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(completion.stop, store, principal, principal['policy'], await document(request), settings)
+
     @app.post("/v1/behavior/states")
     async def search_state_behavior(request: Request, principal=Depends(identity)):
         return await run_in_threadpool(behavior_search.search_states, store, principal, principal['policy'], await document(request))
@@ -329,6 +384,26 @@ def create_app(settings, run_worker=True):
     @app.post('/v1/handoffs/revoke')
     async def builder_revoke(request: Request, principal=Depends(identity)):
         return await run_in_threadpool(builder_handoff.revoke, store, principal, principal['policy'], await document(request), settings)
+
+    @app.post('/v1/effort/calibrate')
+    async def calibrate_effort(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(effort_calibration.assess, store, principal, principal['policy'], await document(request))
+
+    @app.post('/v1/ci-evidence/ingest')
+    async def ingest_ci_evidence(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(ci_evidence.ingest, store, principal, principal['policy'], await document(request), settings)
+
+    @app.post('/v1/generation-traces/create')
+    async def create_generation_trace(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(generation_trace.create, store, principal, principal['policy'], await document(request), settings)
+
+    @app.post('/v1/generation-traces/read')
+    async def read_generation_trace(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(generation_trace.read, store, principal, principal['policy'], await document(request))
+
+    @app.post('/v1/context-exports/prepare')
+    async def prepare_context_export(request: Request, principal=Depends(identity)):
+        return await run_in_threadpool(context_export.prepare, store, principal, principal['policy'], await document(request), settings)
 
     @app.post('/v1/completeness/assess')
     async def contextual_completeness(request: Request, principal=Depends(identity)):

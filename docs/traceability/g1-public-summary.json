@@ -1,0 +1,16 @@
+{
+  "candidate_version": "0.34.0rc9",
+  "g1_received": true,
+  "platform": {
+    "os": "Windows 11",
+    "python": "3.12.14",
+    "database": "SQLite",
+    "authentication": "local"
+  },
+  "license": "Apache-2.0",
+  "support": "COMMUNITY_BEST_EFFORT_NO_SLA_OR_LTS",
+  "format": "air.g1-public-summary/1",
+  "source_document_sha256": "dfab4eb35e6aced5fe8414a9ddb787fa6c34a4a634f3c95b580fd71dd52e9c12",
+  "scope": "Historical rc9 workstation decision only; no qualification inherited by dev8",
+  "independent_validation": "DEFERRED"
+}

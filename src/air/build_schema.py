@@ -33,7 +33,14 @@ def bodies(record, text, uri, ref, refs, nonempty):
     return {
         'air.DossierContext': record({'scope': ref, 'catalogue': {'const': CATALOGUE},
             'profiles': {**array({'enum': CONTEXTS}, 1), 'uniqueItems': True}, 'rationale': text,
-            'exclusions': array(record({'check_id': short, 'reason': text, 'decision': ref}))}),
+            'exclusions': array(record({'check_id': short, 'reason': text, 'decision': ref})),
+            'assurance_plan': record({
+                'requirements': {**array(record({'requirement': ref, 'goal': ref,
+                    'happy': ref, 'failure': ref, 'recovery': ref, 'rationale': text})), 'maxItems': 1000},
+                'quality': {**array(record({'requirement': ref, 'case': ref})), 'maxItems': 1000},
+                'lifecycle': {**array(record({'kind': {'enum': ['MIGRATION', 'ROLLBACK', 'RETIREMENT']},
+                    'case': ref, 'rationale': text})), 'maxItems': 3}})},
+            ['scope', 'catalogue', 'profiles', 'rationale', 'exclusions']),
         'air.InterfaceSpecification': record({'contract': ref, 'binding': ref,
             'version': {'type': 'string', 'pattern': '^[0-9]{1,4}\\.[0-9]{1,4}\\.[0-9]{1,4}$'},
             'compatibility': record({'strategy': {'enum': ['STRICT', 'BACKWARD']}, 'breaking_change_policy': text}),
@@ -58,6 +65,16 @@ def slots(obj):
     for field, targets in fields.items(): yield 'body/' + field, b[field], targets
     if kind == 'air.DossierContext':
         for i, item in enumerate(b['exclusions']): yield f'body/exclusions/{i}/decision', item['decision'], ['air.Decision']
+        plan = b.get('assurance_plan', {})
+        for i, item in enumerate(plan.get('requirements', [])):
+            for field, kinds in [('requirement', ['air.Requirement']), ('goal', ['air.Goal']),
+                                 *((f, ['air.VerificationCase']) for f in ('happy', 'failure', 'recovery'))]:
+                yield f'body/assurance_plan/requirements/{i}/{field}', item[field], kinds
+        for i, item in enumerate(plan.get('quality', [])):
+            yield f'body/assurance_plan/quality/{i}/requirement', item['requirement'], ['air.QualityRequirement']
+            yield f'body/assurance_plan/quality/{i}/case', item['case'], ['air.VerificationCase']
+        for i, item in enumerate(plan.get('lifecycle', [])):
+            yield f'body/assurance_plan/lifecycle/{i}/case', item['case'], ['air.VerificationCase']
     if kind == 'air.DataLifecycleSpecification':
         for field in ('migration', 'rollback'):
             for i, ref in enumerate(b[field]['verification']): yield f'body/{field}/verification/{i}', ref, ['air.VerificationCase']
