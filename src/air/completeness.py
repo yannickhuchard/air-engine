@@ -134,6 +134,11 @@ def project(exported, profiles=None):
                 r['body'].get('subject') and key(r['body']['subject']) == key(obj['meta'])]
             missing = ['RESPONSIBILITY_' + role + '_MISSING' for role in ('R', 'A') if not any(r['body']['responsibility'] == role for r in raci)]
             row('RESPONSIBILITY:' + suffix, 'Affecter explicitement réalisation et responsabilité de « ' + obj['meta']['name'] + ' »', '06', raci, missing)
+    if len(contexts) == 1 and profiles is None:
+        from air.solution_assurance import checks
+        for check in checks(exported, contexts[0]):
+            row(check['code'], 'Documenter et revoir la couverture de « ' + check['subject']['meta']['name'] + ' »',
+                '32', check['references'], check['issues'])
     known = {r['id'] for r in rows}
     exclusion_issues = []
     for exclusion in exclusions:
@@ -150,7 +155,9 @@ def project(exported, profiles=None):
     report = {'engine': ENGINE, 'catalogue': CATALOGUE, 'baseline': {'id': meta['id'], 'revision': meta['revision'], 'digest': exported['digest']},
         'context_state': context_state, 'contexts': [pin(o) for o in contexts], 'profiles': selected,
         'available_profiles': CONTEXTS, 'result': state, 'checks': rows, 'counts': counts, 'exclusion_issues': exclusion_issues,
-        'scope': 'DOCUMENTARY_PRESENCE_AND_EXPLICIT_RELATIONS', 'design_verified': False, 'ready_to_build': False,
+        'scope': 'DOCUMENTARY_PRESENCE_AND_EXPLICIT_RELATIONS',
+        'assurance_plan_enabled': len(contexts) == 1 and 'assurance_plan' in contexts[0]['body'],
+        'scenario_semantics_verified': False, 'design_verified': False, 'ready_to_build': False,
         'launch_authorized': False, 'implementation_accepted': False, 'registry_written': False}
     context_budget(report)
     return {**report, 'report_digest': artifact_digest(report)}

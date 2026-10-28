@@ -4,17 +4,18 @@ from air.expr import artifact_digest
 
 ENGINE = 'air.site-questions/1'
 ROLES = [
-    ('comex', 'COMEX', 'Arbitrer la valeur, les risques et la préparation', ['23', '02', '25', '16', '17', '27', '28']),
-    ('metier', 'Managers métier', 'Comprendre les résultats et les changements de travail', ['23', '03', '04', '14', '05', '32']),
-    ('dsi', 'DSI', 'Examiner les engagements, les moyens et l’exploitation', ['08', '07', '21', '22', '26', '35', '17', '37', '28']),
-    ('entreprise', 'Architecture entreprise', 'Relier capacités, principes et trajectoires', ['14', '18', '24', '15', '25', '34', '37']),
-    ('solution', 'Architecture solution', 'Vérifier les mécanismes, les données et les preuves', ['01', '09', '10', '11', '19', '20', '29', '30', '12', '13', '28']),
-    ('realisation', 'Équipes de réalisation', 'Préparer les responsabilités et les critères de livraison', ['06', '08', '13', '26', '27', '31', '32', '33', '35', '36']),
+    ('comex', 'COMEX', 'Arbitrer la valeur, les risques et la préparation', ['23', '02', '25', '16', '17', '27', '28', '38']),
+    ('metier', 'Managers métier', 'Comprendre les résultats et les changements de travail', ['23', '03', '04', '14', '05', '32', '38']),
+    ('dsi', 'DSI', 'Examiner les engagements, les moyens et l’exploitation', ['08', '07', '21', '22', '26', '35', '17', '37', '28', '38']),
+    ('entreprise', 'Architecture entreprise', 'Relier capacités, principes et trajectoires', ['14', '18', '24', '15', '25', '34', '37', '38']),
+    ('solution', 'Architecture solution', 'Vérifier les mécanismes, les données et les preuves', ['01', '09', '10', '11', '19', '20', '29', '30', '12', '13', '28', '38']),
+    ('realisation', 'Équipes de réalisation', 'Préparer les responsabilités et les critères de livraison', ['06', '08', '13', '26', '27', '31', '32', '33', '35', '36', '38']),
 ]
 GATE_LABELS = {'NOT_READY': 'Préparation à la construction incomplète',
                'READY_TO_BUILD': 'Critères de préparation satisfaits dans leur portée',
                'INCONCLUSIVE': 'Préparation non déterminée'}
 DIMENSIONS = {
+    '38': [('air.StakeholderParticipation', 'Participation, justification et responsabilités dans le projet'), ('air.Role', 'Rôles et compétences attendues')],
     '06': [('air.RaciAssignment', 'Responsabilités RACI de réalisation'), ('air.OrganizationUnit', 'Organisation de réalisation')],
     '07': [('air.RaciAssignment', 'Responsabilités RACI d’exploitation'), ('air.OrganizationUnit', 'Organisation d’exploitation')],
     '03': [('air.CustomerJourney', 'Parcours par persona'), ('air.JourneyCatalog', 'Inventaire des personas et périmètre'), ('air.Touchpoint', 'Points de contact typés'), ('air.UsagePoint', 'Usages numériques, physiques et géographiques')],

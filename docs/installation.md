@@ -1,5 +1,11 @@
 # Installer AIR
 
+Pour ajouter AIR à votre assistant, suivre [Installer AIR dans ChatGPT desktop](installation-chatgpt.md).
+Ce parcours utilise une marketplace locale et la variante Skills-only CLI ;
+il complète l'installation du moteur ci-dessous. Le moteur et le plugin sont
+deux installations séparées. Un chat local avec exécuteur est requis pour appeler
+la CLI ; une conversation web ne joint pas le moteur du poste via `localhost`.
+
 La première cible de production est le [poste de l'architecte](production-poste-architecte.md),
 avec SQLite et identité locale. Le serveur centralisé et sa réception sont reportés.
 
@@ -11,6 +17,11 @@ avec recettes natives Codex et ChatGPT dans leur portée explicite. Lire le
 Pour les clients natifs et leurs limites, lire le [contrat P07](lot-clients-natifs.md).
 Après installation, `python -m air --home <home> workstation-check` vérifie le profil du poste.
 Lire le [contrat local et la reprise après perte du poste](lot-poste-local.md).
+La [matrice courante](traceability/client-release-matrix.json) distingue la
+candidate dev8 des preuves historiques. Pour un identifiant dédié à un modèle,
+configurer le [contrôle de destination et de classification](audit-remediation-2026-10-24.md)
+avant d'exposer des dossiers sensibles ; une installation native reste à vérifier
+sur le client, la version et le transport effectivement utilisés.
 Pour borner le serveur entier et préparer la réception, lire le [profil d'exploitation rc7](lot-exploitation-cloture.md).
 Lire les [fonctions disponibles et limites](etat-implementation.md) avant utilisation.
 La réception technique P05 est conservée par commit dans la traçabilité ; chaque nouvelle candidate est requalifiée.
@@ -28,8 +39,9 @@ Pour une équipe ou un client MCP, appliquer les [règles d'identité P04](lot-i
 
 Prérequis : Python 3.11+ avec venv/pip, un répertoire local inscriptible et un accès
 au registre de packages Python ou au miroir de l’entreprise. Python 3.12 sur Windows
-est la plateforme testée localement. Windows/Linux et Python 3.11/3.12 sont reçus en CI
-sur les commits et artefacts indiqués dans la [traçabilité](validation.md).
+est la plateforme testée localement. Les environnements effectivement vérifiés
+pour chaque archive sont indiqués dans les reçus joints à sa release ; aucune
+qualification CI ou multiplateforme supplémentaire n'est inférée pour dev8.
 Aucun Node, Docker, serveur SQL,
 compte cloud, fournisseur IA ou serveur d’identité n’est nécessaire.
 

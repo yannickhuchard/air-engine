@@ -1,0 +1,40 @@
+{
+  "format": "air.client-release-matrix/1",
+  "updated_at": "2026-10-28",
+  "candidate_version": "0.35.0.dev8",
+  "candidate_state": "PUBLIC_DEVELOPMENT_PRE_RELEASE",
+  "required_clients": [
+    "codex",
+    "chatgpt"
+  ],
+  "qualified_local_decision": "docs/traceability/g1-public-summary.json",
+  "routes": [
+    {
+      "client": "codex",
+      "transport": "MCP_STDIO",
+      "setup": "docs/installation.md",
+      "current_candidate_native_reception": "NOT_EXECUTED"
+    },
+    {
+      "client": "chatgpt",
+      "transport": "LOCAL_CLI_SKILLS",
+      "plugin_version": "0.1.16",
+      "setup": "docs/installation-chatgpt.md",
+      "current_candidate_native_reception": "NOT_EXECUTED"
+    },
+    {
+      "client": "chatgpt",
+      "transport": "AUTHORIZED_REMOTE_MCP",
+      "setup": "docs/installation.md",
+      "current_candidate_native_reception": "NOT_EXECUTED"
+    }
+  ],
+  "historical_publication_observation": {
+    "date": "2026-10-23",
+    "evidence": "docs/traceability/directory-public-summary.json",
+    "state": "SUBMISSION_BLOCKED",
+    "observed_again_today": false
+  },
+  "independent_validation": "DEFERRED_BY_USER_2026_09_28",
+  "full_air_conformance": false
+}

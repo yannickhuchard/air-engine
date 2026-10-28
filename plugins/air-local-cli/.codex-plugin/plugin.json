@@ -1,0 +1,56 @@
+{
+  "name": "air-local",
+  "version": "0.1.16",
+  "description": "Architecture design skills using the separately installed AIR Engine CLI and portable dossier files.",
+  "author": {
+    "name": "Yannick Huchard",
+    "url": "https://github.com/yannickhuchard"
+  },
+  "homepage": "https://github.com/yannickhuchard/air-plugin",
+  "repository": "https://github.com/yannickhuchard/air-plugin",
+  "keywords": [
+    "architecture",
+    "air",
+    "local",
+    "sqlite",
+    "cli"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "AIR - Architecture Workspace",
+    "shortDescription": "Design architecture with AIR",
+    "longDescription": "Official AIR architecture skills and Python CLI helper by Yannick Huchard, updated for AIR Engine 0.35.0.dev8. Design architecture dossiers, map stakeholders, assess scoped gates and traceability, prepare versioned engineering handoffs and resume bounded design-completion runs. Requires Python 3.11+, a separately installed AIR Engine, a local executor, an authorized project and its authenticated loopback HTTP service. SQLite and local authentication are defaults. The plugin does not install the engine or declare an MCP server. Portable files can retain drafts and questions; checks remain NOT_EXECUTED without engine execution. The latest engine capabilities depend on the installed version and permissions. Simulations describe declared models; business applications are built later. Local results sent to the model follow your organization's data rules. Desktop-only submission; approval and publication are separate from local tests. Companion engine prerelease: 0.35.0.dev8. Check installed capabilities and permissions before using newer commands. GitHub distribution does not establish public-directory publication or native-client acceptance.",
+    "developerName": "Yannick Huchard",
+    "category": "Productivity",
+    "capabilities": [
+      "Architecture workflow guidance",
+      "Local AIR CLI",
+      "Portable design sessions"
+    ],
+    "websiteURL": "https://github.com/yannickhuchard/air-plugin",
+    "supportURL": "https://github.com/yannickhuchard/air-plugin/issues",
+    "privacyPolicyURL": "https://github.com/yannickhuchard/air-plugin/blob/main/PRIVACY.md",
+    "termsOfServiceURL": "https://github.com/yannickhuchard/air-plugin/blob/main/TERMS.md",
+    "defaultPrompt": [
+      "Set up AIR for this authorized architecture project.",
+      "Review this AIR dossier and explain its next steps.",
+      "Prepare the engineering handoff for this AIR baseline."
+    ],
+    "brandColor": "#00BFC1",
+    "composerIcon": "./assets/logo.png",
+    "logo": "./assets/logo.png"
+  },
+  "license": "Apache-2.0",
+  "onboardingSkill": "./skills/air-local-setup/SKILL.md",
+  "publication": {
+    "countries": [],
+    "release_notes": "0.1.15 Skills-only desktop candidate, based on the 0.1.14 skills and AIR Engine 0.35.0.dev7 source. Adds requires_local_executor=true in portable and legacy manifests; updates CLI guidance for completion runs, scoped gates, delivery tracking, portable sessions and stakeholder maps. No MCP declaration, engine, credentials or enterprise data bundled. Preserves the approved 0.1.7 archive; this new version requires its own review.",
+    "translations": {
+      "fr-FR": {
+        "subtitle": "Concevoir avec AIR",
+        "description": "Skills officiels de Yannick Huchard pour concevoir, vérifier, simuler et transmettre des projets d'architecture. Version 0.1.15, alignée sur le moteur 0.35.0.dev7 : complétion persistante, gates par périmètre, suivi de livraison, sessions portables et parties prenantes. Python 3.11+, moteur installé séparément, exécuteur local et service HTTP loopback authentifié requis pour les contrôles. SQLite et identité locale par défaut. Aucun serveur MCP déclaré. Les contrôles non exécutés restent en attente."
+      }
+    }
+  },
+  "requires_local_executor": true
+}

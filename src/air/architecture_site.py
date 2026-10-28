@@ -16,16 +16,10 @@ from air.expr import artifact_digest
 from functools import partial
 from air import financial_view, traceability_sankey, site_finance_trace, journey_catalog, site_journeys, management_summary, transformation_view, project_updates
 from air import journey_map, journey_visual, process_diagrams
-from air import completeness, site_completeness
+from air import delivery_assurance, delivery_dashboard_html, checklist_export, stakeholders
+from air import completeness, site_completeness, site_navigation
 
 ENGINE = 'air.architecture-site/1'
-GROUPS = [
-    ('Comprendre le projet', ['23', '02', '03', '14', '24']),
-    ('Suivre les mécanismes', ['01', '04', '09', '10', '11', '29', '30']),
-    ('Comprendre les données', ['18', '19', '20']),
-    ('Examiner les choix et les impacts', ['25', '12', '15', '16', '13', '34', '35']),
-    ('Préparer la réalisation', ['08', '21', '22', '26', '31', '05', '06', '07', '17', '27', '36', '37', '32', '33', '28']),
-]
 QUESTIONS = {
     '01': ('Quels composants portent la solution ?', 'Relier les composants, les contrats et les connexions à leurs responsabilités.'),
     '02': ('Quelle valeur le projet doit-il rendre ?', 'Lire la chaîne depuis son déclencheur jusqu’au résultat attendu.'),
@@ -63,6 +57,7 @@ QUESTIONS = {
     '34': ('Quels contrôles sont couverts ?', 'Relier exigences et contrôles aux mécanismes déclarés et aux vérifications.'),
     '35': ('Quels niveaux de qualité sont attendus ?', 'Examiner cibles, priorités et méthodes de vérification.'),
     '36': ('Comment l’outillage agentique affecte-t-il l’effort ?', 'Lire les estimations et leurs hypothèses, sans promettre un gain mesuré.'),
+    '38': ('Qui doit être impliqué et quels rôles restent à pourvoir ?', 'Lire les contributions attendues, responsabilités, mobilisation et liens au projet.'),
     '37': ('Quelles trajectoires de réalisation comparer ?', 'Examiner phases, dépendances, risques et alternatives déclarées.'),
 }
 CSP = "default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'none'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'"
@@ -149,8 +144,54 @@ def properties(value, g):
     return H(json.dumps(value, ensure_ascii=False) if not isinstance(value, str) else value)
 
 
+TECH_TOKEN = re.compile(r'urn:[A-Za-z0-9][\w:.~%/+-]*[\w/]|sha256:[0-9a-f]{64}')
+TECH_POINTER = re.compile(r'/[A-Za-z_][\w./-]*')
+TECH_SKIP = {'script', 'style', 'textarea', 'option', 'select', 'title', 'pre', 'svg'}
+
+
+def tech_ref(token, label):
+    return '<span class="tech-ref">' + token + '</span><span class="tech-alt">' + label + '</span>'
+
+
+def tech_refs(html):
+    """Exact identifiers stay in the page for search, audit and print, hidden until the reader shows them.
+
+    Only visible text is touched: tags, attributes, scripts, preformatted sources, options and SVG keep their bytes."""
+    out, skip, code, before = [], [], 0, ''
+    def label(token, prefix):
+        if not token.startswith('sha256:'): return 'identifiant'
+        # "Empreinte : <hidden>" already names it; repeating the word reads as an error.
+        return 'masquée' if re.search(r'empreinte[^.;]{0,24}:?\s*$', prefix, re.IGNORECASE) else 'empreinte'
+    for part in re.split(r'(<[^>]*>)', html):
+        if part.startswith('<'):
+            match = re.match(r'<(/?)([A-Za-z][A-Za-z0-9-]*)', part)
+            if match:
+                closing, tag = match.group(1) == '/', match.group(2).lower()
+                if tag in TECH_SKIP and not part.endswith('/>'):
+                    if not closing: skip.append(tag)
+                    elif skip and skip[-1] == tag: skip.pop()
+                elif tag == 'code' and not skip: code = max(0, code + (-1 if closing else 1))
+            out.append(part)
+        elif skip or not part.strip():
+            out.append(part)
+        elif code and TECH_POINTER.fullmatch(part.strip()):
+            out.append(tech_ref(part, 'sélecteur'))
+        else:
+            out.append(TECH_TOKEN.sub(lambda m: tech_ref(m.group(0), label(m.group(0), before + part[:m.start()])), part))
+            before = part
+    return ''.join(out)
+
+
+TECH_SWITCH = ('<input type="checkbox" id="air-tech" class="tech-switch-input"><label class="tech-switch" for="air-tech">'
+               '<span class="tech-switch-track" aria-hidden="true"></span>Références techniques</label>')
+
+
 def shell(title, body, project, nav, root, nodes=(), graph_data=None, temporal_data=None, story_data=None, brand=None, brand_root=None):
     profile = (brand or branding.normalize({}))['profile']
+    if isinstance(nav, site_navigation.Navigation):
+        body = nav.context + body
+        nav = nav.html
+    body = tech_refs(body)
     brand_root = brand_root if brand_root is not None else root + 'branding/'
     image = brand_root + 'logo.svg' if 'logo_svg' in profile else root + 'assets/icon-192.svg'
     # Diagram anchors only need objects present on this page. The lossless
@@ -170,38 +211,17 @@ def shell(title, body, project, nav, root, nodes=(), graph_data=None, temporal_d
         '<meta http-equiv="Content-Security-Policy" content="' + H(CSP, quote=True) + '"><title>' + H(title + ' | ' + project) + '</title>' + \
         '<link rel="stylesheet" href="' + root + 'assets/site.css"><link rel="stylesheet" href="' + H(brand_root) + 'brand.css"><script defer src="' + root + 'assets/mermaid-12.1.0.js"></script>' + \
         '<meta name="theme-color" content="' + profile['colors']['header'] + '"><link rel="icon" href="' + H(image) + '" type="image/svg+xml">' + \
-        '<script defer src="' + root + 'assets/site.js"></script><script defer src="' + root + 'assets/pwa.js"></script>' + graph_script + temporal_script + story_script + process_assets + journey_assets + '</head><body><a class="skip" href="#content">Aller au contenu</a>' + \
-        '<header class="workspace-header"><a class="brand" href="' + root + 'index.html"><img src="' + H(image) + '" alt="" width="40" height="40"><span>' + H(profile['name']) + ' <small>' + H(profile['tagline']) + '</small></span></a><span class="project-name">' + H(project) + '</span>' + \
+        '<script defer src="' + root + 'assets/site.js"></script><script defer src="' + root + 'assets/pwa.js"></script>' + graph_script + temporal_script + story_script + process_assets + journey_assets + ('<script defer src="' + root + 'assets/delivery-dashboard.js"></script>' if 'data-delivery' in body else '') + ('<script defer src="' + root + 'assets/stakeholder-map.js"></script>' if 'data-stakeholders-map' in body else '') + '</head><body><a class="skip" href="#content">Aller au contenu</a>' + \
+        '<header class="workspace-header"><a class="brand" href="' + root + 'index.html"><img src="' + H(image) + '" alt="" width="40" height="40"><span>' + H(profile['name']) + ' <small>' + H(profile['tagline']) + '</small></span></a><span class="project-name">' + H(project) + '</span>' + TECH_SWITCH + \
         '<details class="app-menu"><summary>Hors ligne</summary><div><p id="pwa-status" role="status">Ouverture directe du dossier. L’installation utilise une adresse locale.</p><p>Conserver ce site dans ce navigateur crée une copie de ses données d’architecture sur ce poste.</p>' + \
         '<button id="pwa-enable" type="button" hidden>Conserver hors ligne</button><button id="pwa-install" type="button" hidden>Installer l’application</button><button id="pwa-update" type="button" hidden>Appliquer la nouvelle version</button><button id="pwa-clear" type="button" hidden>Effacer la copie hors ligne</button></div></details></header>' + \
-        '<div class="layout"><aside aria-label="Navigation des dossiers"><details class="workspace-nav" open><summary>Explorer les dossiers</summary><nav aria-label="Sujets d’architecture">' + nav + '</nav></details></aside><main id="content" tabindex="-1">' + body + '</main></div>' + \
+        '<div class="layout"><aside aria-label="Navigation des dossiers"><details class="workspace-nav" open><summary>Sommaire du dossier</summary><nav aria-label="Sujets d’architecture">' + nav + '</nav></details></aside><main id="content" tabindex="-1">' + body + '</main></div>' + \
         '<footer>Conception et simulation pour une réalisation ultérieure. Cet export statique contient des données : sa diffusion reste limitée aux destinataires autorisés.</footer>' + \
         '<script type="application/json" id="air-nodes">' + data + '</script>' + graph_json + temporal_json + story_json + '</body></html>'
 
 
 def navigation(topics, active=''):
-    parts = ['<a class="dossier-home" href="news.html">News, décisions et questions ouvertes</a>', '<a class="dossier-home" href="management-summary.html">Management Summary</a>',
-             '<a class="dossier-home" href="index.html">Vue d’ensemble du dossier</a>',
-             '<a class="dossier-home" href="transformation.html">Programmes, projets et tâches</a>',
-             '<a class="dossier-home" href="journeys.html">Parcours par persona et usages</a>',
-             '<a class="dossier-home" href="processes.html">Processus en couloirs</a>',
-             '<a class="dossier-home" ' + ('aria-current="page" ' if active == 'finance' else '') + 'href="finance.html">Dimension financière</a>',
-             '<a class="dossier-home" ' + ('aria-current="page" ' if active == 'traceability' else '') + 'href="traceability.html">Du besoin aux livrables : Sankey</a>',
-             '<a class="dossier-home" href="questions.html">Trouver une réponse</a>',
-             '<a class="dossier-home" ' + ('aria-current="page" ' if active == 'cooperate' else '') + 'href="cooperate.html">Travailler avec un assistant</a>',
-             '<a class="dossier-home" ' + ('aria-current="page" ' if active.startswith('handoff') or active.startswith('diagram-handoff') else '') + 'href="handoff.html">Préparer la réalisation</a>',
-             '<a class="dossier-home" ' + ('aria-current="page" ' if active == 'verification' else '') + 'href="verification.html">Vérifications et changements</a>',
-             '<details' + (' open' if active.startswith('role-') else '') + '><summary>Mon parcours de lecture</summary><ul>' + ''.join(
-                 '<li><a ' + ('aria-current="page" ' if active == 'role-' + role else '') + 'href="role-' + role + '.html">' + H(label) + '</a></li>'
-                 for role, label, _, _ in site_questions.ROLES) + '</ul></details>']
-    parts.insert(2, '<a class="dossier-home" href="completeness.html">Complétude et contrats de construction</a>')
-    by_prefix = {t['name'][:2]: t for t in topics}
-    for group, prefixes in GROUPS:
-        entries = [by_prefix[p] for p in prefixes if p in by_prefix]
-        if entries:
-            parts.append('<details' + (' open' if any(t['name'] == active for t in entries) else '') + '><summary>' + H(group) + '</summary><ul>' + ''.join(
-                '<li><a ' + ('aria-current="page" ' if t['name'] == active else '') + 'href="' + t['name'] + '.html">' + H(t['title']) + '</a></li>' for t in entries) + '</ul></details>')
-    return '<a class="dossier-home" href="story.html">Lire l’architecture story</a><a class="dossier-home" href="graph.html">Explorer le graphe 2D</a><br><a href="../../timeline.html">Comparer les états et les dates</a>' + ''.join(parts) + '<a href="business-paths.html">Suivre les parcours métier</a><br><a href="objects.html">Explorer les objets et leur ontologie</a>'
+    return site_navigation.render(topics, site_questions.ROLES, active)
 
 
 def reading_routes(root=''):
@@ -387,7 +407,7 @@ def temporal_page(data, dossiers, exports):
     return body, links
 
 
-def compile_site(exports, gates, request, build_topics, model_content, brands=None, interface_suites=None, contextual_models=None, builder_receipts=None, evidence_reports=None):
+def compile_site(exports, gates, request, build_topics, model_content, brands=None, interface_suites=None, contextual_models=None, builder_receipts=None, evidence_reports=None, completion_reports=None, assurance_reports=None):
     """Each pinned dossier is rendered separately: conflicting revisions never merge."""
     directory = request.get('directory', 'livrables') + '/site'
     files, dossiers, diagram_count = [], [], 0
@@ -417,6 +437,8 @@ def compile_site(exports, gates, request, build_topics, model_content, brands=No
                                   ('bpmn-provenance.json', 'bpmn-provenance.json', 'application/json'),
                                   ('architecture-process.js', 'process.js', 'text/javascript'),
                                   ('architecture-journey.js', 'journey.js', 'text/javascript'),
+                                  ('delivery-dashboard.js', 'delivery-dashboard.js', 'text/javascript'),
+                                  ('stakeholder-map.js', 'stakeholder-map.js', 'text/javascript'),
                                   ('architecture-journey.css', 'journey.css', 'text/css')]:
         add('assets/' + target, media, assets.joinpath(source).read_text(encoding='utf-8'))
     site_pwa.add_identity(add, request['title'], default_brand)
@@ -433,6 +455,8 @@ def compile_site(exports, gates, request, build_topics, model_content, brands=No
         add_brand(selected_brand, prefix + 'branding/')
         dossier_shell = partial(shell, brand=selected_brand, brand_root='branding/')
         topics = build_topics(g, [gate])
+        for stage in site_navigation.stages(topics):
+            add(prefix + stage['href'], 'text/html', dossier_shell(stage['title'], site_navigation.chapter(stage), request['title'], navigation(topics, stage['key']), '../../'))
         suites = (interface_suites or {}).get(e['digest'], [])
         contextual = (contextual_models or {}).get(e['digest']) or completeness.attach_interfaces(completeness.project(e), suites)
         add(prefix + 'completeness.json', 'application/json', render_json(contextual))
@@ -441,6 +465,20 @@ def compile_site(exports, gates, request, build_topics, model_content, brands=No
                 add(prefix + 'interfaces/' + site_completeness.slug(suite['specification']) + '/' + file['path'], file['media_type'], file['content'])
         labels = {(o['meta']['id'], o['meta']['revision']): o['meta']['name'] for o in e['objects']}
         add(prefix + 'completeness.html', 'text/html', dossier_shell('Complétude selon le contexte', site_completeness.page(contextual, topics, suites, labels), request['title'], navigation(topics, 'completeness'), '../../'))
+        baseline_pin = {'id': e['baseline']['meta']['id'], 'revision': e['baseline']['meta']['revision'], 'digest': e['digest']}
+        date_of_source = e['baseline']['meta']['recorded_at'][:10]
+        work_report = delivery_assurance.dashboard_project([e], {'baselines': [baseline_pin], 'as_of': date_of_source})
+        trace_report = delivery_assurance.coverage_project(e)
+        scoped = (assurance_reports or {}).get(e['digest']) or {'gates': [], 'assessment': 'NOT_EXECUTED_WITHOUT_REGISTRY'}
+        add(prefix + 'delivery-dashboard.json', 'application/json', render_json(work_report))
+        add(prefix + 'traceability-coverage.json', 'application/json', render_json(trace_report))
+        add(prefix + 'scope-gates.json', 'application/json', render_json(scoped))
+        tracking = checklist_export.rows(e, trace_report, scoped, work_report)
+        add(prefix + 'checklist.csv', 'text/csv', checklist_export.csv_bytes(tracking).decode('utf-8'))
+        delivery_links = {(o['meta']['id'], o['meta']['revision']): 'objects.html#' + anchor(o) for o in e['objects']}
+        add(prefix + 'delivery-dashboard.html', 'text/html', dossier_shell('Livraison et gates par périmètre', delivery_dashboard_html.render(work_report, trace_report, scoped, delivery_links, labels), request['title'], navigation(topics, 'delivery-dashboard'), '../../'))
+        stakeholder_view = stakeholders.project(e)
+        add(prefix + 'stakeholders.json', 'application/json', render_json(stakeholder_view))
         work = transformation_view.project([e])
         work_links = {(o['meta']['id'], o['meta']['revision']): 'objects.html#' + anchor(o) for o in e['objects']}
         add(prefix + 'transformation.json', 'application/json', render_json(work))
@@ -489,6 +527,10 @@ def compile_site(exports, gates, request, build_topics, model_content, brands=No
         from air.evidence_impact import declared_site
         from air.evidence_impact_html import render as evidence_html
         evidence = evidence if evidence is not None else declared_site(e)
+        from air.completion_html import render as completion_html
+        progress = (completion_reports or {}).get(e['digest'], {'runs': []})
+        add(prefix + 'completion-runs.json', 'application/json', render_json(progress))
+        add(prefix + 'completion.html', 'text/html', dossier_shell('Progression avec un agent', completion_html(progress), request['title'], navigation(topics, 'completion'), '../../', focus_nodes))
         add(prefix + 'verification-impact.json', 'application/json', render_json(evidence))
         add(prefix + 'verification.html', 'text/html', dossier_shell('Vérifications et changements', evidence_html(evidence), request['title'], navigation(topics, 'verification'), '../../', focus_nodes))
         for page_path, page_title, page_body in site_handoff_html.pages(handoff, g, diagram, receipts):
@@ -510,23 +552,26 @@ def compile_site(exports, gates, request, build_topics, model_content, brands=No
         for topic_id, capsule_request in default_capsules:
             add(prefix + 'question-' + topic_id + '.json', 'application/json', render_json(capsule_request))
         add(prefix + 'questions.json', 'application/json', render_json(reading))
-        add(prefix + 'questions.html', 'text/html', dossier_shell('Les questions du dossier', question_page(reading, g), request['title'], nav, '../../'))
+        add(prefix + 'questions.html', 'text/html', dossier_shell('Les questions du dossier', question_page(reading, g), request['title'], navigation(topics, 'questions'), '../../'))
         for role, label, _, _ in site_questions.ROLES:
             add(prefix + 'role-' + role + '.html', 'text/html', dossier_shell(label, question_page(reading, g, role), request['title'], navigation(topics, 'role-' + role), '../../'))
         body = '<nav class="breadcrumb"><a href="../../index.html">Projet</a> / Dossier</nav><h1>' + H(title) + '</h1>' + management_summary.section(summary, compact=True) + site_progress.ribbon(progress) + '<p class="intro">' + H(meta['description']) + '</p>' + \
             '<p class="gate"><strong>' + H(reading['gate']['label']) + '</strong>. <a href="28-preparation-construction.html">Comprendre les critères</a></p>' + \
             '<h2>Les réponses dont vous avez besoin</h2><p>Choisissez votre parcours, puis ouvrez les sujets qui portent la réponse et ses preuves.</p>' + reading_routes() + '<p><a href="questions.html">Rechercher parmi toutes les questions du dossier</a></p>' + \
             '<p>Chaque sujet présente une facette du même modèle. Commencez par le besoin, suivez les mécanismes, puis examinez les choix et les preuves.</p>' + story(g) + \
-            '<h2>Parcours de lecture</h2><ol class="reading-path">' + ''.join('<li><a href="' + t['name'] + '.html">' + H(QUESTIONS[t['name'][:2]][0]) + '</a><p>' + H(QUESTIONS[t['name'][:2]][1]) + '</p></li>' for p in ['23', '03', '01', '18', '25', '15', '28'] for t in topics if t['name'][:2] == p) + '</ol>'
-        body = body.replace('<h2>Parcours de lecture</h2>', site_completeness.preview(contextual) + site_journeys.preview(journeys) + site_finance_trace.finance_summary(finance) + site_finance_trace.sankey_preview(sankey) + '<h2>Parcours de lecture</h2>')
+            site_navigation.overview(topics)
+        body = body.replace('<section class="reading-outline">', site_completeness.preview(contextual) + site_journeys.preview(journeys) + site_finance_trace.finance_summary(finance) + site_finance_trace.sankey_preview(sankey) + '<section class="reading-outline">', 1)
+        body += '<section><h2>Qui contribue et qui manque encore ?</h2><p>' + str(stakeholder_view['counts']['INVOLVED']) + ' participation(s) déclarée(s), ' + str(stakeholder_view['counts']['MISSING']) + ' rôle(s) manquant(s). Examiner les contributions et le plan de mobilisation.</p><a href="38-stakeholders-map.html">Ouvrir la Stakeholders Map</a></section>'
         body += project_updates.section(updates, compact=True) + transformation_view.preview(work)
+        body += '<section><h2>Livraison et critères par périmètre</h2><p>Suivre les responsabilités, retards, blocages et liens manquants entre exigences et preuves.</p><a href="delivery-dashboard.html">Ouvrir le tableau de livraison</a></section>'
         body += site_progress.section(progress)
+        body += '<section><h2>Continuer le travail avec un agent</h2><p>Consultez les prochaines tâches, les décisions attendues et les références de reprise du dossier.</p><a href="completion.html">Ouvrir la progression avec un agent</a></section>'
         add(prefix + 'index.html', 'text/html', dossier_shell(title, body, request['title'], nav, '../../'))
         objects = '<h1>Objets et définitions du dossier</h1><p>Les noms, définitions, relations et propriétés ci-dessous viennent des révisions exactes. Les liens suivent ces révisions.</p><label for="object-search">Rechercher un objet, un type ou une définition</label><input id="object-search" type="search"><p id="object-search-status" role="status"></p>'
         for o in sorted(g.by_ref.values(), key=lambda x: (x['meta']['type'], x['meta']['name'], x['meta']['id'], x['meta']['revision'])):
             objects += '<details class="object" id="' + anchor(o) + '"><summary>' + H(o['meta']['name']) + ' <span>' + H(o['meta']['type'][4:]) + ' · r' + str(o['meta']['revision']) + '</span></summary><p>' + H(o['meta']['description']) + '</p>' + \
                 '<p><code>' + H(o['meta']['id']) + '</code><br>Empreinte : <code>' + digest(o) + '</code></p>' + properties(o['body'], g) + '<details><summary>Provenance et métadonnées</summary>' + properties(o['meta'], g) + '</details></details>'
-        add(prefix + 'objects.html', 'text/html', dossier_shell('Objets et définitions', objects, request['title'], nav, '../../'))
+        add(prefix + 'objects.html', 'text/html', dossier_shell('Objets et définitions', objects, request['title'], navigation(topics, 'objects'), '../../'))
         roots = sorted([o for o in e['objects'] if o['meta']['type'] in ['air.Workflow', 'air.CustomerJourney', 'air.ValueStream']], key=lambda o: (o['meta']['name'], o['meta']['id']))
         if len(roots) > 64:
             from air.foundation import TooLarge
@@ -538,7 +583,7 @@ def compile_site(exports, gates, request, build_topics, model_content, brands=No
             name = 'path-' + anchor(root)
             add(prefix + name + '.json', 'application/json', render_json({'engine': business_paths.ENGINE, 'baseline': {'id': meta['id'], 'revision': meta['revision'], 'digest': e['digest']}, **result}))
             body = '<nav class="breadcrumb"><a href="business-paths.html">Parcours du dossier</a></nav><h1>' + H(root['meta']['name']) + '</h1>' + path_story(result, g) + '<p><a href="' + name + '.json">Résultat structuré et liens typés</a></p>'
-            add(prefix + name + '.html', 'text/html', dossier_shell(root['meta']['name'], body, request['title'], nav, '../../'))
+            add(prefix + name + '.html', 'text/html', dossier_shell(root['meta']['name'], body, request['title'], navigation(topics, 'business-paths'), '../../'))
             graph_paths.append({'name': root['meta']['name'], 'href': name + '.html', 'reference': result['root']['reference'],
                                 'objects': [n['reference'] for n in result['context_graph']['nodes']],
                                 'workflows': [w['source']['reference'] for w in result['workflows']],
@@ -546,22 +591,23 @@ def compile_site(exports, gates, request, build_topics, model_content, brands=No
                                 'context_truncated': result['context_graph']['truncated']})
             entries.append('<article class="business-path"><h2><a href="' + name + '.html">' + H(root['meta']['name']) + '</a></h2><p>' + H(root['meta']['description']) + '</p><p>' + H(root['meta']['type'][4:]) + ' · ' + str(len(result['gaps'])) + ' point(s) de vigilance.</p></article>')
         body = '<h1>Suivre les parcours métier</h1><p class="intro">Choisir une intention déclarée, lire ses étapes et ouvrir les objets qui portent son mécanisme.</p><p>Chaque résultat conserve cette baseline. Plusieurs correspondances restent plusieurs choix ; une association ne devient pas une interaction prouvée.</p><label for="path-search">Rechercher un parcours</label><input id="path-search" type="search"><p id="path-search-status" role="status"></p>' + (''.join(entries) if entries else '<p>Aucun workflow, parcours utilisateur ou chaîne de valeur n’est déclaré dans ce dossier.</p>')
-        add(prefix + 'business-paths.html', 'text/html', dossier_shell('Parcours métier', body, request['title'], nav, '../../'))
+        add(prefix + 'business-paths.html', 'text/html', dossier_shell('Parcours métier', body, request['title'], navigation(topics, 'business-paths'), '../../'))
         narrative = architecture_story.project(e, gate, path_results, temporal['comparisons'])
         add(prefix + 'story.json', 'application/json', json.dumps(narrative, ensure_ascii=False, separators=(',', ':')) + '\n')
-        add(prefix + 'story.html', 'text/html', dossier_shell('Architecture story', architecture_story_page(narrative, g), request['title'], nav, '../../', story_data=narrative['trailer']))
+        add(prefix + 'story.html', 'text/html', dossier_shell('Architecture story', architecture_story_page(narrative, g), request['title'], navigation(topics, 'story'), '../../', story_data=narrative['trailer']))
         graph_data = graph_explorer.project_graph(e)
         graph_body, graph_links = graph_page(graph_data, g, graph_paths)
         # UI links and highlighting are a separate presentation envelope: the
         # graph digest identifies the semantic projection before these fields.
         add(prefix + 'graph.json', 'application/json', render_json(graph_data))
-        add(prefix + 'graph.html', 'text/html', dossier_shell('Graphe d’architecture 2D', graph_body, request['title'], nav, '../../', graph_data={'graph': graph_data, 'paths': graph_paths, 'links': graph_links}))
+        add(prefix + 'graph.html', 'text/html', dossier_shell('Graphe d’architecture 2D', graph_body, request['title'], navigation(topics, 'graph'), '../../', graph_data={'graph': graph_data, 'paths': graph_paths, 'links': graph_links}))
         for topic in topics:
             name, focus = topic['name'], QUESTIONS[topic['name'][:2]]
             journey_order = [{(j['reference']['id'], j['reference']['revision']):j for j in journeys['journeys']}[(o['meta']['id'],o['meta']['revision'])] for o in g.of('CustomerJourney')]
-            special = journey_order if name.startswith('03-') else processes if name.startswith('04-') else []
+            special = journey_order if name.startswith('03-') else processes if name.startswith('04-') else [stakeholder_view] if name.startswith('38-') else []
             def special_diagram(n, code, title):
                 if n > len(special): return diagram(code, f'diagram-{name}-{n}.html', title)
+                if name.startswith('38-'): return stakeholders.render(stakeholder_view, work_links)
                 return journey_map.render(special[n-1]) if name.startswith('03-') else process_diagrams.figure(special[n-1])
             rendered, diagrams = markdown(topic['lines'], name, topic['title'], special_diagram if special else None)
             src = sources(topic['used'])
@@ -570,13 +616,18 @@ def compile_site(exports, gates, request, build_topics, model_content, brands=No
                 'Baseline `' + meta['id'] + '` r' + str(meta['revision']) + ' - `' + e['digest'] + '`.', '', *topic['lines'], '', *source_lines(topic['used'])]))
             body = '<nav class="breadcrumb"><a href="../../index.html">Projet</a> / <a href="index.html">' + H(title) + '</a></nav><h1>' + H(topic['title']) + '</h1><p class="intro">' + H(focus[0]) + '</p><p>' + H(focus[1]) + '</p>' + legend() + rendered + src + \
                 '<p><a href="' + name + '.md">Document Markdown de ce dossier exact</a> · <a href="../../architecture-model.json">Modèle exact exporté</a></p>'
+            if name.startswith('38-'):
+                body = stakeholders.render(stakeholder_view, work_links) + src + '<p><a href="38-stakeholders-map.md">Document Markdown</a> · <a href="stakeholders.json">Données et sources exactes</a></p>'
             add(prefix + name + '.html', 'text/html', dossier_shell(topic['title'], body, request['title'], navigation(topics, name), '../../', nodes))
             for d in diagrams:
                 diagram_count += 1
-                visual = (journey_map.render(special[d['number']-1], True) if name.startswith('03-') else process_diagrams.figure(special[d['number']-1])) if special and d['number'] <= len(special) else diagram(d['code'], title=d['title'])
+                visual = stakeholders.render(stakeholder_view, work_links) if name.startswith('38-') else (journey_map.render(special[d['number']-1], True) if name.startswith('03-') else process_diagrams.figure(special[d['number']-1])) if special and d['number'] <= len(special) else diagram(d['code'], title=d['title'])
                 body = '<nav class="breadcrumb"><a href="index.html">Dossier</a> / <a href="' + name + '.html">' + H(topic['title']) + '</a></nav><h1>' + H(d['title']) + '</h1><p class="intro">' + H(focus[0]) + '</p>' + legend() + visual + src
                 add(prefix + 'diagram-' + name + '-' + str(d['number']) + '.html', 'text/html', dossier_shell(d['title'], body, request['title'], navigation(topics, name), '../../', nodes))
         dossiers.append({'name': title, 'namespace': meta['namespace'], 'baseline': {'id': meta['id'], 'revision': meta['revision'], 'digest': e['digest']},
+                         'reading_navigation': {'engine': site_navigation.ENGINE, 'purpose': 'READING_ORDER_NOT_GATING', 'stages': [{'number': s['number'], 'title': s['title'], 'path': prefix + s['href']} for s in site_navigation.stages(topics)]},
+                         'stakeholders_map': prefix + '38-stakeholders-map.html', 'stakeholders_data': prefix + 'stakeholders.json', 'stakeholders_digest': stakeholder_view['projection_digest'],
+                         'delivery_dashboard': prefix + 'delivery-dashboard.html', 'scope_gates': prefix + 'scope-gates.json', 'checklist_csv': prefix + 'checklist.csv',
                          'news': prefix + 'news.html', 'news_data': prefix + 'news.json', 'news_digest': updates['projection_digest'],
                          'purpose': purpose,
                          'completeness': prefix + 'completeness.html', 'completeness_data': prefix + 'completeness.json', 'completeness_digest': contextual['report_digest'],
@@ -585,6 +636,7 @@ def compile_site(exports, gates, request, build_topics, model_content, brands=No
                          'journeys': prefix + 'journeys.html', 'journeys_data': prefix + 'journeys.json', 'journeys_digest': journeys['projection_digest'],
                          'processes': prefix + 'processes.html', 'process_count': len(processes),
                          'finance': prefix + 'finance.html', 'finance_data': prefix + 'finance.json', 'finance_digest': finance['projection_digest'],
+                         'completion': prefix + 'completion.html', 'completion_data': prefix + 'completion-runs.json',
                          'traceability': prefix + 'traceability.html', 'traceability_data': prefix + 'traceability.json', 'traceability_digest': sankey['projection_digest'],
                          'branding': {'profile_digest': selected_brand['profile_digest'], 'path': prefix + 'branding/brand.json', 'warnings': selected_brand['warnings']},
                          'path': prefix + 'index.html', 'graph': prefix + 'graph.html', 'graph_digest': graph_data['graph_digest'],

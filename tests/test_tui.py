@@ -33,7 +33,7 @@ def test_it_says_what_will_be_done_what_is_running_and_how_it_ended():
     activity.enter(1);time.sleep(tui.DELAY + 0.3);activity.enter(2);time.sleep(0.2)
     activity.finish(tui.summary('deliverables', {'written': ['a', 'b'], 'workspace_directory': 'docs'}))
     text = plain(stream.getvalue())
-    assert 'Compiler le dossier de livrables' in text and 'AIR compile 37 documents' in text and 'Comparer et écrire les fichiers' in text
+    assert 'Compiler le dossier de livrables' in text and 'AIR compile 38 documents' in text and 'Comparer et écrire les fichiers' in text
     assert '↳ lecture des baselines épinglées' in text, 'the current step explains what AIR does'
     assert text.rstrip().endswith('2 fichiers écrits dans docs') and 'terminé en' in text
 

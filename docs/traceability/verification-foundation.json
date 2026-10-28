@@ -1,0 +1,117 @@
+{
+  "date": "2026-09-19",
+  "version": "0.2.0.dev1",
+  "profile": "air.foundation/0.2",
+  "platform": "Windows / Python 3.12.14",
+  "tests": {
+    "command": ".venv/Scripts/python.exe -m pytest -q --junitxml=tmp/foundation-tests.xml",
+    "passed": 80,
+    "failed": 0,
+    "warnings": [
+      "Starlette/httpx deprecation",
+      "Starlette/AnyIO BlockingPortal alias deprecation"
+    ],
+    "raw_report": "tmp/foundation-tests.xml"
+  },
+  "scoped_rule": {
+    "id": "AIR-V003",
+    "profile": "air.foundation/0.2",
+    "supported_data_types": 6,
+    "positive": "PASS",
+    "missing_reference": "VIOLATED_AS_EXPECTED",
+    "invalid_schema": "NOT_EXECUTED_UNKNOWN_AS_EXPECTED",
+    "full_AIR_conformance": false
+  },
+  "rehearsal": {
+    "status": "PASS",
+    "dossiers": [
+      {
+        "id": "D01",
+        "members": 9,
+        "baseline": {
+          "id": "urn:asteria:baseline:d01",
+          "revision": 1
+        },
+        "digest": "sha256:ee090696c5fc37b84aad41d90ae79d5d82c4d943203c8da35690169351b75c75",
+        "restored_digest": "sha256:ee090696c5fc37b84aad41d90ae79d5d82c4d943203c8da35690169351b75c75",
+        "proposal_digest": "sha256:1a5c415b0cd6c97f07d8214e28c138d3738513aab375145147cfd88b192f0ac6",
+        "old_baseline_preserved": true,
+        "idempotent_proposal": true,
+        "open_unknowns": 1,
+        "business_acceptance": "NOT_READY"
+      },
+      {
+        "id": "D02",
+        "members": 9,
+        "baseline": {
+          "id": "urn:asteria:baseline:d02",
+          "revision": 1
+        },
+        "digest": "sha256:5f1237e2765c5f0e609877c69e683b48f0ef505a784e5afdccbae53a0eb9e726",
+        "restored_digest": "sha256:5f1237e2765c5f0e609877c69e683b48f0ef505a784e5afdccbae53a0eb9e726",
+        "proposal_digest": "sha256:146448fb1d589e6d0b80b853fd4ef127ef918e8bc7eab0ab6346f4bb69b06352",
+        "old_baseline_preserved": true,
+        "idempotent_proposal": true,
+        "open_unknowns": 1,
+        "business_acceptance": "NOT_READY"
+      },
+      {
+        "id": "D03",
+        "members": 9,
+        "baseline": {
+          "id": "urn:asteria:baseline:d03",
+          "revision": 1
+        },
+        "digest": "sha256:0ecbafc858659eb11c5f616cb44013e61ef8cb46cfbdd5168ea608a0d0633e45",
+        "restored_digest": "sha256:0ecbafc858659eb11c5f616cb44013e61ef8cb46cfbdd5168ea608a0d0633e45",
+        "proposal_digest": "sha256:2ecb154178a824ad3e17ef26c587033526a07601fb5f4a3d02917301f46c57ab",
+        "old_baseline_preserved": true,
+        "idempotent_proposal": true,
+        "open_unknowns": 1,
+        "business_acceptance": "NOT_READY"
+      }
+    ],
+    "live_instance_modified": false,
+    "full_registry_restore": "NOT_EXECUTED"
+  },
+  "http_installation": {
+    "dossiers": [
+      {
+        "dossier": "D01",
+        "cli_http": "PASS"
+      },
+      {
+        "dossier": "D02",
+        "cli_http": "PASS"
+      },
+      {
+        "dossier": "D03",
+        "cli_http": "PASS"
+      }
+    ],
+    "test_instance_stopped": true,
+    "main_version": "0.2.0.dev1",
+    "existing_credential_preserved": true,
+    "existing_example_preserved": true,
+    "database_schema_migration_required": false
+  },
+  "readiness": {
+    "M1-BASELINE": "PASS_SCOPED_SIX_DATA_TYPES",
+    "M1-KNOWLEDGE": "PARTIAL",
+    "M1-CONTRACT": "NOT_IMPLEMENTED",
+    "M1-CHANGE": "PARTIAL_STRUCTURAL_DIFF_NO_IMPACT",
+    "M1-AUTHORITY": "PARTIAL_GLOBAL_ROLES_ONLY",
+    "M1-VIEW": "NOT_IMPLEMENTED",
+    "M1-INSTALL": "PARTIAL_CONTENT_RESTORE_ONLY",
+    "business_demo_ready": false
+  },
+  "unqualified": [
+    "PostgreSQL live integration",
+    "Linux/macOS",
+    "real enterprise IdP",
+    "native IDE compatibility",
+    "full registry backup/restore",
+    "remaining 135 types and 83 rules",
+    "full publication/approval/admission/activation"
+  ]
+}

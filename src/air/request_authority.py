@@ -15,6 +15,9 @@ def check(store, conn, authority, writing=False):
     check_identity(store, conn, principal, settings)
     if AccessPolicy.load(settings.home).digest != policy.digest:
         raise Forbidden('Authority changed during the request')
+    binding = (policy.document or {}).get('subjects', {}).get(principal['subject'], {}).get('model_context')
+    if binding and not policy.context_grant(principal, **binding):
+        raise Forbidden('Model destination grant expired during the request')
 
 
 def guard_write(store, conn):

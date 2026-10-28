@@ -84,6 +84,7 @@ EXPLAIN = {
 }
 # What an agent can do next after a refusal; the refusal itself stays authoritative.
 HINTS = {
+    'AIR_RATE_LIMITED': 'HTTP 429: the origin may be AIR, the connector or a proxy. Do not infer missing schemas or retry in a loop. Keep the last portable session, edit drafts offline and reconnect later. AIR_QUOTA_EXCEEDED is a separate coded server refusal.',
     'AIR_NOT_FOUND': 'The exact revision does not exist. Call air_list_revisions with the id to see existing revisions and the latest one.',
     'AIR_FORBIDDEN': 'Read or write access is missing for the listed references, or they do not exist in a readable namespace. Report it; do not work around it.',
     'AIR_REVISION_CONFLICT': 'That revision already exists with different content, or a digest differs. Call air_list_revisions and use latest+1, or re-read the object.',
@@ -102,7 +103,7 @@ def now():
 
 # ---------------------------------------------------------------- errors an agent can act on
 
-STATUS_CODES = {404: 'AIR_NOT_FOUND', 403: 'AIR_FORBIDDEN', 409: 'AIR_REVISION_CONFLICT', 422: 'AIR_INVALID_MODEL', 503: 'AIR_STORAGE_UNAVAILABLE'}
+STATUS_CODES = {429: 'AIR_RATE_LIMITED', 404: 'AIR_NOT_FOUND', 403: 'AIR_FORBIDDEN', 409: 'AIR_REVISION_CONFLICT', 422: 'AIR_INVALID_MODEL', 503: 'AIR_STORAGE_UNAVAILABLE'}
 DETAIL_FIELDS = ('id', 'revision', 'type', 'latest_revision', 'unavailable_references')
 ERROR_MAX = 65536
 
@@ -877,8 +878,8 @@ def guide(store, principal, policy, request):
         steps.append(_step('This is not the latest revision (' + str(latest) + '): switch to it unless you review history on purpose',
                            'air_guide', {'baseline': {'id': s['id']}, 'intent': intent}))
     if intent == 'ORIENT':
-        steps += [_step('Inspect the contextual questions and absent dimensions; preview is not a selected profile', 'air_assess_completeness', {'baseline': s})]
         steps += [_step('Ready to build? Profile-specific criteria, each with what closes it (already summarised in readiness)', 'air_assess_readiness', {'baseline': s})]
+        steps += [_step('Inspect the contextual questions and absent dimensions; preview is not a selected profile', 'air_assess_completeness', {'baseline': s})]
         if delivery and delivery.get('scenarios'):
             steps.append(_step('Walk the acceptance scenarios on the navigation (already summarised in delivery.scenarios)', 'air_walk_scenarios', {'baseline': s}))
         steps += [
@@ -940,12 +941,16 @@ def guide(store, principal, policy, request):
         steps += [_step('OpenAPI description of ' + b['name'], 'air_compile_openapi', {'baseline': s, 'binding': b['reference'],
                                                                                       'info': {'title': b['name'], 'version': str(s['revision'])}})
                   for b in bindings if b.get('transport') == 'HTTP'][:12]
-        steps.append(_step('Deliverables pack (37 documents with diagrams): list them with their digests, then read the ones you need; 32 to 37 hold scenarios, regression, compliance, NFRs, AI estimate and roadmaps',
+        steps.append(_step('Deliverables pack: list the current catalogue with its digests, then read only the documents you need; scenarios, regression, compliance, NFRs, AI estimates, roadmaps and stakeholder maps are included',
                            'air_compile_deliverables', {'title': baseline['meta']['name'], 'baselines': [s], 'content': 'DIGESTS'}))
         steps.append(_step('Read one deliverable in full', 'air_compile_deliverables', {'title': baseline['meta']['name'], 'baselines': [s], 'only': ['<e.g. 34-matrice-conformite>']}))
         steps.append(_step('Executive presentation outline (action titles and sources); pin sibling and kernel baselines together for a programme', 'air_compile_presentation',
                            {'title': baseline['meta']['name'], 'baselines': [s], 'audience': 'STEERING'}))
     report = {'engine': ENGINE, 'intent': intent, 'registry_written': False, **state, 'next_steps': steps,
+              'completion_workflow': {'create_tool': 'air_create_completion_run', 'resume_tool': 'air_read_completion_run',
+                  'apply_tool': 'air_apply_completion_run', 'mandate_required': True,
+                  'inputs': ['baseline', 'scope', 'objectives', 'purpose', 'idempotency_key'],
+                  'readiness_authority': 'air_assess_readiness', 'host_execution_required': True},
               'limits': ['Checks are structural; behaviour, security and business truth are not verified.',
                          'Commitments (admission, activation, closure, publication) stay human and authenticated.']}
     report['report_digest'] = artifact_digest(report)

@@ -18,12 +18,15 @@ CHUNK_SIZE = 256 * 1024
 CHECKSUM = {'type': 'string', 'pattern': '^sha256:[a-f0-9]{64}$'}
 MEDIA_TYPE = {'type': 'string', 'maxLength': 255, 'pattern': '^[a-z0-9][a-z0-9.+_-]*/[a-z0-9][a-z0-9.+_-]*$'}
 UPLOAD = record({'idempotency_key': {'type': 'string', 'minLength': 1, 'maxLength': 128},
-    'namespace': META['properties']['namespace'], 'media_type': MEDIA_TYPE})
-IMPORT = record({**UPLOAD['properties'], 'content_base64': {'type': 'string', 'minLength': 1, 'maxLength': ((JSON_MAX_SIZE + 2) // 3) * 4}})
+    'namespace': META['properties']['namespace'], 'media_type': MEDIA_TYPE,
+    'classification': META['properties']['classification']}, ['idempotency_key', 'namespace', 'media_type'])
+IMPORT = record({**UPLOAD['properties'], 'content_base64': {'type': 'string', 'minLength': 1, 'maxLength': ((JSON_MAX_SIZE + 2) // 3) * 4}},
+    [*UPLOAD['required'], 'content_base64'])
 LOOKUP = record({'artifact': RECORD_REF})
 OBJECT_PIN = record({**REF['properties'], 'digest': CHECKSUM})
 CONTEXT_GUARD = record({'format': {'const': 'air.artifact-context/0.20'}, 'artifact': RECORD_REF, 'baseline': OBJECT_PIN, 'view': OBJECT_PIN})
-DESCRIPTOR = record({**UPLOAD['properties'], 'content_digest': CHECKSUM, 'size': {'type': 'integer', 'minimum': 1, 'maximum': MAX_SIZE}})
+DESCRIPTOR = record({**UPLOAD['properties'], 'content_digest': CHECKSUM, 'size': {'type': 'integer', 'minimum': 1, 'maximum': MAX_SIZE}},
+    [*UPLOAD['required'], 'content_digest', 'size'])
 CONTEXT = record({'instance_id': TEXT, 'mode': {'enum': ['local', 'oidc']}, 'issuer': {'anyOf': [URI, {'type': 'null'}]}, 'subject': {'type': 'string', 'minLength': 1, 'maxLength': 256}})
 PAYLOAD = record({'format': {'enum': ['air.artifact/0.18', 'air.artifact/0.20']}, 'request': DESCRIPTOR,
     'identity_context': CONTEXT, 'identity': URI, 'policy_digest': CHECKSUM, 'evidence_qualified': {'const': False}})
@@ -50,6 +53,8 @@ def _load_blob(conn, checksum):
 def _result(row):
     request = row['payload']['request']
     return {'artifact': reference(row), 'namespace': row['scope'], 'media_type': request['media_type'],
+        'classification': request.get('classification', {'level': 'RESTRICTED'}),
+        'classification_explicit': 'classification' in request,
         'size': request['size'], 'content_digest': request['content_digest'],
         'artifact_reference': {'locator': row['id'], 'media_type': request['media_type'], 'size': request['size'],
             'digest': {'algorithm': 'sha256', 'value': request['content_digest'].split(':')[1]},
@@ -107,7 +112,7 @@ def import_base64(store, principal, policy, settings, request):
     try: data = base64.b64decode(request['content_base64'], validate=True)
     except (ValueError, binascii.Error): raise InvalidModel('Invalid artifact base64 encoding') from None
     if len(data) > JSON_MAX_SIZE: raise InvalidModel('JSON artifact import exceeds 512 KiB; use the binary CLI/API')
-    return put(store, principal, policy, settings, {k: request[k] for k in UPLOAD['properties']}, data)
+    return put(store, principal, policy, settings, {k: request[k] for k in UPLOAD['properties'] if k in request}, data)
 
 
 def context_guard_id(artifact_id):
@@ -134,6 +139,7 @@ def _authorized(store, conn, principal, policy, request):
     row = store._get_record(conn, request['artifact']['id'])
     if row is None or row['kind'] != 'artifact_manifest': raise Forbidden('Artifact is unavailable')
     policy.require(principal, 'read', row['scope'])
+    policy.check_model_context(principal, row['scope'], row['payload']['request'].get('classification', {'level': 'RESTRICTED'})['level'])
     # A DataSchema or Source carries {locator, content digest}; the manifest digest is equally exact. Either one binds the read.
     if request['artifact']['digest'] not in (row['request_digest'], row['payload']['request']['content_digest']):
         raise Conflict('Artifact digest differs: give the manifest digest or the content digest (sha256:<artifact_reference.digest.value>)')

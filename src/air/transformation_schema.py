@@ -24,6 +24,7 @@ def bodies(record, text, uri, ref, refs, nonempty, instant, day):
             'status': project_status, 'closure_decision': ref, 'closed_at': instant},
             ['code', 'scope_kind', 'purpose', 'scope', 'owner', 'tasks', 'depends_on', 'status']),
         'air.ArchitectureTask': optional({'project': ref, 'purpose': text, 'owner': uri,
+            'team': uri, 'members': refs, 'start': day, 'blockers': refs, 'blocker_reason': text,
             'kind': {'enum': ['RESEARCH', 'MODELLING', 'VERIFICATION', 'REVIEW', 'DECISION', 'DOCUMENTATION']},
             'status': {'enum': ['TODO', 'IN_PROGRESS', 'BLOCKED', 'DONE', 'CANCELLED']}, 'depends_on': refs,
             'deliverables': refs, 'evidence': refs, 'due': day, 'closed_at': instant},
@@ -49,6 +50,9 @@ def slots(obj, data_types):
     }
     for field, targets in arrays.get(kind, {}).items():
         for i, reference in enumerate(b[field]): yield 'body/' + field + '/' + str(i), reference, targets
+    if kind == 'air.ArchitectureTask':
+        for field, targets in [('members', ['air.Actor', 'air.Stakeholder', 'air.Role']), ('blockers', data_types)]:
+            for i, reference in enumerate(b.get(field, [])): yield 'body/' + field + '/' + str(i), reference, targets
     if kind == 'air.ArchitectureProject':
         for i, d in enumerate(b['depends_on']): yield 'body/depends_on/' + str(i) + '/project', d['project'], ['air.ArchitectureProject']
 
@@ -60,6 +64,12 @@ def local_issues(obj):
         if closing != ('closure_decision' in b and 'closed_at' in b) or not closing and ('closure_decision' in b or 'closed_at' in b):
             yield 'AIR_WORK_CLOSURE', 'A terminal project/programme declares its exact closure decision and date; active work has neither'
     if kind == 'air.ArchitectureTask':
+        try:
+            for field in ('start', 'due'):
+                if field in b: date.fromisoformat(b[field])
+            if b.get('start') and b.get('due') and b['start'] > b['due']:
+                yield 'AIR_TASK_PERIOD', 'Task start precedes or equals its due date'
+        except ValueError: yield 'AIR_TASK_PERIOD', 'Task dates exist in the calendar'
         closing = b['status'] in TASK_TERMINAL
         if closing and (not b['evidence'] or 'closed_at' not in b): yield 'AIR_TASK_CLOSURE', 'Terminal design work has evidence and a declared closure date'
         if not closing and 'closed_at' in b: yield 'AIR_TASK_CLOSURE', 'An active task has no closure date'

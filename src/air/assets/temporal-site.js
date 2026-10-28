@@ -16,14 +16,14 @@
   function objectDetails(info,state,parent,label){
     html('h3',label,parent);sourceLink(info,state,parent);
     html('p',info.type.slice(4)+' · r'+info.reference.revision+' · '+info.lifecycle,parent);
-    html('p',info.description,parent);html('p','Identité : '+info.reference.id,parent);
-    html('p','Empreinte : '+info.reference.digest,parent);
+    html('p',info.description,parent);html('p','Identité : '+info.reference.id,parent,{class:'tech-ref'});
+    html('p','Empreinte : '+info.reference.digest,parent,{class:'tech-ref'});
     html('p','Validité déclarée : ['+info.validity.start+', '+(info.validity.end||'fin non déclarée')+')',parent);
     html('p','Date auteur : '+info.author_recorded_at+' (pas la réception dans le registre)',parent);
   }
   function showChange(group,c){
     const panel=el('temporal-detail');panel.replaceChildren();html('h2',data.change_labels[group.status],panel);
-    html('p',group.id,panel);
+    html('p',group.id,panel,{class:'tech-ref'});
     group.before.forEach(o=>objectDetails(o,c.before,panel,'État A'));
     group.after.forEach(o=>objectDetails(o,c.after,panel,'État B'));
     if(group.status==='MULTIPLE_REVISIONS')html('p','Plusieurs révisions figurent dans un même état. Elles restent séparées ; aucune paire de champs n’est choisie arbitrairement.',panel);

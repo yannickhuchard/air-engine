@@ -178,7 +178,7 @@ def test_every_generated_question_roundtrips_against_its_exact_registry(store, t
     settings = Settings(tmp_path, store.engine.url.render_as_string(hide_password=False), instance_id='generated-capsules')
     files = {f['path']: f['content'] for f in report['files']}
     d = report['website']['dossiers'][0];root = 'livrables/site/' + str(Path(d['path']).parent).replace('\\', '/') + '/'
-    for n in range(1, 38):
+    for n in range(1, 39):
         question_request = json.loads(files[root + 'question-' + str(n).zfill(2) + '.json'])
         receipt = qc.resume(store, user, POLICY, settings, question_request)['receipt']
         assert receipt['baseline'] == d['baseline'] and receipt['namespace'] == d['namespace']

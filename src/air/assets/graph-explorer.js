@@ -62,7 +62,7 @@
     const node=byId.get(selected);html('h2',node.name,detail);html('p',node.type.slice(4)+' · révision '+node.reference.revision+' · '+node.lifecycle,detail);
     html('p',node.description,detail);link(node.local_step?'Ouvrir le workflow source':'Ouvrir la définition exacte',payload.links[node.id],detail);
     if(node.local_step){const d=html('details',null,detail);html('summary','Déclaration de cette étape',d);html('pre',JSON.stringify(node.declared,null,2),d);}
-    html('p','Identité : '+node.reference.id,detail);html('p','Empreinte : '+node.reference.digest,detail);
+    html('p','Identité : '+node.reference.id,detail,{class:'tech-ref'});html('p','Empreinte : '+node.reference.digest,detail,{class:'tech-ref'});
     html('h3','Voisins directs',detail);
     // The panel retains all relations, even when a drawing filter hides them.
     const incident=graph.edges.filter(e=>e.source===selected||e.target===selected);
@@ -93,9 +93,9 @@
     });
     html('div',null,reader,{id:'graph-reading-caption',role:'status'});
     readRelation(0,false);
-    html('p',edge.label,detail);html('p','Sélecteur source : '+edge.selector,detail);
+    html('p',edge.label,detail);html('p','Sélecteur source : '+edge.selector,detail,{class:'tech-ref'});
     const evidence=byRef.get(refKey(edge.evidence));if(evidence)link('Ouvrir la source exacte',payload.links[evidence.id],detail);
-    html('p','Empreinte : '+edge.evidence.digest,detail);
+    html('p','Empreinte : '+edge.evidence.digest,detail,{class:'tech-ref'});
     if(edge.kind==='CONTROL_FLOW')html('p','Branche potentielle. La condition et la garde ne sont pas évaluées ; les jointures parallèles ne sont pas reconstruites par ce dessin.',detail);
     if(edge.kind==='REFERENCE'||edge.kind==='CONTEXT'||edge.kind==='PROVENANCE')html('p','Cette flèche est une référence, pas une interaction métier.',detail);
     if(edge.declared){const d=html('details',null,detail);html('summary','Déclaration complète',d);html('pre',JSON.stringify(edge.declared,null,2),d);}

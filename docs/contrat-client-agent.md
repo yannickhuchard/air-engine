@@ -83,7 +83,7 @@ poste : cette étape passe par la CLI locale ou un opérateur disposant de cet a
 
 Chaque dossier HTML offre six parcours : COMEX, managers métier, DSI,
 architecture entreprise, architecture solution et réalisation. Les questions
-renvoient aux 37 sujets, aux diagrammes et aux objets exacts. Les dimensions
+renvoient aux 38 sujets, aux diagrammes et aux objets exacts. Les dimensions
 absentes restent signalées, notamment coûts, jalons, RACI et qualité.
 La présence de sources ne prouve ni complétude ni approbation. Les contrôles
 calculés et leurs actions se lisent séparément des déclarations.

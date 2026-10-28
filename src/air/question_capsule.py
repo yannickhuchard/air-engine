@@ -15,7 +15,7 @@ RECEIPT_ENGINE = 'air.question-context/1'
 NAMESPACE = {'type': 'string', 'pattern': '^[a-z][a-z0-9_.-]{0,127}$'}
 CAPSULE = record({
     'engine': {'const': ENGINE}, 'namespace': NAMESPACE, 'baseline': SNAPSHOT,
-    'question': record({'topic': {'enum': [str(i).zfill(2) for i in range(1, 38)]},
+    'question': record({'topic': {'enum': [str(i).zfill(2) for i in range(1, 39)]},
                         'text': {'type': 'string', 'minLength': 1, 'maxLength': 2000}}),
     'audience': {'enum': [r[0] for r in ROLES]},
     'sources': {'type': 'array', 'items': SNAPSHOT, 'maxItems': 64, 'uniqueItems': True},

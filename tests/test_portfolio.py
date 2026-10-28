@@ -25,7 +25,7 @@ SPEC = {'organization': {'name': 'Asteria Industrie', 'urn_prefix': 'asteria', '
     'review': {'independent_review_required': True, 'namespace_policy': 'EXPLICIT'}}
 USER = {'subject': 'portfolio-architect', 'role': 'editor'}
 COMMON = {'.github/workflows/air-check.yml', '.gitattributes', '.gitignore', 'AGENTS.md', 'README.md', 'air-portfolio.json', 'air-portfolio.request.json',
-          'claude-code.example.json', 'docs/charte-pilote.md', 'docs/conventions-portefeuille.md', 'policies/access-policy.json', 'portfolio-index.request.json'}
+          'claude-code.example.json', 'codex.example.json', 'chatgpt.example.json', 'docs/charte-pilote.md', 'docs/conventions-portefeuille.md', 'policies/access-policy.json', 'portfolio-index.request.json'}
 
 
 def contents(result):
@@ -61,7 +61,7 @@ def test_scaffold_is_deterministic_bounded_and_writes_nothing(store):
     before = store.counts();result = compile_portfolio(store, USER, AccessPolicy(), SPEC)
     assert result == compile_portfolio(store, USER, AccessPolicy(), SPEC) and store.counts() == before
     files = contents(result)
-    per_repository = {'projects/' + code + '/' + name for code in ('sav', 'atelier', 'identites', 'socle') for name in ('README.md', 'workspace.request.json', 'claude-code.example.json')}
+    per_repository = {'projects/' + code + '/' + name for code in ('sav', 'atelier', 'identites', 'socle') for name in ('README.md', 'workspace.request.json', 'claude-code.example.json', 'codex.example.json', 'chatgpt.example.json')}
     assert set(files) == COMMON | per_repository
     manifest = json.loads(files['air-portfolio.json'])
     assert [p['code'] for p in manifest['projects']] == ['atelier', 'identites', 'sav'] and manifest['shared']['namespace'] == 'asteria.shared'
@@ -90,6 +90,28 @@ def test_every_repository_request_produces_its_own_coherent_repository(store):
         dossier = json.loads(contents(repository)['domains/' + code + '/dossier.json'])
         assert dossier['namespace'] == ('asteria.shared' if code == 'socle' else 'asteria.' + code)
         assert dossier['baseline_id'] == 'urn:air:asteria:' + code + ':baseline'
+
+
+def test_required_clients_can_compile_from_every_generated_example(store):
+    files = contents(compile_portfolio(store, USER, AccessPolicy(), SPEC))
+    for prefix in ('', 'projects/sav/', 'projects/atelier/', 'projects/identites/', 'projects/socle/'):
+        for client in ('codex', 'chatgpt'):
+            request = json.loads(files[prefix + client + '.example.json'])
+            request['server'].update(interpreter='D:/air/.venv/Scripts/python.exe', home='D:/air/.air')
+            compiled = compile_adapter(store, USER, AccessPolicy(), request)
+            assert compiled['files'] and not compiled['authorization_granted']
+    workflow = yaml.load(files['.github/workflows/air-check.yml'], Loader=yaml.BaseLoader)
+    assert workflow['on'] == ['workflow_dispatch']
+
+
+def test_generated_workspace_validation_fails_when_engine_is_absent(store):
+    files = contents(compile_workspace(store, USER, AccessPolicy(),
+        json.loads(contents(compile_portfolio(store, USER, AccessPolicy(), SPEC))['projects/sav/workspace.request.json'])))
+    workflow = yaml.load(files['.github/workflows/air-check.yml'], Loader=yaml.BaseLoader)
+    assert workflow['on'] == ['workflow_dispatch']
+    steps = workflow['jobs']['drafts']['steps']
+    script = next(s['run'] for s in steps if 'AIR_VALIDATION_NOT_CONFIGURED' in s.get('run', ''))
+    assert '::error::' in script and 'exit 1' in script and 'exit 0' not in script
 
 
 def test_access_policy_is_installable_and_least_privilege(store):

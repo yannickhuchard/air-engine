@@ -1,5 +1,16 @@
 # Site statique des dossiers d’architecture
 
+Le menu du dossier suit désormais [sept parties de lecture](ux-navigation-dossier.md) :
+cadrage, usages, solution, données, qualité et risques, construction, puis
+vérification et pilotage. Chaque partie regroupe ses dimensions d'architecture,
+possède une page d'entrée et conserve les URL des sujets et diagrammes existants.
+La synthèse management et le récit précèdent ce parcours ; les accès métier,
+COMEX et réalisation restent disponibles en haut du menu. Le groupe actif
+s'ouvre et un repère dans la page propose les parties précédente et suivante.
+Le menu mobile et ses groupes restent utilisables sans JavaScript.
+Les sept parties organisent une présentation ; la barre de complétude mesure
+ses propres dimensions documentaires et ne devient pas un suivi de lecture.
+
 Disponible dans le développement 0.35.0.dev1, distinct de la distribution publique
 rc9. Chaque compilation complète de `deliverables` génère par défaut
 `livrables/site/index.html` et `livrables/architecture-model.json`.
@@ -35,8 +46,8 @@ Les projections JSON sont compactées sans supprimer les objets, liens ou
 octets des artefacts retenus. Les fiches de transmission donnent accès à la
 déclaration complète par son lien exact dans le catalogue d’objets.
 
-Le dossier de référence conservé hors de cette distribution démontre le suivi sur
-une conception de livraison locale par robots, avec inconnues métier conservées.
+Les [trois dossiers fictifs Asteria](../fixtures/enterprise/asteria/README.md)
+montrent la lecture des besoins et des inconnues dans une même entreprise.
 
 UX02 améliore [la présentation et la lecture du graphe](ux02-design-et-lecture-graphe.md)
 dans le générateur : accueil avec intentions sourcées, quatre angles de lecture,
@@ -59,6 +70,10 @@ ou copier la demande. Le site ne lance aucune connexion ni dépôt. La page rest
 accessible hors ligne avec sa présélection de sujet et de public ; les capsules
 de départ sont accessibles sans JavaScript. Le MCP `air_resume_question` et la
 CLI `question-resume` vérifient le contexte du registre actuellement connecté.
+
+UX06 fait du [design Atlas](ux06-design-atlas.md) la présentation par défaut.
+Les URN, empreintes et sélecteurs sont masqués derrière l’interrupteur
+« Références techniques », sans être retirés du HTML.
 
 L’incrément A02 ajoute [les parcours métier sourcés](parcours-metier-sources.md) :
 recherche locale et pages de focus par workflow/parcours utilisateur/chaîne de
@@ -188,8 +203,8 @@ profil choisi pour le stockage de la solution est un exemple PostgreSQL à
 évaluer ; AIR lui-même reste installé avec SQLite.
 
 La vérification navigateur facultative utilise Node/Playwright uniquement en
-développement. La réception locale et les empreintes figurent dans le
-[reçu](traceability/lot-a-2026-10-10.json). Les trois parcours
+développement. Les vérifications et empreintes de cette préversion sont dans
+les assets de sa release. Les trois parcours
 DEMO-METIER-1 sont rejoués séparément. Les neuf tests métier non exécutés et les
 portes bloquées restent visibles, sans nouvelle attestation de conformité AIR.
 
