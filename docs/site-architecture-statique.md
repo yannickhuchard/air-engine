@@ -46,8 +46,8 @@ Les projections JSON sont compactées sans supprimer les objets, liens ou
 octets des artefacts retenus. Les fiches de transmission donnent accès à la
 déclaration complète par son lien exact dans le catalogue d’objets.
 
-Le [dossier ProxiBot](../projects/proxibot/START-HERE.md) démontre le suivi sur
-une conception de livraison locale par robots, avec inconnues métier conservées.
+Les [trois dossiers fictifs Asteria](../fixtures/enterprise/asteria/README.md)
+montrent la lecture des besoins et des inconnues dans une même entreprise.
 
 UX02 améliore [la présentation et la lecture du graphe](ux02-design-et-lecture-graphe.md)
 dans le générateur : accueil avec intentions sourcées, quatre angles de lecture,
@@ -203,8 +203,8 @@ profil choisi pour le stockage de la solution est un exemple PostgreSQL à
 évaluer ; AIR lui-même reste installé avec SQLite.
 
 La vérification navigateur facultative utilise Node/Playwright uniquement en
-développement. La réception locale et les empreintes figurent dans le
-[reçu](traceability/architecture-site-2026-10-02.json). Les trois parcours
+développement. Les vérifications et empreintes de cette préversion sont dans
+les assets de sa release. Les trois parcours
 DEMO-METIER-1 sont rejoués séparément. Les neuf tests métier non exécutés et les
 portes bloquées restent visibles, sans nouvelle attestation de conformité AIR.
 
